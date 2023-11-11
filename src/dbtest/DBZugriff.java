@@ -1,4 +1,4 @@
-package datenhaltungsschicht;
+package dbtest;
 
 import java.sql.Connection;
 import java.sql.Statement;
