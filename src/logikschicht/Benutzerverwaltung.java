@@ -22,19 +22,19 @@ public class Benutzerverwaltung {
         boolean updated = DBBenutzer.update(benutzer);
         if (updated)
         {
-            for (Benutzer existingKunde : benutzern)
+            for (Benutzer existingBenutzer : benutzern)
             {
-                if (existingKunde.getBenutzerId() == benutzer.getBenutzerId())
+                if (existingBenutzer.getBenutzerId() == benutzer.getBenutzerId())
                 {
-                    existingKunde.setAnrede(benutzer.getAnrede());
-                    existingKunde.setVorname(benutzer.getVorname());
-                    existingKunde.setNachname(benutzer.getNachname());
-                    existingKunde.setGeburtsdatum(benutzer.getGeburtsdatum());
-                    existingKunde.setEmail(benutzer.getEmail());
-                    existingKunde.setPlz(benutzer.getPlz());
-                    existingKunde.setOrt(benutzer.getOrt());
-                    existingKunde.setStrasse(benutzer.getStrasse());
-                    existingKunde.setRefBenutzer(benutzer.getRefBenutzer());
+                    existingBenutzer.setAnrede(benutzer.getAnrede());
+                    existingBenutzer.setVorname(benutzer.getVorname());
+                    existingBenutzer.setNachname(benutzer.getNachname());
+                    existingBenutzer.setGeburtsdatum(benutzer.getGeburtsdatum());
+                    existingBenutzer.setEmail(benutzer.getEmail());
+                    existingBenutzer.setPlz(benutzer.getPlz());
+                    existingBenutzer.setOrt(benutzer.getOrt());
+                    existingBenutzer.setStrasse(benutzer.getStrasse());
+                    existingBenutzer.setRefBenutzer(benutzer.getRefBenutzer());
                     break;
                 }
             }
@@ -47,14 +47,14 @@ public class Benutzerverwaltung {
         {
             benutzern.remove(benutzer);
             return true;
-        } else
-        {
-            return false;
         }
+
+        return false;
+
     }
 
-    public static Benutzer getBenutzerBybenutzerId(String kundennummer) throws Exception {
-        return DBBenutzer.getBenutzerByBenutzerId(kundennummer);
+    public static Benutzer getBenutzerBybenutzerId(String benutzerid) throws Exception {
+        return DBBenutzer.getBenutzerByBenutzerId(benutzerid);
     }
 
     public static List<Benutzer> getAllBenutzern() throws Exception {
