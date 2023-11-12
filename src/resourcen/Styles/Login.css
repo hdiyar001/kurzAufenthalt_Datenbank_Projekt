@@ -1,0 +1,43 @@
+.MainPanel {
+    -fx-background-color: white;
+}
+
+.lbl_title {
+    -fx-alignment: CENTER;
+    -fx-font-size: 34;
+    -fx-font-weight: bold;
+}
+
+.btn_login {
+    -fx-pref-height: 35.0;
+    -fx-pref-width: 209.0;
+    -fx-font-size: 14;
+    -fx-font-weight: bold;
+}
+.button{
+    /*-fx-background-color:#FED700;*/
+    -fx-background-color:red;
+    -fx-background-radius:50;
+}
+.button:hover {
+    -fx-background:linear-gradient(to bottom, #ce0100 5%, #fe1a00 100%);
+    -fx-background-color:#ce0100;
+}
+.button:active {
+    -fx-position:relative;
+    -fx-top:1px;
+}
+.lbl_notMember {
+    -fx-text-fill: #3c3a3a;
+}
+
+.lbl_signup {
+    -fx-text-fill: #1100ffd3;
+    -fx-font-size: 15;
+    -fx-font-weight: bold;
+}
+
+.lbl_forgotPass {
+    -fx-text-fill: #2752ffb5;
+    -fx-font-size: 13;
+}

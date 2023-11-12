@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="MainPanel" prefHeight="300.0" prefWidth="500.0" styleClass="MainPanel" stylesheets="@../../Styles/Login.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="praesentationsschicht_GUI.LoginController" 
+>
+
+    <Label fx:id="lbl_title" layoutX="206.0" layoutY="14.0" styleClass="lbl_title" text="Login" />
+    <Button fx:id="btn_login" layoutX="146.0" layoutY="171.0" styleClass="btn_login" text="Login" />
+    <TextField fx:id="tf_userNameLogin" layoutX="146.0" layoutY="83.0" promptText="Username / Email" style="-fx-pref-height: 35.0; -fx-pref-width: 209.0;;" />
+    <Label id="lbl_notMember" fx:id="lbl_notMember" layoutX="166.0" layoutY="251.0" text="Not a member?" />
+    <Label id="lbl_signup" fx:id="lbl_signup" layoutX="259.0" layoutY="249.0" styleClass="lbl_signup" text="Sign Up!" underline="true" />
+    <Label fx:id="lbl_forgotPass" layoutX="183.0" layoutY="212.0" styleClass="lbl_forgotPass" text="Forgot your password?" underline="true" />
+    <PasswordField fx:id="tf_passwordLogin" layoutX="146.0" layoutY="124.0" promptText="Password" style="-fx-pref-height: 35.0; -fx-pref-width: 209.0;;" />
+
+</AnchorPane>

@@ -47,10 +47,10 @@ public class Benutzerverwaltung {
         {
             benutzern.remove(benutzer);
             return true;
-        } else
-        {
-            return false;
         }
+
+        return false;
+
     }
 
     public static Benutzer getBenutzerBybenutzerId(String benutzerid) throws Exception {

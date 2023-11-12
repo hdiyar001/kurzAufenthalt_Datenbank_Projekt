@@ -1,4 +1,4 @@
-package praesentationsschicht;
+package praesentationsschicht_KONSOLE;
 
 import java.io.PrintStream;
 import java.util.List;
