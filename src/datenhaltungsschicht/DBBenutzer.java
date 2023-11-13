@@ -25,13 +25,16 @@ public class DBBenutzer extends DBZugriff {
                 + ", '" + benutzer.getNachname()
                 + "', '" + benutzer.getVorname()
                 + "', '" + benutzer.getAnrede()
+                + "', '" + benutzer.getBenutzerName()
                 + "', '" + benutzer.getEmail()
+                + "', '" + benutzer.getPasswort()
                 + "', '" + benutzer.getStrasse()
                 + "', '" + benutzer.getOrt()
                 + "', " + benutzer.getPlz()
-                + ", TO_DATE('" + benutzer.getGeburtsdatum() + "', 'dd.MM.yyyy'), "
-                + benutzer.getRefBenutzer()
-                + ")";
+                + ", '" + benutzer.getGeburtsdatum()
+                + "', " + benutzer.getRefBenutzer()
+                + ", '" + benutzer.getVerft()
+                + "')";
 
         try
         {
@@ -50,9 +53,19 @@ public class DBBenutzer extends DBZugriff {
     public static boolean update(Benutzer benutzer) throws Exception {
         connect();
 
-        String updateCommand = "UPDATE T_Benutzer SET Anrede = '" + benutzer.getAnrede() + "', Vorname = '" + benutzer.getVorname() + "', Nachname = '" + benutzer.getNachname()
-                + "', Geburtsdatum = TO_DATE('" + benutzer.getGeburtsdatum() + "', 'dd.MM.yyyy'), Email = '" + benutzer.getEmail() + "', PLZ = '" + benutzer.getPlz()
-                + "', Ort = '" + benutzer.getOrt() + "', Strasse = '" + benutzer.getStrasse() + "', referenzbenutzerid = '" + benutzer.getRefBenutzer() + "' WHERE benutzerId = " + benutzer.getBenutzerId();
+        String updateCommand = "UPDATE T_Benutzer SET Anrede = '" + benutzer.getAnrede()
+                + "', Vorname = '" + benutzer.getVorname()
+                + "', Nachname = '" + benutzer.getNachname()
+                + "', Geburtsdatum = '" + benutzer.getGeburtsdatum()
+                + "', Email = '" + benutzer.getEmail()
+                + "', PLZ = '" + benutzer.getPlz()
+                + "', Ort = '" + benutzer.getOrt()
+                + "',benutzerName= '" + benutzer.getBenutzerName()
+                + "', passwort= '" + benutzer.getPasswort()
+                + "' , Strasse = '" + benutzer.getStrasse()
+                + "', referenzbenutzerid = '" + benutzer.getRefBenutzer()
+                + "', verifiziert= '" + benutzer.getVerft()
+                + "' WHERE benutzerId = " + benutzer.getBenutzerId();
 
         try
         {
@@ -99,14 +112,17 @@ public class DBBenutzer extends DBZugriff {
                 String nachname = getNachname();
                 String vorname = getVorname();
                 String anrede = getAnrede();
+                String benutzerName = getBenutzerName();
                 String email = getEmail();
+                String passwort = getPasswort();
                 String strasse = getStrasse();
                 String ort = getOrt();
                 String plz = getPLZ();
                 String geburtsdatum = getGeburtsdatum();
                 String refBenutzer = getrefBenutzer();
+                String verft = getverft();
 
-                Benutzer benuzter = new Benutzer(benutzerId, nachname, vorname, anrede, email, strasse, ort, plz, geburtsdatum, refBenutzer);
+                Benutzer benuzter = new Benutzer(benutzerId, nachname, vorname, anrede, benutzerName, email, passwort, strasse, ort, plz, geburtsdatum, refBenutzer, verft);
                 benuztern.add(benuzter);
             }
         } catch (Exception e)
@@ -133,14 +149,54 @@ public class DBBenutzer extends DBZugriff {
                 String nachname = getNachname();
                 String vorname = getVorname();
                 String anrede = getAnrede();
+                String benutzerName = getBenutzerName();
                 String email = getEmail();
+                String passwort = getPasswort();
                 String strasse = getStrasse();
                 String ort = getOrt();
                 String plz = getPLZ();
                 String geburtsdatum = getGeburtsdatum();
                 String refBenutzer = getrefBenutzer();
+                String verft = getverft();
 
-                benuzter = new Benutzer(benutzerId, nachname, vorname, anrede, email, strasse, ort, plz, geburtsdatum, refBenutzer);
+                benuzter = new Benutzer(benutzerId, nachname, vorname, anrede, benutzerName, email, passwort, strasse, ort, plz, geburtsdatum, refBenutzer, verft);
+            }
+        } catch (Exception e)
+        {
+            throw new Exception("Es ist ein Fehler beim Lesen der Benutzerdaten aufgetreten. ");
+        } finally
+        {
+            close();
+        }
+        return benuzter;
+    }
+
+    public static Benutzer getBenutzerByLogin(String l_bNameOEmail, String l_passwort) throws Exception {
+        connect();
+        Benutzer benuzter = null;
+        String query = "SELECT * FROM T_Benutzer WHERE benutzerName = '" + l_bNameOEmail + "' OR  email = '" + l_bNameOEmail + "' AND passwort = '" + l_passwort + "'";
+
+        try
+        {
+            datenmenge = befehl.executeQuery(query);
+
+            if (datenmenge.next())
+            {
+                String benutzerId = getbenutzerId();
+                String nachname = getNachname();
+                String vorname = getVorname();
+                String anrede = getAnrede();
+                String benutzerName = getBenutzerName();
+                String email = getEmail();
+                String passwort = getPasswort();
+                String strasse = getStrasse();
+                String ort = getOrt();
+                String plz = getPLZ();
+                String geburtsdatum = getGeburtsdatum();
+                String refBenutzer = getrefBenutzer();
+                String verft = getverft();
+
+                benuzter = new Benutzer(benutzerId, nachname, vorname, anrede, benutzerName, email, passwort, strasse, ort, plz, geburtsdatum, refBenutzer, verft);
             }
         } catch (Exception e)
         {
@@ -202,5 +258,17 @@ public class DBBenutzer extends DBZugriff {
 
     public static String getrefBenutzer() throws Exception {
         return datenmenge.getString("referenzbenutzerid");
+    }
+
+    public static String getverft() throws Exception {
+        return datenmenge.getString("verifiziert");
+    }
+
+    private static String getBenutzerName() throws SQLException {
+        return datenmenge.getString("benutzerName");
+    }
+
+    private static String getPasswort() throws SQLException {
+        return datenmenge.getString("passwort");
     }
 }

@@ -1,4 +1,4 @@
-package praesentationsschicht_KONSOLE;
+package praesentationsschicht;
 
 import java.io.PrintStream;
 import java.util.List;
@@ -34,13 +34,10 @@ public class KonsolenMenue {
                 String vorname;
                 String nachname;
                 String geburtsdatum;
-                String benutzername;
                 String email;
-                String passwort;
                 String plz;
                 String strasse;
                 String refBenutzer;
-                String verft;
                 String ort;
                 switch (choice)
                 {
@@ -55,12 +52,8 @@ public class KonsolenMenue {
                         nachname = scanner.nextLine();
                         out.print("Geben Sie das Geburtsdatum des Benutzern ein (TT.MM.JJJJ): ");
                         geburtsdatum = scanner.nextLine();
-                        out.print("Geben Sie die Benutzername des Benutzern ein: ");
-                        benutzername = scanner.nextLine();
                         out.print("Geben Sie die E-Mail-Adresse des Benutzern ein: ");
                         email = scanner.nextLine();
-                        out.print("Geben Sie die Passwort des Benutzern ein: ");
-                        passwort = scanner.nextLine();
                         out.print("Geben Sie die PLZ des Benutzern ein: ");
                         plz = scanner.nextLine();
                         out.print("Geben Sie den Ort des Benutzern ein: ");
@@ -69,17 +62,15 @@ public class KonsolenMenue {
                         strasse = scanner.nextLine();
                         out.print("Geben Sie die refBenutzer des Benutzern ein: ");
                         refBenutzer = scanner.nextLine();
-                        out.print("Geben Sie ein ob der Benutzer verfiziert ist: ");
-                        verft = scanner.nextLine();
-                        Benutzer newBenutzer = new Benutzer(benutzerId, anrede, vorname, nachname, benutzername, email, passwort, strasse, ort, plz, geburtsdatum, refBenutzer, verft);
+//                        Benutzer newBenutzer = new Benutzer(benutzerId, anrede, vorname, nachname, geburtsdatum, email, plz, ort, strasse, refBenutzer);
 
-                        if (Benutzerverwaltung.storeBenutzer(newBenutzer))
-                        {
-                            out.println("Der Benutzer wurde hinzugefügt.");
-                        } else
-                        {
-                            out.println("Fehler beim Hinzufügen des Benutzern.");
-                        }
+//                        if (Benutzerverwaltung.storeBenutzer(newBenutzer))
+//                        {
+//                            out.println("Der Benutzer wurde hinzugefügt.");
+//                        } else
+//                        {
+//                            out.println("Fehler beim Hinzufügen des Benutzern.");
+//                        }
                         break;
                     case 2:
                         out.print("Geben Sie die benutzerId des zu aktualisierenden Benutzern ein: ");

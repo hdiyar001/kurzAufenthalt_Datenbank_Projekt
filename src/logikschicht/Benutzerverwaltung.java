@@ -57,6 +57,11 @@ public class Benutzerverwaltung {
         return DBBenutzer.getBenutzerByBenutzerId(benutzerid);
     }
 
+    public static boolean checkUserExists(String bNameOEmail, String passwort) throws Exception {
+
+        return DBBenutzer.getBenutzerByLogin(bNameOEmail, passwort) != null;
+    }
+
     public static List<Benutzer> getAllBenutzern() throws Exception {
         benutzern = DBBenutzer.getAllBenutzer();
         return benutzern;

@@ -1,5 +1,6 @@
 package datenhaltungsschicht;
 
+import logikschicht.Bewertung;
 import static datenhaltungsschicht.DBZugriff.befehl;
 import static datenhaltungsschicht.DBZugriff.close;
 import static datenhaltungsschicht.DBZugriff.connect;

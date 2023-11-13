@@ -33,7 +33,7 @@
                 <PasswordField fx:id="tf_confirmPassword" layoutX="54.0" layoutY="443.0" promptText="Password  Bestätigen*" styleClass="tf_inputs" />
                 <CheckBox fx:id="cb_acceptTerms" layoutX="61.0" layoutY="623.0" styleClass="cb_acceptTerms" text="NUTZUNGSBEDINGUNGEN AKZEPTIEREN" />
                 <Text fx:id="text_errorMessage" layoutX="71.0" layoutY="714.0" styleClass="text_errorMessage" text="fehlern werden hier angezeigt!" wrappingWidth="300.0" />
-                <Button fx:id="btn_signup" layoutX="97.0" layoutY="659.0" prefHeight="35.0" styleClass="btn_signup" text="Registrieren">
+                <Button fx:id="btn_signup" layoutX="97.0" layoutY="659.0" prefHeight="50.0" styleClass="btn_signup" text="Registrieren">
                     <font>
                         <Font size="14.0" />
                     </font>
@@ -44,17 +44,17 @@
                         <Font size="18.0" />
                     </font>
                 </Label>
-                <TextField fx:id="tf_firstName1" layoutX="59.0" layoutY="513.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="232.0" promptText="STRASSE*" />
-                <TextField fx:id="tf_lastName1" layoutX="301.0" layoutY="513.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="54.0" promptText="H.NR *" />
-                <TextField fx:id="tf_firstName11" layoutX="58.0" layoutY="563.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="136.0" promptText="STRASSE*" />
-                <TextField fx:id="tf_lastName11" layoutX="202.0" layoutY="563.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="150.0" promptText="VORNAME *" />
+                <TextField fx:id="tf_strasse" layoutX="59.0" layoutY="513.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="232.0" promptText="STRASSE*" />
+                <TextField fx:id="tf_hsNr" layoutX="301.0" layoutY="513.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="54.0" promptText="H.NR *" />
+                <TextField fx:id="tf_plz" layoutX="58.0" layoutY="563.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="136.0" promptText="PLZ*" />
+                <TextField fx:id="tf_ort" layoutX="202.0" layoutY="563.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="150.0" promptText="ORT*" />
                 <Label fx:id="lbl_signupTitle11" layoutX="52.0" layoutY="87.0" text="PersönlicheDaten: ">
                     <font>
                         <Font size="18.0" />
                     </font>
                 </Label>
-                <TextField fx:id="tf_username1" layoutX="54.0" layoutY="248.0" promptText="Empfohlen durch Benutzername " styleClass="tf_inputs" />
-                <DatePicker layoutX="53.0" layoutY="200.0" prefHeight="35.0" prefWidth="300.0" promptText="Geburtsdatum" />
+                <TextField fx:id="tf_refBenutzerId" layoutX="54.0" layoutY="248.0" promptText="Empfohlen durch Benutzername " styleClass="tf_inputs" />
+                <DatePicker fx:id="dp_gebDat" layoutX="53.0" layoutY="200.0" prefHeight="35.0" prefWidth="300.0" promptText="Geburtsdatum" />
                 <Label fx:id="lbl_signupTitle12" layoutX="51.0" layoutY="283.0" text="Anmelde Daten:">
                     <font>
                         <Font size="18.0" />

@@ -1,19 +1,14 @@
-package praesentationsschicht_GUI;
+package Controllers;
 
-import logikschicht.Modell;
+import datenhaltungsschicht.Modell;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import logikschicht.Benutzer;
-import logikschicht.Benutzerverwaltung;
 
 /**
  *
@@ -30,48 +25,27 @@ public class LoginController implements Initializable {
 
     @FXML
     private Label lbl_signup;
-
+    
     @FXML
     private Button btn_login;
 
-    @FXML
-    private Text text_errorMessage;
-
+    /*  The initialize(URL location, ResourceBundle resources) method in JavaFX is a callback 
+        method used for initializing FXML-controlled
+        controllers. It is similar to a constructor and is called after the FXML file is loaded
+        and the graphical user interface is created,
+        allowing you to perform initialization tasks before the UI is displayed to the user.*/
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        text_errorMessage.setText("");
+
         btn_login.setOnAction((event) -> onLogin());
         lbl_signup.setOnMouseClicked((event) -> onSignUp());
     }
 
     private void onLogin() {
-        try
-        {
-            String BNameemail = tf_userNameLogin.getText();
-            String passwort = tf_passwordLogin.getText();
-            if (BNameemail.isBlank() || passwort.isBlank())
-            {
-                text_errorMessage.setText("Bitte kein leere Eingabefelder!");
-            } else
-            {
-                boolean benutzer = Benutzerverwaltung.checkUserExists(BNameemail, passwort);
-                if (benutzer)
-                {
-                    System.out.println("Der Benutzer exisitiert!");
-//                Stage stage = (Stage) btn_login.getScene().getWindow();
-//                Modell.getInstance().getViewFacotry().closeStage(stage);
-//                Modell.getInstance().getViewFacotry().getClientSelectedMenuItem().set("Dashboard");
-                } else
-                {
-
-                    text_errorMessage.setText("Diese Account exisitiert nicht!");
-                }
-            }
-        } catch (Exception ex)
-        {
-            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+        //We can get the stage of this window by any these avaliable controlls obove
+        Stage stage = (Stage) btn_login.getScene().getWindow();
+        Modell.getInstance().getViewFacotry().closeStage(stage);
+        Modell.getInstance().getViewFacotry().getClientSelectedMenuItem().set("Dashboard");
     }
 
     private void onSignUp() {

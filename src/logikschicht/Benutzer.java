@@ -10,24 +10,38 @@ public class Benutzer {
     private String nachname;
     private String vorname;
     private String anrede;
+    private String benutzerName;
     private String email;
+    private String passwort;
     private String strasse;
     private String ort;
     private String plz;
     private String geburtsdatum;
     private String refBenutzer;
+    private String verft;
 
-    public Benutzer(String benutzerId, String nachname, String vorname, String anrede, String email, String strasse, String ort, String plz, String geburtsdatum, String refBenutzer) {
+    public Benutzer(String benutzerId, String nachname, String vorname, String anrede, String benutzerName, String email, String passwort, String strasse, String ort, String plz, String geburtsdatum, String refBenutzer, String verft) {
         this.benutzerId = benutzerId;
         this.nachname = nachname;
         this.vorname = vorname;
         this.anrede = anrede;
+        this.benutzerName = benutzerName;
         this.email = email;
+        this.passwort = passwort;
         this.strasse = strasse;
         this.ort = ort;
         this.plz = plz;
         this.geburtsdatum = geburtsdatum;
         this.refBenutzer = refBenutzer;
+        this.verft = verft;
+    }
+
+    public String getVerft() {
+        return verft;
+    }
+
+    public void setVerft(String verft) {
+        this.verft = verft;
     }
 
     public String getBenutzerId() {
@@ -110,9 +124,25 @@ public class Benutzer {
         this.refBenutzer = refBenutzer;
     }
 
+    public String getBenutzerName() {
+        return benutzerName;
+    }
+
+    public void setBenutzerName(String benutzerName) {
+        this.benutzerName = benutzerName;
+    }
+
+    public String getPasswort() {
+        return passwort;
+    }
+
+    public void setPasswort(String passwort) {
+        this.passwort = passwort;
+    }
+
     @Override
     public String toString() {
-        return "Benutzer{" + "benutzerId=" + benutzerId + ", nachname=" + nachname + ", vorname=" + vorname + ", anrede=" + anrede + ", email=" + email + ", strasse=" + strasse + ", ort=" + ort + ", plz=" + plz + ", geburtsdatum=" + geburtsdatum + ", refBenutzer=" + refBenutzer + '}';
+        return "Benutzer{" + "benutzerId=" + benutzerId + ", nachname=" + nachname + ", vorname=" + vorname + ", anrede=" + anrede + ", benutzerName=" + benutzerName + ", email=" + email + ", passwort=" + passwort + ", strasse=" + strasse + ", ort=" + ort + ", plz=" + plz + ", geburtsdatum=" + geburtsdatum + ", refBenutzer=" + refBenutzer + ", verft=" + verft + '}';
     }
 
 }
