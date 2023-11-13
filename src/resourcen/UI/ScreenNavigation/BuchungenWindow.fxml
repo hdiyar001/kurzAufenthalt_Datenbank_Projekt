@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="880.0" styleClass="main" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.DashboardController">
+   <stylesheets>
+      <URL value="@../../Styles/Dashboard.css" />
+      <URL value="@../../Styles/Dashboard.css" />
+   </stylesheets>
+   <children>
+      <TextField layoutX="22.0" layoutY="16.0" prefHeight="32.0" prefWidth="176.0" promptText="Buchungsnummer" />
+      <Button layoutX="634.0" layoutY="16.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="128.0" text="Filter" />
+      <DatePicker layoutX="223.0" layoutY="16.0" prefHeight="32.0" prefWidth="176.0" promptText="Buchungsdatum" />
+      <TextField layoutX="425.0" layoutY="16.0" prefHeight="32.0" prefWidth="176.0" promptText="Ort" />
+      <ListView layoutX="1.0" layoutY="75.0" prefHeight="576.0" prefWidth="880.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+   </children>
+</AnchorPane>

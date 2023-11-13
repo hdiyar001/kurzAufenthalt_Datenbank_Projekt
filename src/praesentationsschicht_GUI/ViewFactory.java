@@ -52,6 +52,13 @@ public class ViewFactory {
         createStage(loader);
     }
 
+    public void showClientWindow() {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/resourcen/UI/ScreenNavigation/ClientWindow.fxml"));
+        ClientController clientController = new ClientController();
+        loader.setController(clientController);
+        createStage(loader);
+    }
+
     private void createStage(FXMLLoader loader) {
         Scene scene = null;
         try

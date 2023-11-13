@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane fx:id="client_parent" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1080.0" stylesheets="@../../Styles/Dashboard.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+    <top>
+        <fx:include source="TopBarWindow.fxml" />
+    </top>
+    <left>
+        <fx:include source="DashboardMenu.fxml" />
+    </left>
+    <center>
+        <fx:include source="DashboardWindow.fxml" />
+    </center>
+</BorderPane>

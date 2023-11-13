@@ -58,9 +58,10 @@ public class LoginController implements Initializable {
                 if (benutzer)
                 {
                     System.out.println("Der Benutzer exisitiert!");
-//                Stage stage = (Stage) btn_login.getScene().getWindow();
-//                Modell.getInstance().getViewFacotry().closeStage(stage);
-//                Modell.getInstance().getViewFacotry().getClientSelectedMenuItem().set("Dashboard");
+                    Stage stage = (Stage) btn_login.getScene().getWindow();
+                    Modell.getInstance().getViewFacotry().closeStage(stage);
+                    Modell.getInstance().getViewFacotry().showClientWindow();
+//                    Modell.getInstance().getViewFacotry().getClientSelectedMenuItem().set("Dashboard");
                 } else
                 {
 
@@ -81,20 +82,3 @@ public class LoginController implements Initializable {
 
     }
 }
-
-//    @FXML
-//    public void login(ActionEvent e) {
-//        Login loginDatabase = new Login();
-////        Button b = (Button) e.getSource();
-//        System.out.println(e.getSource() == btn_login);
-////        b.getScene().getWindow().hide();
-//        String loginNameOrEmail = tf_userNameLogin.getText();
-//        String password = tf_passwordLogin.getText();
-//        System.out.println(loginNameOrEmail + " " + password);
-//
-//        if (loginDatabase.emailExists(loginNameOrEmail) && loginDatabase.passwordExists(password))
-//        {
-//            System.out.println("Login was Seccsussful");
-//            Modell.getInstance().getViewFacotry().showClientWindow();
-//        }
-//    }
