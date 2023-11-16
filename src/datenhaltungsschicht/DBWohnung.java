@@ -92,7 +92,7 @@ public class DBWohnung extends DBZugriff {
             datenmenge = befehl.executeQuery("SELECT * FROM T_Wohnung");
             while (getNext())
             {
-                String wohnungId = getwohnungId();
+                String wohnungId = datenmenge.getString(1);
                 String eigentuemerId = getEigentuemerId();
                 String strasse = getStrasse();
                 String ort = getOrt();
@@ -104,8 +104,9 @@ public class DBWohnung extends DBZugriff {
                 Wohnung wohnung = new Wohnung(wohnungId, eigentuemerId, strasse, ort, plz, preisProNacht, beschreibung, verfuegbarkeit);
                 wohnungen.add(wohnung);
             }
-        } catch (Exception e)
+        } catch (SQLException e)
         {
+            System.out.println(e.toString());
             throw new Exception("Es ist ein Fehler beim Lesen der Wohnungdaten aufgetreten. ");
         } finally
         {
@@ -161,7 +162,7 @@ public class DBWohnung extends DBZugriff {
     }
 
     public static String getEigentuemerId() throws Exception {
-        return datenmenge.getString("eigentümerId");
+        return datenmenge.getString("eigentuemerId");
     }
 
     public static String getStrasse() throws Exception {

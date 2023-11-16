@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="880.0" styleClass="main" stylesheets="@../../Styles/Styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="praesentationsschicht_GUI.Controllers.VermietenController">
+    <children>
+        <TextField layoutX="26.0" layoutY="14.0" prefHeight="32.0" prefWidth="176.0" promptText="Wohnung  Id" />
+        <Button layoutX="14.0" layoutY="143.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="99.0" text="Hinzufügen" />
+        <TableView fx:id="tv_wohnungen" layoutX="14.0" layoutY="187.0" prefHeight="461.0" prefWidth="867.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      <Button layoutX="176.0" layoutY="143.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="99.0" text="Löschen" />
+      <Button layoutX="499.0" layoutY="143.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="99.0" text="Suchen" />
+      <Button layoutX="339.0" layoutY="143.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="99.0" text="Ändern" />
+    </children>
+</AnchorPane>

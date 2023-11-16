@@ -1,4 +1,4 @@
-package praesentationsschicht_GUI;
+package praesentationsschicht_GUI.AuthenticationControllers;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -118,7 +118,7 @@ public class SignUpController implements Initializable {
     private Benutzer getBenutzer() {
         String formattedDate = formatDate(dp_gebDat.getValue());
 
-        return new Benutzer("7",
+        return new Benutzer("43",
                 tf_lastName.getText(),
                 tf_firstName.getText(),
                 anredeComboBox.getValue(),

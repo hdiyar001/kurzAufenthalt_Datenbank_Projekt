@@ -4,7 +4,10 @@ import praesentationsschicht_GUI.ViewFactory;
 
 /**
  *
- * @author Diyar
+ * @author Diyar, Singleton Design Pattern
+ *
+ * Das Singleton-Muster ist ein Entwurfsmuster, das sicherstellt, dass eine
+ * Klasse nur eine einzige Instanz hat
  */
 public class Modell {
 
@@ -16,7 +19,7 @@ public class Modell {
         return viewFacotry;
     }
 
-    public Modell() {
+    private Modell() {
         this.viewFacotry = new ViewFactory();
     }
 

@@ -22,6 +22,10 @@ public class Bewertung {
         return bewertungId;
     }
 
+    /**
+     *
+     * @param bewertungId
+     */
     public void setBewertungId(String bewertungId) {
         this.bewertungId = bewertungId;
     }

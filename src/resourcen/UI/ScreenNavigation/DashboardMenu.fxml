@@ -8,51 +8,51 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Text?>
 
-<VBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="614.0" prefWidth="200.0" style="-fx-background-color: white;" styleClass="main-menau_container" stylesheets="@../../Styles/DashboardMenu.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.DashboardMenuController">
+<VBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="614.0" prefWidth="200.0" style="-fx-background-color: white;" styleClass="main-menau_container" stylesheets="@../../Styles/DashboardMenu.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="praesentationsschicht_GUI.Controllers.DashboardMenuController">
     <children>
         <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="587.0" prefWidth="200.0" styleClass="left-containe" VBox.vgrow="SOMETIMES">
             <children>
                 <VBox layoutY="18.0" prefHeight="565.0" prefWidth="200.0" styleClass="menu_container" AnchorPane.bottomAnchor="31.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="18.0">
                     <children>
-                        <Button fx:id="dashboard_btn" mnemonicParsing="false" text="Wohnungen">
-                            <graphic>
+                        <Button fx:id="wohnungen_btn" mnemonicParsing="false" text="Wohnungen">
+                            <!--                            <graphic>
                                 <FontAwesomeIconView glyphName="HOME" size="20" />
-                            </graphic>
+                            </graphic>-->
                         </Button>
-                        <Button fx:id="exercise_btn" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Vermieten">
-                            <graphic>
+                        <Button fx:id="vermieten_btn" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Vermieten">
+                            <!--                            <graphic>
                                 <FontAwesomeIconView glyphName="" size="20" />
-                            </graphic>
+                            </graphic>-->
                         </Button>
-                        <Button fx:id="statistics_btn" layoutX="10.0" layoutY="35.0" mnemonicParsing="false" text="Buchungen">
-                            <graphic>
+                        <Button fx:id="buchungen_btn" layoutX="10.0" layoutY="35.0" mnemonicParsing="false" text="Buchungen">
+                            <!--                            <graphic>
                                 <FontAwesomeIconView glyphName="" size="20" />
-                            </graphic>
+                            </graphic>-->
                         </Button>
                         <Line endX="140.0" />
-                        <Button fx:id="settings_btn" layoutX="10.0" layoutY="60.0" mnemonicParsing="false" styleClass="alt_menu_btn" text="Nachrichten">
-                            <graphic>
+                        <Button fx:id="nachrrichten_btn" layoutX="10.0" layoutY="60.0" mnemonicParsing="false" styleClass="alt_menu_btn" text="Nachrichten">
+                            <!--                            <graphic>
                                 <FontAwesomeIconView glyphName="HOME" size="20" />
-                            </graphic>
+                            </graphic>-->
                         </Button>
                         <Button fx:id="account_btn" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" styleClass="alt_menu_btn" text="Account">
-                            <graphic>
+                            <!--                            <graphic>
                                 <FontAwesomeIconView glyphName="USER" size="20" />
-                            </graphic>
+                            </graphic>-->
                         </Button>
                         <Button fx:id="logout_btn" layoutX="10.0" layoutY="123.0" mnemonicParsing="false" styleClass="alt_menu_btn" text="Auslogen">
-                            <graphic>
+                            <!--                            <graphic>
                                 <FontAwesomeIconView glyphName="EXTERNAL_LINK" size="20" />
-                            </graphic>
+                            </graphic>-->
                         </Button>
                         <VBox prefHeight="140.0" prefWidth="200.0" styleClass="report_container">
                             <children>
                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Allgemeine Infos" />
-                                <Label text="Use this to report any errors or suggestion" />
+                                <Label text="Hier kommt irgend ein fehlermeldung" />
                                 <Button fx:id="report_btn" mnemonicParsing="false" text="Click">
-                                    <graphic>
+                                    <!--                                    <graphic>
                                         <FontAwesomeIconView glyphName="PLUS" size="20" />
-                                    </graphic>
+                                    </graphic>-->
                                 </Button>
                             </children>
                             <VBox.margin>

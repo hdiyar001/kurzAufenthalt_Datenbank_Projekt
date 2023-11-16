@@ -1,4 +1,4 @@
-package praesentationsschicht_GUI;
+package praesentationsschicht_GUI.AuthenticationControllers;
 
 import logikschicht.Modell;
 import java.net.URL;
@@ -20,7 +20,6 @@ import logikschicht.Benutzerverwaltung;
  * @author Diyar
  */
 public class LoginController implements Initializable {
-//Dependency Injection (DI)
 
     @FXML
     private TextField tf_userNameLogin;
@@ -36,6 +35,9 @@ public class LoginController implements Initializable {
 
     @FXML
     private Text text_errorMessage;
+
+    public static String benutzerName;
+    public static String benutzerId;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -54,14 +56,17 @@ public class LoginController implements Initializable {
                 text_errorMessage.setText("Bitte kein leere Eingabefelder!");
             } else
             {
-                boolean benutzer = Benutzerverwaltung.checkUserExists(BNameemail, passwort);
-                if (benutzer)
+                Benutzer benutzer = Benutzerverwaltung.checkUserExists(BNameemail, passwort);
+
+                if (benutzer != null)
                 {
+                    benutzerName = benutzer.getBenutzerName();
+                    benutzerId = benutzer.getBenutzerId();
                     System.out.println("Der Benutzer exisitiert!");
                     Stage stage = (Stage) btn_login.getScene().getWindow();
                     Modell.getInstance().getViewFacotry().closeStage(stage);
                     Modell.getInstance().getViewFacotry().showClientWindow();
-//                    Modell.getInstance().getViewFacotry().getClientSelectedMenuItem().set("Dashboard");
+                    Modell.getInstance().getViewFacotry().getClientSelectedMenuItem().set("Nachrichten");
                 } else
                 {
 
