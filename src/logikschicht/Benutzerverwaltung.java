@@ -66,6 +66,11 @@ public class Benutzerverwaltung {
         return DBBenutzer.getBenutzerByBenutzerId(BenutzerId);
     }
 
+    public static String getLastId() throws Exception {
+        int lastId = Integer.parseInt(DBBenutzer.getLastId());
+        return (++lastId) + "";
+    }
+
     public static List<Benutzer> getAllBenutzern() throws Exception {
         benutzern = DBBenutzer.getAllBenutzer();
         return benutzern;

@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  *
- * @author Diyar
+ * @author Diyar+
  */
 public class DBBewertung extends DBZugriff {
 

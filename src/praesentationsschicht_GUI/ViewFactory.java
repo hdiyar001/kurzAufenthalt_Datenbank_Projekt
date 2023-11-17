@@ -43,6 +43,11 @@ public class ViewFactory {
         createStage(loader);
     }
 
+    public void showNewPasswortView() {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/resourcen/UI/Authentication/PasswortVergessenWindow.fxml"));
+        createStage(loader);
+    }
+
     public void showClientWindow() {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/resourcen/UI/ScreenNavigation/ClientWindow.fxml"));
         createStage(loader);

@@ -18,6 +18,16 @@ public class DBBenutzer extends DBZugriff {
 
     private static ResultSet datenmenge;
 
+    /**
+     * Author Diyar
+     *
+     *
+     * Hier werden neue Daten hizugefügt
+     *
+     * @param benutzer
+     * @return
+     * @throws Exception
+     */
     public static boolean Insert(Benutzer benutzer) throws Exception {
         connect();
         String insertCommand = "INSERT INTO T_Benutzer VALUES ("
@@ -180,7 +190,7 @@ public class DBBenutzer extends DBZugriff {
         {
             datenmenge = befehl.executeQuery(query);
 
-            if (datenmenge.next())
+            while (datenmenge.next())
             {
                 String benutzerId = getbenutzerId();
                 String nachname = getNachname();
@@ -195,10 +205,10 @@ public class DBBenutzer extends DBZugriff {
                 String geburtsdatum = getGeburtsdatum();
                 String refBenutzer = getrefBenutzer();
                 String verft = getverft();
-
                 benuzter = new Benutzer(benutzerId, nachname, vorname, anrede, benutzerName, email, passwort, strasse, ort, plz, geburtsdatum, refBenutzer, verft);
+                System.out.println(benuzter);
             }
-        } catch (Exception e)
+        } catch (SQLException e)
         {
             throw new Exception("Es ist ein Fehler beim Lesen der Benutzerdaten aufgetreten. ");
         } finally
@@ -219,48 +229,69 @@ public class DBBenutzer extends DBZugriff {
         }
     }
 
+    public static String getLastId() throws Exception {
+        connect();
+
+        try
+        {
+            String sql = "SELECT MAX(benutzerId) FROM T_Benutzer";
+            datenmenge = befehl.executeQuery(sql);
+            if (getNext())
+            {
+                return datenmenge.getString(1);
+            }
+        } catch (SQLException e)
+        {
+            throw new Exception(e.getSQLState());
+        } finally
+        {
+            close();
+        }
+        return "0";
+    }
+
     public static String getbenutzerId() throws SQLException {
         return datenmenge.getString("benutzerId");
     }
 
-    public static String getNachname() throws Exception {
+    public static String getNachname() throws SQLException {
         return datenmenge.getString("NachName");
     }
 
-    public static String getVorname() throws Exception {
+    public static String getVorname() throws SQLException {
         return datenmenge.getString("VorName");
     }
 
-    public static String getAnrede() throws Exception {
+    public static String getAnrede() throws SQLException {
         return datenmenge.getString("anrede");
     }
 
-    public static String getEmail() throws Exception {
+    public static String getEmail() throws SQLException {
         return datenmenge.getString("Email");
     }
 
-    public static String getStrasse() throws Exception {
+    public static String getStrasse() throws SQLException {
         return datenmenge.getString("Strasse");
     }
 
-    public static String getOrt() throws Exception {
+    public static String getOrt() throws SQLException {
         return datenmenge.getString("Ort");
     }
 
-    public static String getPLZ() throws Exception {
+    public static String getPLZ() throws SQLException {
         return datenmenge.getString("PLZ");
     }
 
-    public static String getGeburtsdatum() throws Exception {
+    public static String getGeburtsdatum() throws SQLException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         return dateFormat.format(datenmenge.getDate("Geburtsdatum"));
     }
 
-    public static String getrefBenutzer() throws Exception {
+    public static String getrefBenutzer() throws SQLException {
         return datenmenge.getString("referenzbenutzerid");
     }
 
-    public static String getverft() throws Exception {
+    public static String getverft() throws SQLException {
         return datenmenge.getString("verifiziert");
     }
 

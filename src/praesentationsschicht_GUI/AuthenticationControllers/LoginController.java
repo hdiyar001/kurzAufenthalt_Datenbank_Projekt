@@ -36,6 +36,9 @@ public class LoginController implements Initializable {
     @FXML
     private Text text_errorMessage;
 
+    @FXML
+    private Label lbl_forgotPass;
+
     public static String benutzerName;
     public static String benutzerId;
 
@@ -44,6 +47,7 @@ public class LoginController implements Initializable {
         text_errorMessage.setText("");
         btn_login.setOnAction((event) -> onLogin());
         lbl_signup.setOnMouseClicked((event) -> onSignUp());
+        lbl_forgotPass.setOnMouseClicked(e -> onPasswordForgot());
     }
 
     private void onLogin() {
@@ -84,6 +88,13 @@ public class LoginController implements Initializable {
         Stage stage = (Stage) lbl_signup.getScene().getWindow();
         Modell.getInstance().getViewFacotry().closeStage(stage);
         Modell.getInstance().getViewFacotry().showSignUpWindow();
+
+    }
+
+    private void onPasswordForgot() {
+        Stage stage = (Stage) lbl_forgotPass.getScene().getWindow();
+        Modell.getInstance().getViewFacotry().closeStage(stage);
+        Modell.getInstance().getViewFacotry().showNewPasswortView();
 
     }
 }
