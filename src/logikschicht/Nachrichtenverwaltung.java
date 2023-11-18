@@ -61,8 +61,9 @@ public class Nachrichtenverwaltung {
 //
 //        return DBNachrichten.getNachrichtenByLogin(bNameOEmail, passwort) != null;
 //    }
-    public static List<Nachrichten> getAllNachrichten() throws Exception {
-        nachrichtenn = DBNachrichten.getAllNachrichten();
+    public static List<Nachrichten> getAllNachrichten(String benutzerid) throws Exception {
+        nachrichtenn = DBNachrichten.getAllNachrichten(benutzerid);
+        
         return nachrichtenn;
     }
 }

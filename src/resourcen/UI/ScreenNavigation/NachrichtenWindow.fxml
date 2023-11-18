@@ -5,14 +5,17 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="880.0" styleClass="main" stylesheets="@../../Styles/Styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="praesentationsschicht_GUI.Controllers.NachrichtenController">
     <children>
-        <TextField layoutX="26.0" layoutY="14.0" prefHeight="32.0" prefWidth="176.0" promptText="Nachricht  Id" />
-        <Button layoutX="194.0" layoutY="108.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="69.0" text="Löschen" />
-        <DatePicker layoutX="26.0" layoutY="52.0" prefHeight="32.0" prefWidth="176.0" promptText="Nachrichten seit" />
+        <TextField layoutX="233.0" layoutY="67.0" prefHeight="32.0" prefWidth="176.0" promptText="Nachricht  Id" />
+        <Button layoutX="233.0" layoutY="108.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="69.0" text="Löschen" />
+        <DatePicker layoutX="457.0" layoutY="67.0" prefHeight="32.0" prefWidth="176.0" promptText="Nachrichten seit" />
         <TableView fx:id="tv_nachrichten" layoutX="14.0" layoutY="187.0" prefHeight="461.0" prefWidth="867.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-      <Button layoutX="359.0" layoutY="108.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="69.0" text="Suchen" />
+      <Button layoutX="457.0" layoutY="108.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="69.0" text="Suchen" />
       <Button layoutX="26.0" layoutY="108.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="69.0" text="Senden" />
+      <TextField layoutX="26.0" layoutY="67.0" prefHeight="32.0" prefWidth="176.0" promptText="EmpfängerId/Benutzername" />
+      <Text fx:id="fehlerMeldungen" fill="RED" layoutX="18.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="332.13671875" />
     </children>
 </AnchorPane>

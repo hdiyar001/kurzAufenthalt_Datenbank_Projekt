@@ -28,7 +28,7 @@
     -fx-spacing: 20;
 }
 .menu_container Button{
-    -fx-pref-width: 115;
+    -fx-pref-width: 125;
     -fx-pref-height: 40;
     -fx-background-color:#ffffff;
     -fx-font-size: 1.1em;
@@ -43,7 +43,7 @@
     -fx-fill: #132A13;
 }
 .alt_menu_btn{
-    -fx-pref-width: 115;
+    -fx-pref-width: 125;
     -fx-pref-height:40;
     -fx-background-color:#132A13;
     -fx-text-fill:#FFFFFF;

@@ -1,5 +1,6 @@
 package datenhaltungsschicht;
 
+import logikschicht.FilterBuchung;
 import static datenhaltungsschicht.DBZugriff.befehl;
 import static datenhaltungsschicht.DBZugriff.close;
 import static datenhaltungsschicht.DBZugriff.connect;
@@ -81,24 +82,29 @@ public class DBBuchung extends DBZugriff {
         return true;
     }
 
-    public static List<Buchung> getAllBuchung() throws Exception {
+    public static List<FilterBuchung> getAllBuchung(String benutzerId) throws Exception {
 
-        ArrayList<Buchung> buchungen = new ArrayList<>();
+        ArrayList<FilterBuchung> filterBuchungen = new ArrayList<>();
         connect();
         try
         {
-            datenmenge = befehl.executeQuery("SELECT * FROM T_Buchung");
+            datenmenge = befehl.executeQuery("SELECT t_buchung.buchungsdatum, t_buchung.startdatum,t_buchung.enddatum,t_wohnung.strasse,t_wohnung.ort,t_wohnung.plz,t_wohnung.preispronacht,t_bewertung.bewertungstext,t_bewertung.sternebewertung "
+                    + "FROM t_benutzer JOIN t_wohnung ON t_benutzer.benutzerid = t_wohnung.eigentuemerid JOIN t_buchung ON t_wohnung.wohnungid = t_buchung.wohnungid JOIN t_bewertung ON t_buchung.buchungid = t_bewertung.buchungid  WHERE Mieterid= " + benutzerId);
             while (getNext())
             {
-                String buchungId = getbuchungId();
-                String mieterId = getMieterId();
-                String wohnungId = getWohnungId();
                 String buchungsDatum = getBuchungsDatum();
                 String startDatum = getStartDatum();
                 String endDatum = getEndDatum();
+                String strasse = datenmenge.getString("Strasse");
+                String ort = datenmenge.getString("Ort");
+                String plz = datenmenge.getString("PLZ");
+                String anschrift = strasse + " " + plz + " " + ort;
+                String preisProNacht = datenmenge.getString("preisProNacht") + " €";
+                String textBewertung = datenmenge.getString("bewertungstext");
+                String sternBewertung = datenmenge.getString("sternebewertung");
 
-                Buchung buchung = new Buchung(buchungId, mieterId, wohnungId, buchungsDatum, startDatum, endDatum);
-                buchungen.add(buchung);
+                FilterBuchung buchung = new FilterBuchung(buchungsDatum, startDatum, endDatum, anschrift, preisProNacht, textBewertung, sternBewertung);
+                filterBuchungen.add(buchung);
             }
         } catch (Exception e)
         {
@@ -107,7 +113,7 @@ public class DBBuchung extends DBZugriff {
         {
             close();
         }
-        return buchungen;
+        return filterBuchungen;
     }
 
     public static Buchung getBuchungByBuchungId(String buchungId) throws Exception {

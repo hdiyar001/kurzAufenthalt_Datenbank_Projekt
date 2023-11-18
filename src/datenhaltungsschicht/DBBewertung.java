@@ -155,6 +155,6 @@ public class DBBewertung extends DBZugriff {
     }
 
     public static String getSternBewertung() throws Exception {
-        return datenmenge.getString("sternBewertung");
+        return datenmenge.getString("sterneBewertung");
     }
 }

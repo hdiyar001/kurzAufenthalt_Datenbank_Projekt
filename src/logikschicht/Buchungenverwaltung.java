@@ -8,6 +8,7 @@ import datenhaltungsschicht.DBBuchung;
 public class Buchungenverwaltung {
 
     private static List<Buchung> buchungn = new ArrayList<>();
+    private static List<FilterBuchung> filterBuchungn = new ArrayList<>();
 
     public static boolean storeBuchung(Buchung buchung) throws Exception {
         boolean stored = DBBuchung.Insert(buchung);
@@ -61,8 +62,8 @@ public class Buchungenverwaltung {
 //
 //        return DBBuchung.getBuchungByLogin(bNameOEmail, passwort) != null;
 //    }
-    public static List<Buchung> getAllBuchungen() throws Exception {
-        buchungn = DBBuchung.getAllBuchung();
-        return buchungn;
+    public static List<FilterBuchung> getAllBuchungen(String benutzerId) throws Exception {
+        filterBuchungn = DBBuchung.getAllBuchung(benutzerId);
+        return filterBuchungn;
     }
 }

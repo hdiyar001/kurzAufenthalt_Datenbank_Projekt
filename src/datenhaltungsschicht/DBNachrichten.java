@@ -78,22 +78,30 @@ public class DBNachrichten extends DBZugriff {
         return true;
     }
 
-    public static List<Nachrichten> getAllNachrichten() throws Exception {
+    public static List<Nachrichten> getAllNachrichten(String benutzerid) throws Exception {
 
         ArrayList<Nachrichten> nachrichtenenList = new ArrayList<>();
         connect();
         try
         {
-            datenmenge = befehl.executeQuery("SELECT * FROM T_Nachrichten");
+            String sql = "SELECT t_nachrichten.nachrichtenid,t_benutzer.benutzername,t_nachrichten.senderid,t_nachrichten.empfaengerid,t_nachrichten.nachrichtentext,t_nachrichten.zeitstempel "
+                    + "FROM t_benutzer JOIN t_nachrichten ON t_benutzer.benutzerid = t_nachrichten.senderid "
+                    + "WHERE t_nachrichten.senderid = " + benutzerid
+                    + "UNION ALL "
+                    + "SELECT t_nachrichten.nachrichtenid,t_benutzer.benutzername,t_nachrichten.senderid,t_nachrichten.empfaengerid,t_nachrichten.nachrichtentext,t_nachrichten.zeitstempel "
+                    + "FROM t_benutzer JOIN t_nachrichten ON t_benutzer.benutzerid = t_nachrichten.senderid "
+                    + "WHERE t_nachrichten.empfaengerid = " + benutzerid;
+            datenmenge = befehl.executeQuery(sql);
             while (getNext())
             {
-                String nachrichtenId = getnachrichtenId();
+                String nachrichtenid = getnachrichtenId();
+                String benutzerName = datenmenge.getString(2);
                 String senderId = getSenderId();
                 String empfaengerId = getempfaengerId();
                 String nachrichtenText = getNachrichtenText();
                 String zielStempel = getZeitStempel();
 
-                Nachrichten nachrichten = new Nachrichten(nachrichtenId, senderId, empfaengerId, nachrichtenText, zielStempel);
+                Nachrichten nachrichten = new Nachrichten(nachrichtenid, benutzerName, senderId, empfaengerId, nachrichtenText, zielStempel);
                 nachrichtenenList.add(nachrichten);
             }
         } catch (Exception e)

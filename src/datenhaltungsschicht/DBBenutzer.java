@@ -184,7 +184,7 @@ public class DBBenutzer extends DBZugriff {
     public static Benutzer getBenutzerByLogin(String l_bNameOEmail, String l_passwort) throws Exception {
         connect();
         Benutzer benuzter = null;
-        String query = "SELECT * FROM T_Benutzer WHERE benutzerName = '" + l_bNameOEmail + "' OR  email = '" + l_bNameOEmail + "' AND passwort = '" + l_passwort + "'";
+        String query = "SELECT * FROM T_Benutzer WHERE (benutzerName = '" + l_bNameOEmail + "' OR  email = '" + l_bNameOEmail + "') AND passwort = '" + l_passwort + "'";
 
         try
         {
@@ -295,11 +295,11 @@ public class DBBenutzer extends DBZugriff {
         return datenmenge.getString("verifiziert");
     }
 
-    private static String getBenutzerName() throws SQLException {
+    public static String getBenutzerName() throws SQLException {
         return datenmenge.getString("benutzerName");
     }
 
-    private static String getPasswort() throws SQLException {
+    public static String getPasswort() throws SQLException {
         return datenmenge.getString("passwort");
     }
 }

@@ -11,8 +11,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import logikschicht.Nachrichten;
-import datenhaltungsschicht.DBNachrichten;
 import logikschicht.Nachrichtenverwaltung;
+import praesentationsschicht_GUI.AuthenticationControllers.LoginController;
 
 public class NachrichtenController implements Initializable {
 
@@ -32,8 +32,11 @@ public class NachrichtenController implements Initializable {
     }
 
     private void setupTableViewColumns() {
-        TableColumn<Nachrichten, String> nachrichtenIdColumn = new TableColumn<>("Nachrichten ID");
-        nachrichtenIdColumn.setCellValueFactory(new PropertyValueFactory<>("nachrichtenId"));
+//        TableColumn<Nachrichten, String> nachrichtenIdColumn = new TableColumn<>("Nachrichten ID");
+//        nachrichtenIdColumn.setCellValueFactory(new PropertyValueFactory<>("nachrichtenId"));
+
+        TableColumn<Nachrichten, String> benutzerNameColumn = new TableColumn<>("BenutzerName");
+        benutzerNameColumn.setCellValueFactory(new PropertyValueFactory<>("benutzerName"));
 
         TableColumn<Nachrichten, String> senderIdColumn = new TableColumn<>("Sender ID");
         senderIdColumn.setCellValueFactory(new PropertyValueFactory<>("senderId"));
@@ -47,15 +50,16 @@ public class NachrichtenController implements Initializable {
         TableColumn<Nachrichten, String> zeitStempelColumn = new TableColumn<>("Zeitstempel");
         zeitStempelColumn.setCellValueFactory(new PropertyValueFactory<>("zeitStempel"));
 
-        tv_nachrichten.getColumns().addAll(nachrichtenIdColumn, senderIdColumn, empfaengerIdColumn, nachrichtenTextColumn, zeitStempelColumn);
+        tv_nachrichten.getColumns().addAll(benutzerNameColumn, senderIdColumn, empfaengerIdColumn, nachrichtenTextColumn, zeitStempelColumn);
     }
 
     private void fillTableView() throws Exception {
+        System.out.println(getNachrichten());
         ObservableList<Nachrichten> data = FXCollections.observableArrayList(getNachrichten());
         tv_nachrichten.setItems(data);
     }
 
     private List<Nachrichten> getNachrichten() throws Exception {
-        return Nachrichtenverwaltung.getAllNachrichten();
+        return Nachrichtenverwaltung.getAllNachrichten(LoginController.benutzerId);
     }
 }

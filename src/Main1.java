@@ -1,5 +1,8 @@
 
 import datenhaltungsschicht.DBBenutzer;
+import datenhaltungsschicht.DBBuchung;
+import datenhaltungsschicht.DBNachrichten;
+import datenhaltungsschicht.DBWohnung;
 import datenhaltungsschicht.DBZugriff;
 import java.sql.SQLException;
 import logikschicht.Benutzer;
@@ -18,6 +21,9 @@ public class Main1 extends DBZugriff {
 //        Nachrichtenverwaltung.getAllNachrichten().forEach(s -> System.out.println(s));
 //        Benutzer benutzer = new Benutzer("9", "Mueller", "Max", "HERR", "max.mueller", "max.mueller@example.com", "max12345", "Beispielstr. 1", "Beispielstadt", "12345", "01.01.1990", "2", "J");
 //        DBBenutzer.Insert(benutzer);
+//        DBWohnung.getAllWohnungenGefiltert().forEach(s -> System.out.println(s));
+//        DBBuchung.getAllBuchung("3").forEach(s -> System.out.println(s));
+        DBWohnung.getAllVermieteteWohnungen("3").forEach(s -> System.out.println(s));
     }
 
 }

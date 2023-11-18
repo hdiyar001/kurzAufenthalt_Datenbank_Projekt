@@ -7,8 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="MainPanel" prefHeight="300.0" prefWidth="500.0" styleClass="MainPanel" stylesheets="@../../Styles/Login.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" 
-            fx:controller="praesentationsschicht_GUI.AuthenticationControllers.LoginController">
+<AnchorPane id="MainPanel" fx:id="enterpressed" prefHeight="300.0" prefWidth="500.0" styleClass="MainPanel" stylesheets="@../../Styles/Login.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="praesentationsschicht_GUI.AuthenticationControllers.LoginController">
 
     <Label fx:id="lbl_title" layoutX="175.0" layoutY="14.0" styleClass="lbl_title" text="Einlogin" />
     <Button fx:id="btn_login" layoutX="146.0" layoutY="171.0" styleClass="btn_login" text="anmelden" />

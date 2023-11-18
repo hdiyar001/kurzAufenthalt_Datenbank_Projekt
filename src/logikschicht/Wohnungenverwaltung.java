@@ -8,6 +8,8 @@ import datenhaltungsschicht.DBWohnung;
 public class Wohnungenverwaltung {
 
     private static List<Wohnung> wohnungn = new ArrayList<>();
+    private static List<FilterWohnung> GefWohnungn = new ArrayList<>();
+    private static List<FilterWohnung> VermWohnungn = new ArrayList<>();
 
     public static boolean storeWohnung(Wohnung wohnung) throws Exception {
         boolean stored = DBWohnung.Insert(wohnung);
@@ -64,5 +66,15 @@ public class Wohnungenverwaltung {
     public static List<Wohnung> getAllWohnungn() throws Exception {
         wohnungn = DBWohnung.getAllWohnung();
         return wohnungn;
+    }
+
+    public static List<FilterWohnung> getAllWohnungen() throws Exception {
+        GefWohnungn = DBWohnung.getAllWohnungenGefiltert();
+        return GefWohnungn;
+    }
+
+    public static List<FilterWohnung> getVermieteteWohnungen(String benutzerId) throws Exception {
+        VermWohnungn = DBWohnung.getAllVermieteteWohnungen(benutzerId);
+        return VermWohnungn;
     }
 }

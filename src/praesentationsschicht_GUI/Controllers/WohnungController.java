@@ -10,13 +10,14 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import logikschicht.FilterWohnung;
 import logikschicht.Wohnung;
 import logikschicht.Wohnungenverwaltung;
 
 public class WohnungController implements Initializable {
 
     @FXML
-    private TableView<Wohnung> tv_wohnungen;
+    private TableView<FilterWohnung> tv_wohnungen;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -31,39 +32,39 @@ public class WohnungController implements Initializable {
     }
 
     private void setupTableViewColumns() {
-        TableColumn<Wohnung, String> wohnungIdColumn = new TableColumn<>("Wohnung ID");
-        wohnungIdColumn.setCellValueFactory(new PropertyValueFactory<>("wohnungId"));
+        TableColumn<FilterWohnung, String> benutzerNameColumn = new TableColumn<>("Benutzername");
+        benutzerNameColumn.setCellValueFactory(new PropertyValueFactory<>("benutzerName"));
 
-        TableColumn<Wohnung, String> eigentuemerIdColumn = new TableColumn<>("Eigentümer ID");
-        eigentuemerIdColumn.setCellValueFactory(new PropertyValueFactory<>("eigentuemerId"));
+        TableColumn<FilterWohnung, String> anschriftColumn = new TableColumn<>("Anschrift");
+        anschriftColumn.setCellValueFactory(new PropertyValueFactory<>("anschrift"));
 
-        TableColumn<Wohnung, String> strasseColumn = new TableColumn<>("Straße");
-        strasseColumn.setCellValueFactory(new PropertyValueFactory<>("strasse"));
+        TableColumn<FilterWohnung, String> verifiziertColumn = new TableColumn<>("Verifiziert");
+        verifiziertColumn.setCellValueFactory(new PropertyValueFactory<>("verifiziert"));
 
-        TableColumn<Wohnung, String> ortColumn = new TableColumn<>("Ort");
-        ortColumn.setCellValueFactory(new PropertyValueFactory<>("ort"));
-
-        TableColumn<Wohnung, String> plzColumn = new TableColumn<>("PLZ");
-        plzColumn.setCellValueFactory(new PropertyValueFactory<>("plz"));
-
-        TableColumn<Wohnung, String> preisProNachtColumn = new TableColumn<>("Preis Pro Nacht");
+        TableColumn<FilterWohnung, String> preisProNachtColumn = new TableColumn<>("Preis Pro Nacht");
         preisProNachtColumn.setCellValueFactory(new PropertyValueFactory<>("preisProNacht"));
 
-        TableColumn<Wohnung, String> beschreibungColumn = new TableColumn<>("Beschreibung");
+        TableColumn<FilterWohnung, String> beschreibungColumn = new TableColumn<>("Beschreibung");
         beschreibungColumn.setCellValueFactory(new PropertyValueFactory<>("beschreibung"));
 
-        TableColumn<Wohnung, String> verfuegbarkeitColumn = new TableColumn<>("Verfügbarkeit");
+        TableColumn<FilterWohnung, String> verfuegbarkeitColumn = new TableColumn<>("Verfügbarkeit");
         verfuegbarkeitColumn.setCellValueFactory(new PropertyValueFactory<>("verfuegbarkeit"));
 
-        tv_wohnungen.getColumns().addAll(wohnungIdColumn, eigentuemerIdColumn, strasseColumn, ortColumn, plzColumn, preisProNachtColumn, beschreibungColumn, verfuegbarkeitColumn);
+        TableColumn<FilterWohnung, String> bewertungstextColumn = new TableColumn<>("Bewertungstext");
+        bewertungstextColumn.setCellValueFactory(new PropertyValueFactory<>("bewertungstext"));
+
+        TableColumn<FilterWohnung, String> sternBewertungColumn = new TableColumn<>("SternBewertung");
+        sternBewertungColumn.setCellValueFactory(new PropertyValueFactory<>("sternBewertung"));
+
+        tv_wohnungen.getColumns().addAll(benutzerNameColumn, anschriftColumn, verifiziertColumn, preisProNachtColumn, beschreibungColumn, verfuegbarkeitColumn, bewertungstextColumn, sternBewertungColumn);
     }
 
     private void fillTableView() throws Exception {
-        ObservableList<Wohnung> data = FXCollections.observableArrayList(getWohnungen());
+        ObservableList<FilterWohnung> data = FXCollections.observableArrayList(getAllWohnungen());
         tv_wohnungen.setItems(data);
     }
 
-    private List<Wohnung> getWohnungen() throws Exception {
-        return Wohnungenverwaltung.getAllWohnungn();
+    private List<FilterWohnung> getAllWohnungen() throws Exception {
+        return Wohnungenverwaltung.getAllWohnungen();
     }
 }

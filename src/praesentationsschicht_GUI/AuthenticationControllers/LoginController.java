@@ -10,6 +10,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import logikschicht.Benutzer;
@@ -34,6 +36,9 @@ public class LoginController implements Initializable {
     private Button btn_login;
 
     @FXML
+    private AnchorPane enterpressed;
+
+    @FXML
     private Text text_errorMessage;
 
     @FXML
@@ -48,6 +53,13 @@ public class LoginController implements Initializable {
         btn_login.setOnAction((event) -> onLogin());
         lbl_signup.setOnMouseClicked((event) -> onSignUp());
         lbl_forgotPass.setOnMouseClicked(e -> onPasswordForgot());
+        enterpressed.setOnKeyPressed(e ->
+        {
+            if (e.getCode() == KeyCode.ENTER)
+            {
+                onLogin();
+            }
+        });
     }
 
     private void onLogin() {
@@ -70,11 +82,11 @@ public class LoginController implements Initializable {
                     Stage stage = (Stage) btn_login.getScene().getWindow();
                     Modell.getInstance().getViewFacotry().closeStage(stage);
                     Modell.getInstance().getViewFacotry().showClientWindow();
-                    Modell.getInstance().getViewFacotry().getClientSelectedMenuItem().set("Nachrichten");
+                    Modell.getInstance().getViewFacotry().getClientSelectedMenuItem().set("Wohnungen");
                 } else
                 {
 
-                    text_errorMessage.setText("Diese Account exisitiert nicht!");
+                    text_errorMessage.setText("Konto nicht gefunden oder Passwort falsch!");
                 }
             }
         } catch (Exception ex)

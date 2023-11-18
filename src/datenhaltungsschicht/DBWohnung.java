@@ -1,5 +1,6 @@
 package datenhaltungsschicht;
 
+import logikschicht.FilterWohnung;
 import static datenhaltungsschicht.DBZugriff.befehl;
 import static datenhaltungsschicht.DBZugriff.close;
 import static datenhaltungsschicht.DBZugriff.connect;
@@ -115,6 +116,79 @@ public class DBWohnung extends DBZugriff {
         return wohnungen;
     }
 
+    public static List<FilterWohnung> getAllWohnungenGefiltert() throws Exception {
+        connect();
+        ArrayList<FilterWohnung> filterW = new ArrayList<>();
+        String query = "SELECT  t_benutzer.benutzername,t_wohnung.strasse,t_wohnung.ort,t_wohnung.plz,t_benutzer.verifiziert,t_wohnung.preispronacht,t_wohnung.beschreibung,t_wohnung.verfuegbarkeit,t_bewertung.bewertungstext,t_bewertung.sternebewertung "
+                + "FROM t_benutzer JOIN t_wohnung ON t_benutzer.benutzerid = t_wohnung.eigentuemerid JOIN t_buchung ON t_wohnung.wohnungid = t_buchung.wohnungid JOIN t_bewertung ON t_buchung.buchungid = t_bewertung.buchungid";
+
+        try
+        {
+            datenmenge = befehl.executeQuery(query);
+
+            while (datenmenge.next())
+            {
+                String benutzerName = datenmenge.getString("benutzerName");
+                String strasse = getStrasse();
+                String ort = getOrt();
+                String plz = getPLZ();
+                String anschrift = strasse + " " + plz + " " + ort;
+                String verifiziert = datenmenge.getString("verifiziert").equals("J") ? "JA" : "NEIN";
+                String preisProNacht = getPreisProNacht() + " €";
+                String beschreibung = getBeschreibung();
+                String verfuegbarkeit = getVerfuegbarkeit().equals("J") ? "JA" : "NEIN";
+                String bewertungstext = datenmenge.getString("bewertungsText");
+                String sternBewertung = getSternImo(datenmenge.getString("sterneBewertung"));
+
+                FilterWohnung filter = new FilterWohnung(benutzerName, anschrift, verifiziert, preisProNacht, beschreibung, verfuegbarkeit, bewertungstext, sternBewertung);
+                filterW.add(filter);
+            }
+        } catch (SQLException e)
+        {
+            e.printStackTrace();
+            throw new Exception("Es ist ein Fehler beim Lesen der Wohnungdaten aufgetreten. ");
+        } finally
+        {
+            close();
+        }
+        return filterW;
+    }
+
+    public static List<FilterWohnung> getAllVermieteteWohnungen(String benutzerId) throws Exception {
+        connect();
+        ArrayList<FilterWohnung> filterW = new ArrayList<>();
+        String query = "SELECT strasse,ort,plz,preispronacht,beschreibung,verfuegbarkeit "
+                + "FROM t_wohnung "
+                + "WHERE eigentuemerId =" + benutzerId;
+
+        try
+        {
+            datenmenge = befehl.executeQuery(query);
+
+            while (datenmenge.next())
+            {
+                String strasse = getStrasse();
+                String ort = getOrt();
+                String plz = getPLZ();
+                String anschrift = strasse + " " + plz + " " + ort;
+                String preisProNacht = getPreisProNacht() + " €";
+                String beschreibung = getBeschreibung();
+                String verfuegbarkeit = getVerfuegbarkeit();
+
+                FilterWohnung filter = new FilterWohnung(anschrift, preisProNacht, beschreibung, verfuegbarkeit);
+                filterW.add(filter);
+            }
+        } catch (SQLException e)
+        {
+            e.printStackTrace();
+            throw new Exception("Es ist ein Fehler beim Lesen der Wohnungdaten aufgetreten. ");
+        } finally
+        {
+            close();
+        }
+        return filterW;
+    }
+
     public static Wohnung getWohnungByWohnungId(String wohnungId) throws Exception {
         connect();
         Wohnung wohnung = null;
@@ -187,5 +261,16 @@ public class DBWohnung extends DBZugriff {
 
     public static String getVerfuegbarkeit() throws Exception {
         return datenmenge.getString("verfuegbarkeit");
+    }
+
+    private static String getSternImo(String anzahl) {
+
+        String sterne = "";
+        for (int i = 0; i < Integer.parseInt(anzahl); i++)
+        {
+            sterne += "⭐";
+        }
+
+        return sterne;
     }
 }

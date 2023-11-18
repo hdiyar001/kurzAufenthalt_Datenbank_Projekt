@@ -14,17 +14,17 @@
             <children>
                 <VBox layoutY="18.0" prefHeight="565.0" prefWidth="200.0" styleClass="menu_container" AnchorPane.bottomAnchor="31.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="18.0">
                     <children>
-                        <Button fx:id="wohnungen_btn" mnemonicParsing="false" text="Wohnungen">
+                        <Button fx:id="wohnungen_btn" mnemonicParsing="false" text="Dashboard">
                             <!--                            <graphic>
                                 <FontAwesomeIconView glyphName="HOME" size="20" />
                             </graphic>-->
                         </Button>
-                        <Button fx:id="vermieten_btn" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Vermieten">
+                        <Button fx:id="vermieten_btn" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Eigentümer">
                             <!--                            <graphic>
                                 <FontAwesomeIconView glyphName="" size="20" />
                             </graphic>-->
                         </Button>
-                        <Button fx:id="buchungen_btn" layoutX="10.0" layoutY="35.0" mnemonicParsing="false" text="Buchungen">
+                        <Button fx:id="buchungen_btn" layoutX="10.0" layoutY="35.0" mnemonicParsing="false" prefWidth="121.0" text="Meine Buchungen">
                             <!--                            <graphic>
                                 <FontAwesomeIconView glyphName="" size="20" />
                             </graphic>-->

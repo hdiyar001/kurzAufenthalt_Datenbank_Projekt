@@ -1,3 +1,6 @@
+.background{
+    -fx-background-color:white;
+}
 Button{
     -fx-pref-width: 150;
     -fx-pref-height: 32;

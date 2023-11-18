@@ -39,7 +39,7 @@
         </MenuBar>
       <AnchorPane layoutX="930.0" layoutY="14.0" prefHeight="47.0" prefWidth="186.0" AnchorPane.rightAnchor="0.0">
          <children>
-                <Text fx:id="tf_benutzername" layoutX="43.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Diyar " textAlignment="CENTER" wrappingWidth="100.0" AnchorPane.rightAnchor="55.0">
+                <Text fx:id="tf_benutzername" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Diyar " textAlignment="RIGHT" wrappingWidth="226.0" AnchorPane.rightAnchor="55.0">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>

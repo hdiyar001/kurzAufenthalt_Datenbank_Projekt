@@ -2,12 +2,34 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="880.0" styleClass="main" stylesheets="@../../Styles/Styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="praesentationsschicht_GUI.Controllers.AccountController">
     <children>
-        <Button layoutX="26.0" layoutY="393.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="137.0" text="Mein Account löschen" />
-      <Button layoutX="186.0" layoutY="393.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="174.0" text="Mein Account ändern" />
-        <TableView fx:id="tv_account" layoutX="14.0" layoutY="187.0" prefHeight="170.0" prefWidth="880.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+        <Button layoutX="218.0" layoutY="393.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="137.0" style="-fx-background-color: red; -fx-pref-width: 220;" text="Mein Konto Permanent löschen" />
+        <Button layoutX="26.0" layoutY="393.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="180.0" style="-fx-pref-width: 180;" text="Mein Kontodaten ändern" />
+        <TableView fx:id="tv_account" layoutX="1.0" layoutY="483.0" prefHeight="160.0" prefWidth="371.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+        <VBox layoutX="26.0" layoutY="103.0" prefHeight="279.0" prefWidth="180.0" spacing="5.0">
+            <children>
+                <TextField prefHeight="20.0" promptText="Nachname" style="-fx-pref-height: 60;" />
+                <TextField layoutX="10.0" layoutY="10.0" prefHeight="20.0" promptText="Vorname" style="-fx-pref-height: 60;" />
+                <TextField layoutX="10.0" layoutY="36.0" prefHeight="20.0" promptText="Benutzername" style="-fx-pref-height: 60;" />
+                <TextField layoutX="10.0" layoutY="82.0" prefHeight="20.0" promptText="EMail" style="-fx-pref-height: 60;" />
+                <TextField layoutX="10.0" layoutY="118.0" prefHeight="20.0" promptText="Passwort" style="-fx-pref-height: 60;" />
+                <TextField layoutX="10.0" layoutY="154.0" prefHeight="20.0" promptText="Straße" style="-fx-pref-height: 60;" />
+                <TextField layoutX="10.0" layoutY="190.0" prefHeight="20.0" promptText="Ort" style="-fx-pref-height: 60;" />
+                <TextField layoutX="10.0" layoutY="226.0" prefHeight="20.0" promptText="PLZ" style="-fx-pref-height: 60;" />
+                <TextField layoutX="10.0" layoutY="262.0" prefHeight="20.0" promptText="Geburtsdatum" style="-fx-pref-height: 60;" />
+            </children>
+        </VBox>
+        <Text fx:id="fehlerMeldungen" fill="RED" layoutX="26.0" layoutY="455.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="343.9814453125">
+            <font>
+                <Font size="13.0" />
+            </font>
+        </Text>
     </children>
 </AnchorPane>
