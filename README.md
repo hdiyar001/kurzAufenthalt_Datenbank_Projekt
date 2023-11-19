@@ -1,5 +1,6 @@
 # kurzAufenthalt_Datenbank_Projekt
 #Test_Daten
+
 -- Tabellen und ihre Abhängigkeiten löschen, falls vorhanden
 DROP TABLE T_Nachrichten CASCADE CONSTRAINTS;
 DROP TABLE T_Zahlungen CASCADE CONSTRAINTS;
