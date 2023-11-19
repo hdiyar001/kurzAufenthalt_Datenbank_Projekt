@@ -11,10 +11,21 @@ public class Buchungenverwaltung {
     private static List<FilterBuchung> filterBuchungn = new ArrayList<>();
 
     public static boolean storeBuchung(Buchung buchung) throws Exception {
-        boolean stored = DBBuchung.Insert(buchung);
-        if (stored)
+
+        boolean stored = false;
+
+        if (!DBBuchung.checkBuchungExists(buchung.getMieterId(), buchung.getWohnungId()))
         {
-            buchungn.add(buchung);
+            stored = DBBuchung.Insert(buchung);
+            if (stored)
+            {
+                buchungn.add(buchung);
+            }
+
+        } else
+        {
+
+            System.out.println("Dies ist schon gebucht wroden!!");
         }
         return stored;
     }
@@ -66,4 +77,5 @@ public class Buchungenverwaltung {
         filterBuchungn = DBBuchung.getAllBuchung(benutzerId);
         return filterBuchungn;
     }
+
 }

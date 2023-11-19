@@ -20,28 +20,8 @@ public class Wohnungenverwaltung {
         return stored;
     }
 
-    public static boolean updateWohnung(Wohnung wohnung) throws Exception {
-        boolean updated = DBWohnung.update(wohnung);
-        if (updated)
-        {
-            for (Wohnung existingWohnung : wohnungn)
-            {
-//                if (existingWohnung.getWohnungId() == wohnung.getWohnungId())
-//                {
-//                    existingWohnung.setAnrede(wohnung.getAnrede());
-//                    existingWohnung.setVorname(wohnung.getVorname());
-//                    existingWohnung.setNachname(wohnung.getNachname());
-//                    existingWohnung.setGeburtsdatum(wohnung.getGeburtsdatum());
-//                    existingWohnung.setEmail(wohnung.getEmail());
-//                    existingWohnung.setPlz(wohnung.getPlz());
-//                    existingWohnung.setOrt(wohnung.getOrt());
-//                    existingWohnung.setStrasse(wohnung.getStrasse());
-//                    existingWohnung.setRefWohnung(wohnung.getRefWohnung());
-//                    break;
-//                }
-            }
-        }
-        return updated;
+    public static boolean updateWohnungStatus(String wohnungId) throws Exception {
+        return DBWohnung.updateWohnungStatus(wohnungId);
     }
 
     public static boolean deleteWohnung(Wohnung wohnung) throws Exception {
@@ -63,13 +43,13 @@ public class Wohnungenverwaltung {
 //
 //        return DBWohnung.getWohnungByLogin(bNameOEmail, passwort) != null;
 //    }
-    public static List<Wohnung> getAllWohnungn() throws Exception {
+    public static List<Wohnung> getAllWohnungen() throws Exception {
         wohnungn = DBWohnung.getAllWohnung();
         return wohnungn;
     }
 
-    public static List<FilterWohnung> getAllWohnungen() throws Exception {
-        GefWohnungn = DBWohnung.getAllWohnungenGefiltert();
+    public static List<FilterWohnung> getAllGefWohnungen(String preisProNachtP, String ortP) throws Exception {
+        GefWohnungn = DBWohnung.getAllWohnungenGefiltert(preisProNachtP, ortP);
         return GefWohnungn;
     }
 

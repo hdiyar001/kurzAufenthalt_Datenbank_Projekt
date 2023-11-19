@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Date;
 
 /**
  *
@@ -20,22 +21,22 @@ public class DBBuchung extends DBZugriff {
     private static ResultSet datenmenge;
 
     public static boolean Insert(Buchung buchung) throws Exception {
+        String buchungsId = (buchung.getBuchungId().equals("-1") ? (getLastId() + 1) + "" : buchung.getBuchungId());
         connect();
-        String insertCommand = "INSERT INTO T_Buchung VALUES ("
-                + buchung.getBuchungId()
-                + ", " + buchung.getMieterId()
-                + ", '" + buchung.getWohnungId()
-                + ", TO_DATE('" + buchung.getBuchungsDatum()
-                + "', 'dd.MM.yyyy'), TO_DATE('" + buchung.getStartDatum()
-                + "', 'dd.MM.yyyy'), TO_DATE('" + buchung.getEndDatum()
-                + "', 'dd.MM.yyyy')";
-
+        String insertCommand = "INSERT INTO T_Buchung VALUES  (" + buchungsId
+                + "  , " + buchung.getMieterId()
+                + "  , " + buchung.getWohnungId()
+                + "  , '" + buchung.getBuchungsDatum()
+                + "' , '" + buchung.getStartDatum()
+                + "' , '" + buchung.getEndDatum()
+                + "')";
         try
         {
             befehl.executeUpdate(insertCommand);
         } catch (SQLException ex)
         {
-            String errorMessage = "Es ist ein Fehler beim Hinzufügen des Buchungs " + buchung.getBuchungId() + " aufgetreten.";
+            String errorMessage = "Es ist ein Fehler beim Hinzufügen des Buchungs " + buchungsId + " aufgetreten.";
+            ex.printStackTrace();
             throw new Exception(errorMessage);
         } finally
         {
@@ -116,6 +117,30 @@ public class DBBuchung extends DBZugriff {
         return filterBuchungen;
     }
 
+    public static boolean checkBuchungExists(String benutzerid, String wohnungId) throws Exception {
+        connect();
+        String query = " SELECT benutzerid, wohnungid FROM t_benutzer "
+                + "JOIN t_buchung ON t_benutzer.benutzerid = t_buchung.mieterid"
+                + " WHERE benutzerid = " + benutzerid + " AND wohnungid =" + wohnungId;
+
+        try
+        {
+            datenmenge = befehl.executeQuery(query);
+
+            if (datenmenge.next())
+            {
+                return true;
+            }
+        } catch (Exception e)
+        {
+            throw new Exception("Es ist ein Fehler beim Lesen der Benutzerdaten aufgetreten. ");
+        } finally
+        {
+            close();
+        }
+        return false;
+    }
+
     public static Buchung getBuchungByBuchungId(String buchungId) throws Exception {
         connect();
         Buchung buchung = null;
@@ -169,18 +194,56 @@ public class DBBuchung extends DBZugriff {
     }
 
     public static String getBuchungsDatum() throws Exception {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-        return dateFormat.format(datenmenge.getDate("buchungsDatum"));
+        Date date = datenmenge.getDate("buchungsDatum");
+        if (date != null)
+        {
+            return new SimpleDateFormat("dd.MM.yyyy").format(date);
+        } else
+        {
+            throw new Exception("Buchungsdatum ist null oder im falschen Format");
+        }
     }
 
     public static String getStartDatum() throws Exception {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-        return dateFormat.format(datenmenge.getDate("startDatum"));
+        Date date = datenmenge.getDate("startDatum");
+        if (date != null)
+        {
+            return new SimpleDateFormat("dd.MM.yyyy").format(date);
+        } else
+        {
+            throw new Exception("Startdatum ist null oder im falschen Format");
+        }
     }
 
     public static String getEndDatum() throws Exception {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-        return dateFormat.format(datenmenge.getDate("endDatum"));
+        Date date = datenmenge.getDate("endDatum");
+        if (date != null)
+        {
+            return new SimpleDateFormat("dd.MM.yyyy").format(date);
+        } else
+        {
+            throw new Exception("Enddatum ist null oder im falschen Format");
+        }
     }
 
+    public static int getLastId() throws Exception {
+        connect();
+
+        try
+        {
+            String sql = "SELECT MAX(buchungId) FROM T_Buchung";
+            datenmenge = befehl.executeQuery(sql);
+            if (getNext())
+            {
+                return datenmenge.getInt(1);
+            }
+        } catch (SQLException e)
+        {
+            throw new Exception(e.getSQLState());
+        } finally
+        {
+            close();
+        }
+        return 0;
+    }
 }

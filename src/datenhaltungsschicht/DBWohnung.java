@@ -45,6 +45,26 @@ public class DBWohnung extends DBZugriff {
         return true;
     }
 
+    public static boolean updateWohnungStatus(String wohnungId) throws Exception {
+        connect();
+
+        String updateCommand = "UPDATE T_Wohnung SET verfuegbarkeit='N' WHERE wohnungId = " + wohnungId;
+
+        try
+        {
+            befehl.executeUpdate(updateCommand);
+        } catch (SQLException ex)
+        {
+            String errorMessage = "Es ist ein Fehler beim Aktualisieren des Wohnungs " + wohnungId + " aufgetreten.";
+            throw new Exception(errorMessage);
+
+        } finally
+        {
+            close();
+        }
+        return true;
+    }
+
     public static boolean update(Wohnung wohnung) throws Exception {
         connect();
 
@@ -116,18 +136,26 @@ public class DBWohnung extends DBZugriff {
         return wohnungen;
     }
 
-    public static List<FilterWohnung> getAllWohnungenGefiltert() throws Exception {
+    public static List<FilterWohnung> getAllWohnungenGefiltert(String preisProNachtP, String ortP) throws Exception {
         connect();
         ArrayList<FilterWohnung> filterW = new ArrayList<>();
-        String query = "SELECT  t_benutzer.benutzername,t_wohnung.strasse,t_wohnung.ort,t_wohnung.plz,t_benutzer.verifiziert,t_wohnung.preispronacht,t_wohnung.beschreibung,t_wohnung.verfuegbarkeit,t_bewertung.bewertungstext,t_bewertung.sternebewertung "
-                + "FROM t_benutzer JOIN t_wohnung ON t_benutzer.benutzerid = t_wohnung.eigentuemerid JOIN t_buchung ON t_wohnung.wohnungid = t_buchung.wohnungid JOIN t_bewertung ON t_buchung.buchungid = t_bewertung.buchungid";
+        String whereBedingungen = "WHERE verfuegbarkeit != 'N'";
+        whereBedingungen += preisProNachtP.isBlank() ? "" : " AND preispronacht >" + preisProNachtP;
+        whereBedingungen += ortP.isBlank() ? "" : " AND t_wohnung.ort = '" + ortP + "'";
 
+        String query = "SELECT t_wohnung.wohnungid, t_benutzer.benutzername,t_wohnung.strasse,t_wohnung.ort,t_wohnung.plz,t_benutzer.verifiziert,t_wohnung.preispronacht,t_wohnung.beschreibung,t_wohnung.verfuegbarkeit,t_bewertung.bewertungstext,t_bewertung.sternebewertung "
+                + "FROM t_benutzer JOIN t_wohnung ON t_benutzer.benutzerid = t_wohnung.eigentuemerid JOIN t_buchung ON t_wohnung.wohnungid = t_buchung.wohnungid JOIN t_bewertung ON t_buchung.buchungid = t_bewertung.buchungid "
+                + (!whereBedingungen.isBlank() ? whereBedingungen : "");
+//                + "WHERE preispronacht > " + preisProNachtP + " AND verfuegbarkeit != 'N' AND t_wohnung.ort = '" + ortP + "'";    
+        System.out.println("Query :" + query);
         try
         {
             datenmenge = befehl.executeQuery(query);
 
             while (datenmenge.next())
             {
+
+                String wohnungId = getwohnungId();
                 String benutzerName = datenmenge.getString("benutzerName");
                 String strasse = getStrasse();
                 String ort = getOrt();
@@ -140,7 +168,7 @@ public class DBWohnung extends DBZugriff {
                 String bewertungstext = datenmenge.getString("bewertungsText");
                 String sternBewertung = getSternImo(datenmenge.getString("sterneBewertung"));
 
-                FilterWohnung filter = new FilterWohnung(benutzerName, anschrift, verifiziert, preisProNacht, beschreibung, verfuegbarkeit, bewertungstext, sternBewertung);
+                FilterWohnung filter = new FilterWohnung(wohnungId, benutzerName, anschrift, verifiziert, preisProNacht, beschreibung, verfuegbarkeit, bewertungstext, sternBewertung);
                 filterW.add(filter);
             }
         } catch (SQLException e)
@@ -157,7 +185,7 @@ public class DBWohnung extends DBZugriff {
     public static List<FilterWohnung> getAllVermieteteWohnungen(String benutzerId) throws Exception {
         connect();
         ArrayList<FilterWohnung> filterW = new ArrayList<>();
-        String query = "SELECT strasse,ort,plz,preispronacht,beschreibung,verfuegbarkeit "
+        String query = "SELECT t_wohnung.wohnungid,strasse,ort,plz,preispronacht,beschreibung,verfuegbarkeit "
                 + "FROM t_wohnung "
                 + "WHERE eigentuemerId =" + benutzerId;
 
@@ -167,6 +195,7 @@ public class DBWohnung extends DBZugriff {
 
             while (datenmenge.next())
             {
+                String wohnungId = getwohnungId();
                 String strasse = getStrasse();
                 String ort = getOrt();
                 String plz = getPLZ();
@@ -175,7 +204,7 @@ public class DBWohnung extends DBZugriff {
                 String beschreibung = getBeschreibung();
                 String verfuegbarkeit = getVerfuegbarkeit();
 
-                FilterWohnung filter = new FilterWohnung(anschrift, preisProNacht, beschreibung, verfuegbarkeit);
+                FilterWohnung filter = new FilterWohnung(wohnungId, anschrift, preisProNacht, beschreibung, verfuegbarkeit);
                 filterW.add(filter);
             }
         } catch (SQLException e)
@@ -273,4 +302,5 @@ public class DBWohnung extends DBZugriff {
 
         return sterne;
     }
+
 }

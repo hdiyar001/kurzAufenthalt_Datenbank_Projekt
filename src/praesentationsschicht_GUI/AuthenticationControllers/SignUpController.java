@@ -156,17 +156,18 @@ public class SignUpController implements Initializable {
             return false;
         }
 
+        if (!tf_password.getText().equals(tf_confirmPassword.getText()))
+        {
+            text_errorMessage.setText("Die Passwörter stimmen nicht überein. Bitte überprüfen Sie Ihre Eingabe.");
+            return false;
+        }
+
         if (!emailValidator())
         {
             text_errorMessage.setText("Bitte überprüfen Sie Ihre E-Mail-Adresse. Sie scheint nicht korrekt zu sein.");
             return false;
         }
 
-        if (!tf_password.getText().equals(tf_confirmPassword.getText()))
-        {
-            text_errorMessage.setText("Die Passwörter stimmen nicht überein. Bitte überprüfen Sie Ihre Eingabe.");
-            return false;
-        }
         if (!tf_plz.getText().matches("\\d{5}"))
         {
             text_errorMessage.setText("Bitte geben Sie eine gültige Postleitzahl (5 Zahlen) ein.");

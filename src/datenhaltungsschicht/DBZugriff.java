@@ -10,6 +10,7 @@ public class DBZugriff {
     private static Connection con;
     private static String url = "jdbc:oracle:thin:@172.22.160.22:1521:xe";
     protected static Statement befehl;
+    protected static int BenutzerId;
 
     public static void connect() throws SQLException {
         try

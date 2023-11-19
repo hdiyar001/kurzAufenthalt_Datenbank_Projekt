@@ -6,6 +6,7 @@ package logikschicht;
  */
 public class FilterWohnung {
 
+    private String wohnungId;
     private String benutzerName;
     private String anschrift;
     private String verifiziert;
@@ -15,7 +16,8 @@ public class FilterWohnung {
     private String bewertungstext;
     private String sternBewertung;
 
-    public FilterWohnung(String benutzerName, String anschrift, String verifiziert, String preisProNacht, String beschreibung, String verfuegbarkeit, String bewertungstext, String sternBewertung) {
+    public FilterWohnung(String wohnungId, String benutzerName, String anschrift, String verifiziert, String preisProNacht, String beschreibung, String verfuegbarkeit, String bewertungstext, String sternBewertung) {
+        this.wohnungId = wohnungId;
         this.benutzerName = benutzerName;
         this.anschrift = anschrift;
         this.verifiziert = verifiziert;
@@ -26,11 +28,20 @@ public class FilterWohnung {
         this.sternBewertung = sternBewertung;
     }
 
-    public FilterWohnung(String anschrift, String preisProNacht, String beschreibung, String verfuegbarkeit) {
+    public FilterWohnung(String wohnungId, String anschrift, String preisProNacht, String beschreibung, String verfuegbarkeit) {
+        this.wohnungId = wohnungId;
         this.anschrift = anschrift;
         this.preisProNacht = preisProNacht;
         this.beschreibung = beschreibung;
         this.verfuegbarkeit = verfuegbarkeit;
+    }
+
+    public String getWohnungId() {
+        return wohnungId;
+    }
+
+    public void setWohnungId(String wohnungId) {
+        this.wohnungId = wohnungId;
     }
 
     public String getBenutzerName() {
@@ -99,7 +110,7 @@ public class FilterWohnung {
 
     @Override
     public String toString() {
-        return "FilterBean{" + "benutzerName=" + benutzerName + ", anschrift=" + anschrift + ", verifiziert=" + verifiziert + ", preisProNacht=" + preisProNacht + ", beschreibung=" + beschreibung + ", verfuegbarkeit=" + verfuegbarkeit + ", bewertungstext=" + bewertungstext + ", sternBewertung=" + sternBewertung + '}';
+        return "FilterWohnung{" + "wohnungId=" + wohnungId + ", benutzerName=" + benutzerName + ", anschrift=" + anschrift + ", verifiziert=" + verifiziert + ", preisProNacht=" + preisProNacht + ", beschreibung=" + beschreibung + ", verfuegbarkeit=" + verfuegbarkeit + ", bewertungstext=" + bewertungstext + ", sternBewertung=" + sternBewertung + '}';
     }
 
 }

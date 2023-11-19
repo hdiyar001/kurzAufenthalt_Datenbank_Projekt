@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -10,18 +11,23 @@
 
 <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="880.0" styleClass="main" stylesheets="@../../Styles/Styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="praesentationsschicht_GUI.Controllers.BuchungenController">
     <children>
-        <TextField layoutX="22.0" layoutY="16.0" prefHeight="32.0" prefWidth="176.0" promptText="Buchung_id" styleClass="tf_inputs" />
-        <DatePicker layoutX="223.0" layoutY="16.0" prefHeight="32.0" prefWidth="176.0" promptText="Buchungsdatum" styleClass="tf_inputs" />
-        <TextField layoutX="425.0" layoutY="16.0" prefHeight="32.0" prefWidth="176.0" promptText="Ort" styleClass="tf_inputs" />
-        <TableView fx:id="tv_buchungen" layoutY="170.0" prefHeight="464.0" prefWidth="880.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="150.0" />
-      <Button layoutX="185.0" layoutY="93.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="128.0" text="Ändern" />
-      <Button layoutX="22.0" layoutY="93.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="128.0" text="Suchen" />
-      <Button layoutX="350.0" layoutY="93.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="128.0" text="Hinzufügen" />
-      <Button layoutX="515.0" layoutY="93.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="128.0" text="Löschen" />
-      <Text fx:id="fehlerMeldungen" fill="#f80000" layoutX="22.0" layoutY="73.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="420.13671875">
+        <TextField layoutX="22.0" layoutY="68.0" prefHeight="32.0" prefWidth="176.0" promptText="Buchung_id" styleClass="tf_inputs" />
+        <DatePicker layoutX="223.0" layoutY="68.0" prefHeight="32.0" prefWidth="176.0" promptText="Buchungsdatum" styleClass="tf_inputs" />
+        <TextField layoutX="425.0" layoutY="68.0" prefHeight="32.0" prefWidth="176.0" promptText="Ort" styleClass="tf_inputs" />
+        <TableView fx:id="tv_buchungen" layoutY="190.0" prefHeight="460.0" prefWidth="880.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="190.0" />
+      <Button layoutX="185.0" layoutY="145.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="128.0" text="Ändern" />
+      <Button layoutX="22.0" layoutY="145.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="128.0" text="Suchen" />
+      <Button layoutX="350.0" layoutY="145.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="128.0" text="Hinzufügen" />
+      <Button layoutX="515.0" layoutY="145.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="128.0" text="Löschen" />
+      <Text fx:id="fehlerMeldungen" fill="#f80000" layoutX="22.0" layoutY="129.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="420.13671875">
          <font>
             <Font size="13.0" />
          </font>
       </Text>
+      <Label layoutX="35.0" layoutY="28.0" text="Buchungen" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+         <font>
+            <Font name="System Bold" size="23.0" />
+         </font>
+      </Label>
     </children>
 </AnchorPane>

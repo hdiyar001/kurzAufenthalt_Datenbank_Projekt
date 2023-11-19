@@ -6,6 +6,7 @@ import datenhaltungsschicht.DBWohnung;
 import datenhaltungsschicht.DBZugriff;
 import java.sql.SQLException;
 import logikschicht.Benutzer;
+import logikschicht.Buchung;
 import logikschicht.Nachrichtenverwaltung;
 
 /**
@@ -23,7 +24,9 @@ public class Main1 extends DBZugriff {
 //        DBBenutzer.Insert(benutzer);
 //        DBWohnung.getAllWohnungenGefiltert().forEach(s -> System.out.println(s));
 //        DBBuchung.getAllBuchung("3").forEach(s -> System.out.println(s));
-        DBWohnung.getAllVermieteteWohnungen("3").forEach(s -> System.out.println(s));
+//        DBWohnung.getAllVermieteteWohnungen("3").forEach(s -> System.out.println(s));           
+//        Buchung buchung = new Buchung("-1", "2", "1", "19.11.2023", "20.11.2023", "24.11.2023");
+//        DBBuchung.Insert(buchung);
     }
 
 }
