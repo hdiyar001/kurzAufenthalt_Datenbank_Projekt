@@ -102,7 +102,7 @@ public class DBBuchung extends DBZugriff {
                 String anschrift = strasse + " " + plz + " " + ort;
                 String preisProNacht = datenmenge.getString("preisProNacht") + " €";
                 String textBewertung = datenmenge.getString("bewertungstext");
-                String sternBewertung = datenmenge.getString("sternebewertung");
+                String sternBewertung = getSternImo(datenmenge.getString("sterneBewertung"));
 
                 FilterBuchung buchung = new FilterBuchung(buchungsDatum, startDatum, endDatum, anschrift, preisProNacht, textBewertung, sternBewertung);
                 filterBuchungen.add(buchung);
@@ -245,5 +245,16 @@ public class DBBuchung extends DBZugriff {
             close();
         }
         return 0;
+    }
+
+    private static String getSternImo(String anzahl) {
+
+        String sterne = "";
+        for (int i = 0; i < Integer.parseInt(anzahl); i++)
+        {
+            sterne += "⭐";
+        }
+
+        return sterne;
     }
 }

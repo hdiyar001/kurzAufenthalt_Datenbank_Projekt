@@ -12,10 +12,50 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import logikschicht.Benutzer;
 import datenhaltungsschicht.DBBenutzer;
+import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 import logikschicht.Benutzerverwaltung;
 import praesentationsschicht_GUI.AuthenticationControllers.LoginController;
 
 public class AccountController implements Initializable {
+
+    @FXML
+    private Button btn_kontoDatenAendern;
+
+    @FXML
+    private Button btn_kontoloeschen;
+
+    @FXML
+    private DatePicker dp_gebDat;
+
+    @FXML
+    private Text fehlerMeldungen;
+
+    @FXML
+    private TextField tf_benutzername;
+
+    @FXML
+    private TextField tf_email;
+
+    @FXML
+    private TextField tf_nachname;
+
+    @FXML
+    private TextField tf_ort;
+
+    @FXML
+    private TextField tf_passwort;
+
+    @FXML
+    private TextField tf_plz;
+
+    @FXML
+    private TextField tf_strasse;
+
+    @FXML
+    private TextField tf_vorname;
 
     @FXML
     private TableView<Benutzer> tv_account;

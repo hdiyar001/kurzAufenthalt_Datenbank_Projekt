@@ -45,57 +45,64 @@ public class DBWohnung extends DBZugriff {
         return true;
     }
 
-    public static boolean updateWohnungStatus(String wohnungId) throws Exception {
+    public static boolean updateWohnungStatus(String wohnungId, String status) throws Exception {
+        boolean isUpdated;
         connect();
 
-        String updateCommand = "UPDATE T_Wohnung SET verfuegbarkeit='N' WHERE wohnungId = " + wohnungId;
+        String updateCommand = "UPDATE T_Wohnung SET verfuegbarkeit='" + status + "' WHERE wohnungId = " + wohnungId;
 
         try
         {
             befehl.executeUpdate(updateCommand);
+            isUpdated = true;
         } catch (SQLException ex)
         {
             String errorMessage = "Es ist ein Fehler beim Aktualisieren des Wohnungs " + wohnungId + " aufgetreten.";
+            isUpdated = false;
             throw new Exception(errorMessage);
 
         } finally
         {
             close();
         }
-        return true;
+        return isUpdated;
     }
 
     public static boolean update(Wohnung wohnung) throws Exception {
+        boolean isUpdated;
+        System.out.println(wohnung);
         connect();
-
-        String updateCommand = "UPDATE T_Wohnung SET EigentuemerId = " + wohnung.getEigentuemerId() + ", PLZ = " + wohnung.getPlz()
+        String updateCommand = "UPDATE T_Wohnung SET PLZ = " + wohnung.getPlz()
                 + ", Ort = '" + wohnung.getOrt() + "', Strasse = '" + wohnung.getStrasse() + "', preisProNacht = " + wohnung.getPreisProNacht()
-                + ", beschreibung = '" + wohnung.getBeschreibung() + "', verfuegbarkeit = '" + wohnung.getVerfuegbarkeit() + "', WHERE wohnungId = " + wohnung.getWohnungId();
+                + ", beschreibung = '" + wohnung.getBeschreibung() + "', verfuegbarkeit = '" + wohnung.getVerfuegbarkeit() + "' WHERE wohnungId = " + wohnung.getWohnungId();
 
         try
         {
             befehl.executeUpdate(updateCommand);
+            isUpdated = true;
+
         } catch (SQLException ex)
         {
             String errorMessage = "Es ist ein Fehler beim Aktualisieren des Wohnungs " + wohnung.getWohnungId() + " aufgetreten.";
+            isUpdated = false;
             throw new Exception(errorMessage);
         } finally
         {
             close();
         }
-        return true;
+        return isUpdated;
     }
 
-    public static boolean Delete(Wohnung wohnung) throws Exception {
+    public static boolean Delete(String wohnungId) throws Exception {
         connect();
-        String deleteCommand = "DELETE FROM T_Wohnung WHERE wohnungId = " + wohnung.getWohnungId();
+        String deleteCommand = "DELETE FROM T_Wohnung WHERE wohnungId = " + wohnungId;
 
         try
         {
             befehl.executeUpdate(deleteCommand);
         } catch (SQLException ex)
         {
-            String errorMessage = "Es ist ein Fehler beim Löschen des Wohnungs " + wohnung.getWohnungId() + " aufgetreten.";
+            String errorMessage = "Es ist ein Fehler beim Löschen des Wohnungs " + wohnungId + " aufgetreten.";
             throw new Exception(errorMessage);
         } finally
         {

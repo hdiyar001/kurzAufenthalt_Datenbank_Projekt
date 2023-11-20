@@ -95,7 +95,7 @@ public class WohnungController implements Initializable {
                 Buchung buchung = createBuchung();
                 if (Buchungenverwaltung.storeBuchung(buchung))
                 {
-                    Wohnungenverwaltung.updateWohnungStatus(buchung.getWohnungId());
+                    Wohnungenverwaltung.updateWohnungStatus(buchung.getWohnungId(), "N");
                     meldungen.setText("Die Wohnung wurde erfolgreich gebucht :)");
                     reloadTableView();
                 } else

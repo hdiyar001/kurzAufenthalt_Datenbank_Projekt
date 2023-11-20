@@ -7,14 +7,39 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.text.Text;
 import logikschicht.Nachrichten;
 import logikschicht.Nachrichtenverwaltung;
 import praesentationsschicht_GUI.AuthenticationControllers.LoginController;
 
 public class NachrichtenController implements Initializable {
+
+    @FXML
+    private Button btn_loeschen;
+
+    @FXML
+    private Button btn_senden;
+
+    @FXML
+    private Button btn_suchen;
+
+    @FXML
+    private DatePicker dp_nachrichtZeitraum;
+
+    @FXML
+    private Text fehlerMeldungen;
+
+    @FXML
+    private TextField tf_SendenBenutzerNOEmpfId;
+
+    @FXML
+    private TextField tf_nachrichtId;
 
     @FXML
     private TableView<Nachrichten> tv_nachrichten;

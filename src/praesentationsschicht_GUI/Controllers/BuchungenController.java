@@ -8,14 +8,35 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import logikschicht.Buchung;
+import javafx.scene.text.Text;
 import logikschicht.Buchungenverwaltung;
 import praesentationsschicht_GUI.AuthenticationControllers.LoginController;
 
 public class BuchungenController implements Initializable {
+
+    @FXML
+    private Button btn_loeschen;
+
+    @FXML
+    private Button btn_suchen;
+
+    @FXML
+    private DatePicker buchungsdatum;
+
+    @FXML
+    private Text fehlerMeldungen;
+
+    @FXML
+    private TextField tf_ort;
+
+    @FXML
+    private TextField tf_buchungsid;
 
     @FXML
     private TableView<FilterBuchung> tv_buchungen;

@@ -1,38 +1,25 @@
 package logikschicht;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import datenhaltungsschicht.DBWohnung;
 
 public class Wohnungenverwaltung {
 
-    private static List<Wohnung> wohnungn = new ArrayList<>();
-    private static List<FilterWohnung> GefWohnungn = new ArrayList<>();
-    private static List<FilterWohnung> VermWohnungn = new ArrayList<>();
-
     public static boolean storeWohnung(Wohnung wohnung) throws Exception {
-        boolean stored = DBWohnung.Insert(wohnung);
-        if (stored)
-        {
-            wohnungn.add(wohnung);
-        }
-        return stored;
+        return DBWohnung.Insert(wohnung);
     }
 
-    public static boolean updateWohnungStatus(String wohnungId) throws Exception {
-        return DBWohnung.updateWohnungStatus(wohnungId);
+    public static boolean updateWohnungStatus(String wohnungId, String status) throws Exception {
+        return DBWohnung.updateWohnungStatus(wohnungId, status);
     }
 
-    public static boolean deleteWohnung(Wohnung wohnung) throws Exception {
-        if (DBWohnung.Delete(wohnung) && wohnungn.contains(wohnung))
-        {
-            wohnungn.remove(wohnung);
-            return true;
-        }
+    public static boolean updateWohnung(Wohnung wohnung) throws Exception {
+        return DBWohnung.update(wohnung);
+    }
 
-        return false;
-
+    public static boolean deleteWohnung(String wohnungId) throws Exception {
+        return DBWohnung.Delete(wohnungId);
     }
 
     public static Wohnung getWohnungBywohnungId(String wohnungid) throws Exception {
@@ -44,17 +31,15 @@ public class Wohnungenverwaltung {
 //        return DBWohnung.getWohnungByLogin(bNameOEmail, passwort) != null;
 //    }
     public static List<Wohnung> getAllWohnungen() throws Exception {
-        wohnungn = DBWohnung.getAllWohnung();
-        return wohnungn;
+        return DBWohnung.getAllWohnung();
     }
 
     public static List<FilterWohnung> getAllGefWohnungen(String preisProNachtP, String ortP) throws Exception {
-        GefWohnungn = DBWohnung.getAllWohnungenGefiltert(preisProNachtP, ortP);
-        return GefWohnungn;
+        return DBWohnung.getAllWohnungenGefiltert(preisProNachtP, ortP);
+
     }
 
     public static List<FilterWohnung> getVermieteteWohnungen(String benutzerId) throws Exception {
-        VermWohnungn = DBWohnung.getAllVermieteteWohnungen(benutzerId);
-        return VermWohnungn;
+        return DBWohnung.getAllVermieteteWohnungen(benutzerId);
     }
 }

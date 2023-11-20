@@ -1,7 +1,7 @@
 .background{
     -fx-background-color:white;
 }
-Button{
+.btns {
     -fx-pref-width: 150;
     -fx-pref-height: 32;
     -fx-background-color:#ffffff;
@@ -9,7 +9,7 @@ Button{
     -fx-alignment: CENTER_LEFT;
     -fx-effect: dropshadow(three-pass-box,#DDDDDD ,5,0,0,6);
 }
-Button:hover{
+.btns:hover{
     -fx-effect: dropshadow(gaussian, rgba(46, 46, 46, 0.50), 20, 0, 0, 0);
     -fx-cursor:hand;
 }

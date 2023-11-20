@@ -11,14 +11,14 @@
 
 <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="880.0" styleClass="main" stylesheets="@../../Styles/Styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="praesentationsschicht_GUI.Controllers.NachrichtenController">
     <children>
-        <TextField layoutX="233.0" layoutY="67.0" prefHeight="32.0" prefWidth="176.0" promptText="Nachricht  Id" />
-        <Button layoutX="233.0" layoutY="108.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="69.0" text="Löschen" />
-        <DatePicker layoutX="457.0" layoutY="67.0" prefHeight="32.0" prefWidth="176.0" promptText="Nachrichten seit" />
+        <TextField fx:id="tf_nachrichtId" layoutX="233.0" layoutY="67.0" prefHeight="32.0" prefWidth="176.0" promptText="Nachricht  Id" />
+        <Button fx:id="btn_loeschen" layoutX="233.0" layoutY="108.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="69.0" styleClass="btns" text="Löschen" />
+        <DatePicker fx:id="dp_nachrichtZeitraum" layoutX="457.0" layoutY="67.0" prefHeight="32.0" prefWidth="176.0" promptText="Nachrichten vom" />
         <TableView fx:id="tv_nachrichten" layoutX="14.0" layoutY="187.0" prefHeight="461.0" prefWidth="867.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-      <Button layoutX="457.0" layoutY="108.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="69.0" text="Suchen" />
-      <Button layoutX="26.0" layoutY="108.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="69.0" text="Senden" />
-      <TextField layoutX="26.0" layoutY="67.0" prefHeight="32.0" prefWidth="176.0" promptText="EmpfängerId/Benutzername" />
-      <Text fx:id="fehlerMeldungen" fill="RED" layoutX="18.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="332.13671875" />
+      <Button fx:id="btn_suchen" layoutX="457.0" layoutY="108.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="69.0" styleClass="btns" text="Suchen" />
+      <Button fx:id="btn_senden" layoutX="26.0" layoutY="108.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="69.0" styleClass="btns" text="Senden" />
+      <TextField fx:id="tf_SendenBenutzerNOEmpfId" layoutX="26.0" layoutY="67.0" prefHeight="32.0" prefWidth="182.0" promptText="EmpfängerId/Benutzername" />
+      <Text fx:id="fehlerMeldungen" fill="#3c3c3c" layoutX="26.0" layoutY="175.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="332.13671875" />
       <Label layoutX="35.0" layoutY="28.0" text="Nachrichten" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
          <font>
             <Font name="System Bold" size="23.0" />
