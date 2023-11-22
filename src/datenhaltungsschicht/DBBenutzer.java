@@ -62,20 +62,9 @@ public class DBBenutzer extends DBZugriff {
 
     public static boolean update(Benutzer benutzer) throws Exception {
         connect();
-
-        String updateCommand = "UPDATE T_Benutzer SET Anrede = '" + benutzer.getAnrede()
-                + "', Vorname = '" + benutzer.getVorname()
-                + "', Nachname = '" + benutzer.getNachname()
-                + "', Geburtsdatum = '" + benutzer.getGeburtsdatum()
-                + "', Email = '" + benutzer.getEmail()
-                + "', PLZ = '" + benutzer.getPlz()
-                + "', Ort = '" + benutzer.getOrt()
-                + "',benutzerName= '" + benutzer.getBenutzerName()
-                + "', passwort= '" + benutzer.getPasswort()
-                + "' , Strasse = '" + benutzer.getStrasse()
-                + "', referenzbenutzerid = '" + benutzer.getRefBenutzer()
-                + "', verifiziert= '" + benutzer.getVerft()
-                + "' WHERE benutzerId = " + benutzer.getBenutzerId();
+        String dataToUpdate = getDataToUpdate(benutzer);
+        System.out.println(dataToUpdate);
+        String updateCommand = "UPDATE T_Benutzer SET " + dataToUpdate + " WHERE benutzerId = " + benutzer.getBenutzerId();
 
         try
         {
@@ -83,6 +72,7 @@ public class DBBenutzer extends DBZugriff {
         } catch (SQLException ex)
         {
             String errorMessage = "Es ist ein Fehler beim Aktualisieren des Benutzers " + benutzer.getBenutzerId() + " aufgetreten.";
+            ex.printStackTrace();
             throw new Exception(errorMessage);
         } finally
         {
@@ -302,5 +292,23 @@ public class DBBenutzer extends DBZugriff {
 
     public static String getPasswort() throws SQLException {
         return datenmenge.getString("passwort");
+    }
+
+    private static String getDataToUpdate(Benutzer benutzer) {
+        String sql = "";
+
+        sql += benutzer.getAnrede() != null ? " Anrede = '" + benutzer.getAnrede() + "', " : "";
+        sql += benutzer.getVorname() != null ? " Vorname = '" + benutzer.getVorname() + "', " : "";
+        sql += benutzer.getNachname() != null ? " Nachname = '" + benutzer.getNachname() + "', " : "";
+        sql += benutzer.getGeburtsdatum() != null ? " Geburtsdatum = '" + benutzer.getGeburtsdatum() + "', " : "";
+        sql += benutzer.getEmail() != null ? " Email = '" + benutzer.getEmail() + "', " : "";
+        sql += benutzer.getPlz() != null ? " PLZ = " + benutzer.getPlz() + ", " : "";
+        sql += benutzer.getOrt() != null ? " Ort = '" + benutzer.getOrt() + "', " : "";
+        sql += benutzer.getBenutzerName() != null ? " benutzerName= '" + benutzer.getBenutzerName() + "', " : "";
+        sql += benutzer.getPasswort() != null ? " passwort= '" + benutzer.getPasswort() + "', " : "";
+        sql += benutzer.getStrasse() != null ? " Strasse = '" + benutzer.getStrasse() + "', " : "";
+        sql += benutzer.getRefBenutzer() != null ? " referenzbenutzerid = " + benutzer.getRefBenutzer() + ", " : "";
+        sql += benutzer.getVerft() != null ? " verifiziert= '" + benutzer.getVerft() + "', " : "";
+        return sql.substring(0, sql.length() - 2);
     }
 }

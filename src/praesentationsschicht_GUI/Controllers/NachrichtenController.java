@@ -127,6 +127,10 @@ public class NachrichtenController implements Initializable {
     }
 
     private Boolean onSenden() throws Exception {
+        if (LoginController.benutzerId.equals(tf_empfaengerId.getText()))
+        {
+            return false;
+        }
         String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
 
         Nachrichten nachricht = new Nachrichten(null, LoginController.benutzerId, tf_empfaengerId.getText(), ta_nachricht.getText(), currentDate);
