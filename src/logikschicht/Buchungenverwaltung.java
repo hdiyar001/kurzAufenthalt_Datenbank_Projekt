@@ -25,7 +25,7 @@ public class Buchungenverwaltung {
         } else
         {
 
-            System.out.println("Dies ist schon gebucht wroden!!");
+//            System.out.println("Dies ist schon gebucht wroden!!");
         }
         return stored;
     }
@@ -54,15 +54,8 @@ public class Buchungenverwaltung {
         return updated;
     }
 
-    public static boolean deleteBuchung(Buchung buchung) throws Exception {
-        if (DBBuchung.Delete(buchung) && buchungn.contains(buchung))
-        {
-            buchungn.remove(buchung);
-            return true;
-        }
-
-        return false;
-
+    public static boolean deleteBuchung(String buchungId) throws Exception {
+        return DBBuchung.Delete(buchungId);
     }
 
     public static Buchung getBuchungBybuchungId(String buchungid) throws Exception {
@@ -73,9 +66,8 @@ public class Buchungenverwaltung {
 //
 //        return DBBuchung.getBuchungByLogin(bNameOEmail, passwort) != null;
 //    }
-    public static List<FilterBuchung> getAllBuchungen(String benutzerId) throws Exception {
-        filterBuchungn = DBBuchung.getAllBuchung(benutzerId);
-        return filterBuchungn;
+    public static List<FilterBuchung> getAllBuchungen(String benutzerId, String buchungId, String ortP, String buchungsdatum) throws Exception {
+        return DBBuchung.getAllBuchung(benutzerId, buchungId, ortP, buchungsdatum);
     }
 
 }

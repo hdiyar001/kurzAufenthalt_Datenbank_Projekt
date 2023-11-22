@@ -6,6 +6,7 @@ package logikschicht;
  */
 public class FilterBuchung {
 
+    private String buchungid;
     private String buchungsDatum;
     private String startDatum;
     private String endDatum;
@@ -13,8 +14,13 @@ public class FilterBuchung {
     private String preisProNacht;
     private String textBewertung;
     private String sternBewertung;
+    private String anzahlDerNaechte;
+    private String betrag;
+    private String zahlungsdatum;
+    private String zahlungsart;
 
-    public FilterBuchung(String buchungsDatum, String startDatum, String endDatum, String anschrift, String preisProNacht, String textBewertung, String sternBewertung) {
+    public FilterBuchung(String buchungid, String buchungsDatum, String startDatum, String endDatum, String anschrift, String preisProNacht, String textBewertung, String sternBewertung, String anzahlDerNaechte, String betrag, String zahlungsdatum, String zahlungsart) {
+        this.buchungid = buchungid;
         this.buchungsDatum = buchungsDatum;
         this.startDatum = startDatum;
         this.endDatum = endDatum;
@@ -22,6 +28,18 @@ public class FilterBuchung {
         this.preisProNacht = preisProNacht;
         this.textBewertung = textBewertung;
         this.sternBewertung = sternBewertung;
+        this.anzahlDerNaechte = anzahlDerNaechte;
+        this.betrag = betrag;
+        this.zahlungsdatum = zahlungsdatum;
+        this.zahlungsart = zahlungsart;
+    }
+
+    public String getBuchungid() {
+        return buchungid;
+    }
+
+    public void setBuchungid(String buchungid) {
+        this.buchungid = buchungid;
     }
 
     public String getBuchungsDatum() {
@@ -80,9 +98,41 @@ public class FilterBuchung {
         this.sternBewertung = sternBewertung;
     }
 
+    public String getAnzahlDerNaechte() {
+        return anzahlDerNaechte;
+    }
+
+    public void setAnzahlDerNaechte(String anzahlDerNaechte) {
+        this.anzahlDerNaechte = anzahlDerNaechte;
+    }
+
+    public String getBetrag() {
+        return betrag;
+    }
+
+    public void setBetrag(String betrag) {
+        this.betrag = betrag;
+    }
+
+    public String getZahlungsdatum() {
+        return zahlungsdatum;
+    }
+
+    public void setZahlungsdatum(String zahlungsdatum) {
+        this.zahlungsdatum = zahlungsdatum;
+    }
+
+    public String getZahlungsart() {
+        return zahlungsart;
+    }
+
+    public void setZahlungsart(String zahlungsart) {
+        this.zahlungsart = zahlungsart;
+    }
+
     @Override
     public String toString() {
-        return "FilterBuchung{" + "buchungsDatum=" + buchungsDatum + ", startDatum=" + startDatum + ", endDatum=" + endDatum + ", anschrift=" + anschrift + ", preisProNacht=" + preisProNacht + ", textBewertung=" + textBewertung + ", sternBewertung=" + sternBewertung + '}';
+        return "FilterBuchung{" + "buchungid=" + buchungid + ", buchungsDatum=" + buchungsDatum + ", startDatum=" + startDatum + ", endDatum=" + endDatum + ", anschrift=" + anschrift + ", preisProNacht=" + preisProNacht + ", textBewertung=" + textBewertung + ", sternBewertung=" + sternBewertung + ", anzahlDerNaechte=" + anzahlDerNaechte + ", betrag=" + betrag + ", zahlungsdatum=" + zahlungsdatum + ", zahlungsart=" + zahlungsart + '}';
     }
 
 }

@@ -32,7 +32,7 @@
                 <Menu mnemonicParsing="false" text="Hilfe">
                     <items>
                         <MenuItem mnemonicParsing="false" text="Über uns" />
-                  <MenuItem mnemonicParsing="false" text="Anweisungen" />
+                  <MenuItem mnemonicParsing="false" text="TestDaten" />
                     </items>
                 </Menu>
             </menus>

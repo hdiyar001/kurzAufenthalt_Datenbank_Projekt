@@ -35,6 +35,8 @@ public class VermietenController implements Initializable {
     @FXML
     private Button btn_vermieten;
     @FXML
+    private Button btn_hinzufuegen;
+    @FXML
     private Text fehlerMeldungen;
     @FXML
     private TextArea ta_beschreibungAendern;
@@ -55,6 +57,7 @@ public class VermietenController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        setupTableViewColumns();
         onActionEvents();
         comb_verfuegbarkeit.getItems().setAll("JA", "NEIN");
         refreshTableView();
@@ -76,7 +79,6 @@ public class VermietenController implements Initializable {
 
     private void fillTableView() throws Exception {
         ObservableList<FilterWohnung> data = FXCollections.observableArrayList(getAllWohnungen());
-        tv_wohnungen.getItems().clear();
         comb_wohnId.getItems().clear();
         comb_wohnId.getItems().addAll(
                 data.stream()
@@ -103,25 +105,23 @@ public class VermietenController implements Initializable {
     }
 
     private boolean onAktuallisieren() throws Exception {
-        Wohnung wohnung = new Wohnung(
-                comb_wohnId.getValue(),
-                LoginController.benutzerId,
-                tf_strasseAendern.getText(),
-                tf_ortAendern.getText(),
-                tf_plzAendern.getText(),
-                tf_preisAendern.getText(),
-                ta_beschreibungAendern.getText(),
-                comb_verfuegbarkeit.getValue().equals("JA") ? "J" : "N"
-        );
-        boolean aktuallisert = Wohnungenverwaltung.updateWohnung(wohnung);
+
+        boolean aktuallisert = Wohnungenverwaltung.updateWohnung(getWohnung(comb_wohnId.getValue()));
         refreshTableView();
         return aktuallisert;
+    }
+
+    private Boolean btn_hinzufuegen() throws Exception {
+        boolean hinzugefuegt = Wohnungenverwaltung.storeWohnung(getWohnung(null));
+        refreshTableView();
+        return hinzugefuegt;
     }
 
     private void onActionEvents() {
         btn_loeschen.setOnAction(e -> runTask(this::onLoeschen, "Die Wohnung wurde erfolgreich gelöscht.", "Die Wohnung konnte nicht gelöscht werden."));
         btn_vermieten.setOnAction(e -> runTask(this::onVermieten, "Ihre Wohnung ist nun veröffentlicht worden.", "Die Wohnung konnte nicht veröffentlicht werden."));
         btn_aendern.setOnAction(e -> runTask(this::onAktuallisieren, "Die Wohnungsdetails wurden erfolgreich aktualisiert.", "Die Aktualisierung der Wohnungsdetails ist fehlgeschlagen."));
+        btn_hinzufuegen.setOnAction(e -> runTask(this::btn_hinzufuegen, "Neue Wohnung wurde Erfolgreich hinzugefügt.", "Neue Wohnung hinzugefügen fehlgeschlagen."));
     }
 
     private void runTask(Callable<Boolean> action, String successMessage, String failureMessage) {
@@ -165,7 +165,9 @@ public class VermietenController implements Initializable {
         {
             try
             {
+                tv_wohnungen.getColumns().clear();
                 setupTableViewColumns();
+                tv_wohnungen.getItems().clear();
                 fillTableView();
             } catch (Exception e)
             {
@@ -175,4 +177,15 @@ public class VermietenController implements Initializable {
         });
     }
 
+    private Wohnung getWohnung(String id) {
+        return new Wohnung(
+                id,
+                LoginController.benutzerId,
+                tf_strasseAendern.getText(),
+                tf_ortAendern.getText(),
+                tf_plzAendern.getText(),
+                tf_preisAendern.getText(),
+                ta_beschreibungAendern.getText(),
+                comb_verfuegbarkeit.getValue().equals("JA") ? "J" : "N");
+    }
 }

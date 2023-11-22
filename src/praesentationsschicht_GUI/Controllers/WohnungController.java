@@ -125,7 +125,7 @@ public class WohnungController implements Initializable {
         String start = formatDate(dp_startdatum.getValue());
         String end = formatDate(dp_enddatum.getValue());
         String currentDate = formatDate(LocalDate.now());
-        return new Buchung("-1", LoginController.benutzerId, tf_wohnungId.getText(), currentDate, start, end);
+        return new Buchung(null, LoginController.benutzerId, tf_wohnungId.getText(), currentDate, start, end);
     }
 
     private void reloadTableView() {

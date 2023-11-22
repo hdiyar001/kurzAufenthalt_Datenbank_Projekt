@@ -1,16 +1,24 @@
 package praesentationsschicht_GUI.Controllers;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.Callable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
@@ -22,66 +30,108 @@ public class NachrichtenController implements Initializable {
 
     @FXML
     private Button btn_loeschen;
-
     @FXML
     private Button btn_senden;
 
     @FXML
-    private Button btn_suchen;
-
-    @FXML
     private DatePicker dp_nachrichtZeitraum;
-
     @FXML
     private Text fehlerMeldungen;
-
     @FXML
-    private TextField tf_SendenBenutzerNOEmpfId;
-
+    private TextField tf_empfaengerId;
     @FXML
     private TextField tf_nachrichtId;
-
+    @FXML
+    private TextArea ta_nachricht;
     @FXML
     private TableView<Nachrichten> tv_nachrichten;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try
-        {
-            setupTableViewColumns();
-            fillTableView();
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        setupTableViewColumns();
+        onActionEvents();
+        refreshTableView();
     }
 
     private void setupTableViewColumns() {
-//        TableColumn<Nachrichten, String> nachrichtenIdColumn = new TableColumn<>("Nachrichten ID");
-//        nachrichtenIdColumn.setCellValueFactory(new PropertyValueFactory<>("nachrichtenId"));
-
+        TableColumn<Nachrichten, String> nachrichtenIdColumn = new TableColumn<>("NachrichtID");
+        nachrichtenIdColumn.setCellValueFactory(new PropertyValueFactory<>("nachrichtenId"));
         TableColumn<Nachrichten, String> benutzerNameColumn = new TableColumn<>("BenutzerName");
         benutzerNameColumn.setCellValueFactory(new PropertyValueFactory<>("benutzerName"));
-
         TableColumn<Nachrichten, String> senderIdColumn = new TableColumn<>("Sender ID");
         senderIdColumn.setCellValueFactory(new PropertyValueFactory<>("senderId"));
-
         TableColumn<Nachrichten, String> empfaengerIdColumn = new TableColumn<>("Empfänger ID");
         empfaengerIdColumn.setCellValueFactory(new PropertyValueFactory<>("empfaengerId"));
-
         TableColumn<Nachrichten, String> nachrichtenTextColumn = new TableColumn<>("Nachrichtentext");
         nachrichtenTextColumn.setCellValueFactory(new PropertyValueFactory<>("nachrichtenText"));
-
         TableColumn<Nachrichten, String> zeitStempelColumn = new TableColumn<>("Zeitstempel");
         zeitStempelColumn.setCellValueFactory(new PropertyValueFactory<>("zeitStempel"));
-
-        tv_nachrichten.getColumns().addAll(benutzerNameColumn, senderIdColumn, empfaengerIdColumn, nachrichtenTextColumn, zeitStempelColumn);
+        tv_nachrichten.getColumns().addAll(nachrichtenIdColumn, benutzerNameColumn, senderIdColumn, empfaengerIdColumn, nachrichtenTextColumn, zeitStempelColumn);
     }
 
-    private void fillTableView() throws Exception {
-        System.out.println(getNachrichten());
-        ObservableList<Nachrichten> data = FXCollections.observableArrayList(getNachrichten());
-        tv_nachrichten.setItems(data);
+    private void onActionEvents() {
+        btn_loeschen.setOnAction(e -> runTask(this::onLoeschen, "Die Nachricht wurde erfolgreich gelöscht.", "Die Nachricht konnte nicht gelöscht werden."));
+        btn_senden.setOnAction(e -> runTask(this::onSenden, "Die Nachricht wurde erfolgreich gesendet.", "Die Nachricht konnte nicht gesendet werden."));
+    }
+
+    private void runTask(Callable<Boolean> action, String successMessage, String failureMessage) {
+        Task<Boolean> task = new Task<Boolean>() {
+            @Override
+            protected Boolean call() throws Exception {
+                return action.call();
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                Platform.runLater(() ->
+                {
+                    if (getValue())
+                    {
+                        fehlerMeldungen.setText(successMessage);
+                    } else
+                    {
+                        fehlerMeldungen.setText(failureMessage);
+                    }
+                    refreshTableView();
+                });
+            }
+
+            @Override
+            protected void failed() {
+                super.failed();
+                Platform.runLater(() -> fehlerMeldungen.setText("Ein unerwarteter Fehler ist aufgetreten."));
+            }
+        };
+        new Thread(task).start();
+    }
+
+    private void refreshTableView() {
+        Platform.runLater(() ->
+        {
+            try
+            {
+                List<Nachrichten> nachrichtenListe = getNachrichten();
+                ObservableList<Nachrichten> data = FXCollections.observableArrayList(nachrichtenListe);
+                tv_nachrichten.setItems(data);
+            } catch (Exception e)
+            {
+                fehlerMeldungen.setText("Fehler beim Laden der Nachrichten.");
+                Logger.getLogger(NachrichtenController.class.getName()).log(Level.SEVERE, null, e);
+            }
+        });
+    }
+
+    private Boolean onLoeschen() throws Exception {
+        return Nachrichtenverwaltung.deleteNachricht(tf_nachrichtId.getText());
+    }
+
+    private Boolean onSenden() throws Exception {
+        String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+
+        Nachrichten nachricht = new Nachrichten(null, LoginController.benutzerId, tf_empfaengerId.getText(), ta_nachricht.getText(), currentDate);
+        System.out.println(nachricht);
+        return Nachrichtenverwaltung.sendNachricht(nachricht);
     }
 
     private List<Nachrichten> getNachrichten() throws Exception {

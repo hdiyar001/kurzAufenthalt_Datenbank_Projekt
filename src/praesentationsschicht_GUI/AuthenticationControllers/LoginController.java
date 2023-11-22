@@ -78,7 +78,6 @@ public class LoginController implements Initializable {
                 {
                     benutzerName = benutzer.getBenutzerName();
                     benutzerId = benutzer.getBenutzerId();
-                    System.out.println("Der Benutzer exisitiert!");
                     Stage stage = (Stage) btn_login.getScene().getWindow();
                     Modell.getInstance().getViewFacotry().closeStage(stage);
                     Modell.getInstance().getViewFacotry().showClientWindow();

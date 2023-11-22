@@ -91,22 +91,23 @@ public class DBBenutzer extends DBZugriff {
         return true;
     }
 
-    public static boolean Delete(Benutzer benutzer) throws Exception {
+    public static boolean Delete(String benutzerId) throws Exception {
         connect();
-        String deleteCommand = "DELETE FROM T_Benutzer WHERE benutzerId = " + benutzer.getBenutzerId();
+        int status = -1;
+        String deleteCommand = "DELETE FROM T_Benutzer WHERE benutzerId = " + benutzerId;
 
         try
         {
-            befehl.executeUpdate(deleteCommand);
+            status = befehl.executeUpdate(deleteCommand);
         } catch (SQLException ex)
         {
-            String errorMessage = "Es ist ein Fehler beim Löschen des Benutzers " + benutzer.getBenutzerId() + " aufgetreten.";
+            String errorMessage = "Es ist ein Fehler beim Löschen des Benutzers " + benutzerId + " aufgetreten.";
             throw new Exception(errorMessage);
         } finally
         {
             close();
         }
-        return true;
+        return status == 1;
     }
 
     public static List<Benutzer> getAllBenutzer() throws Exception {

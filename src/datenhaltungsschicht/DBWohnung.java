@@ -19,9 +19,11 @@ public class DBWohnung extends DBZugriff {
     private static ResultSet datenmenge;
 
     public static boolean Insert(Wohnung wohnung) throws Exception {
+        String wohnId = wohnung.getWohnungId() == null ? (getLastId() + 1) + "" : wohnung.getWohnungId();
         connect();
+
         String insertCommand = "INSERT INTO T_Wohnung VALUES ("
-                + wohnung.getWohnungId()
+                + wohnId
                 + ", " + wohnung.getEigentuemerId()
                 + ", '" + wohnung.getStrasse()
                 + "', '" + wohnung.getOrt()
@@ -70,11 +72,9 @@ public class DBWohnung extends DBZugriff {
 
     public static boolean update(Wohnung wohnung) throws Exception {
         boolean isUpdated;
-        System.out.println(wohnung);
+        String updateSQL = getDataToUpdate(wohnung);
         connect();
-        String updateCommand = "UPDATE T_Wohnung SET PLZ = " + wohnung.getPlz()
-                + ", Ort = '" + wohnung.getOrt() + "', Strasse = '" + wohnung.getStrasse() + "', preisProNacht = " + wohnung.getPreisProNacht()
-                + ", beschreibung = '" + wohnung.getBeschreibung() + "', verfuegbarkeit = '" + wohnung.getVerfuegbarkeit() + "' WHERE wohnungId = " + wohnung.getWohnungId();
+        String updateCommand = "UPDATE T_Wohnung SET " + updateSQL + " WHERE wohnungId = " + wohnung.getWohnungId();
 
         try
         {
@@ -94,21 +94,24 @@ public class DBWohnung extends DBZugriff {
     }
 
     public static boolean Delete(String wohnungId) throws Exception {
+        boolean deleted;
         connect();
         String deleteCommand = "DELETE FROM T_Wohnung WHERE wohnungId = " + wohnungId;
 
         try
         {
-            befehl.executeUpdate(deleteCommand);
+            deleted = befehl.executeUpdate(deleteCommand) == 1;
         } catch (SQLException ex)
         {
             String errorMessage = "Es ist ein Fehler beim Löschen des Wohnungs " + wohnungId + " aufgetreten.";
+            ex.printStackTrace();
             throw new Exception(errorMessage);
         } finally
         {
             close();
         }
-        return true;
+        return deleted;
+
     }
 
     public static List<Wohnung> getAllWohnung() throws Exception {
@@ -134,7 +137,6 @@ public class DBWohnung extends DBZugriff {
             }
         } catch (SQLException e)
         {
-            System.out.println(e.toString());
             throw new Exception("Es ist ein Fehler beim Lesen der Wohnungdaten aufgetreten. ");
         } finally
         {
@@ -154,7 +156,6 @@ public class DBWohnung extends DBZugriff {
                 + "FROM t_benutzer JOIN t_wohnung ON t_benutzer.benutzerid = t_wohnung.eigentuemerid JOIN t_buchung ON t_wohnung.wohnungid = t_buchung.wohnungid JOIN t_bewertung ON t_buchung.buchungid = t_bewertung.buchungid "
                 + (!whereBedingungen.isBlank() ? whereBedingungen : "");
 //                + "WHERE preispronacht > " + preisProNachtP + " AND verfuegbarkeit != 'N' AND t_wohnung.ort = '" + ortP + "'";    
-        System.out.println("Query :" + query);
         try
         {
             datenmenge = befehl.executeQuery(query);
@@ -308,6 +309,39 @@ public class DBWohnung extends DBZugriff {
         }
 
         return sterne;
+    }
+
+    public static int getLastId() throws Exception {
+        connect();
+
+        try
+        {
+            String sql = "SELECT MAX(wohnungid) FROM T_Wohnung";
+            datenmenge = befehl.executeQuery(sql);
+            if (getNext())
+            {
+                return datenmenge.getInt(1);
+            }
+        } catch (SQLException e)
+        {
+            throw new Exception(e.getSQLState());
+        } finally
+        {
+            close();
+        }
+        return 0;
+    }
+
+    private static String getDataToUpdate(Wohnung wohnung) {
+        String sql = "";
+        sql += wohnung.getStrasse() != null ? " STRASSE = '" + wohnung.getStrasse() + "', " : "";
+        sql += wohnung.getOrt() != null ? " ORT = '" + wohnung.getOrt() + "', " : "' ";
+        sql += wohnung.getPlz() != null ? " PLZ = " + wohnung.getPlz() + ", " : "";
+        sql += wohnung.getPreisProNacht() != null ? " PreisProNacht = " + wohnung.getPreisProNacht() + ", " : "";
+        sql += wohnung.getVerfuegbarkeit() != null ? " verfuegbarkeit = '" + wohnung.getVerfuegbarkeit() + "', " : "";
+        sql += wohnung.getBeschreibung() != null ? " beschreibung = '" + wohnung.getBeschreibung() + "', " : "";
+
+        return sql.substring(0, sql.length() - 2);
     }
 
 }

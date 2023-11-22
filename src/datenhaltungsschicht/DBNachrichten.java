@@ -19,13 +19,15 @@ public class DBNachrichten extends DBZugriff {
     private static ResultSet datenmenge;
 
     public static boolean Insert(Nachrichten nachrichten) throws Exception {
+        String nachrichtId = nachrichten.getNachrichtenId() == null ? (getLastId() + 1) + "" : nachrichten.getNachrichtenId();
         connect();
         String insertCommand = "INSERT INTO T_Nachrichten VALUES ("
-                + nachrichten.getNachrichtenId()
+                + nachrichtId
                 + ", " + nachrichten.getSenderId()
-                + ", '" + nachrichten.getEmpfaengerId()
-                + "', '" + nachrichten.getNachrichtenText()
-                + ", TO_DATE('" + nachrichten.getZeitStempel() + "', 'dd.MM.yyyy'), ";
+                + ", " + nachrichten.getEmpfaengerId()
+                + ", '" + nachrichten.getNachrichtenText()
+                + "','" + nachrichten.getZeitStempel() + "')";
+        System.out.println(insertCommand);
         try
         {
             befehl.executeUpdate(insertCommand);
@@ -60,22 +62,23 @@ public class DBNachrichten extends DBZugriff {
         return true;
     }
 
-    public static boolean Delete(Nachrichten nachrichten) throws Exception {
+    public static boolean Delete(String nachrichtId) throws Exception {
+        int status = -1;
         connect();
-        String deleteCommand = "DELETE FROM T_Nachrichten WHERE nachrichtenId = " + nachrichten.getNachrichtenId();
+        String deleteCommand = "DELETE FROM T_Nachrichten WHERE nachrichtenId = " + nachrichtId;
 
         try
         {
-            befehl.executeUpdate(deleteCommand);
+            status = befehl.executeUpdate(deleteCommand);
         } catch (SQLException ex)
         {
-            String errorMessage = "Es ist ein Fehler beim Löschen des Nachrichtens " + nachrichten.getNachrichtenId() + " aufgetreten.";
+            String errorMessage = "Es ist ein Fehler beim Löschen des Nachrichtens " + nachrichtId + " aufgetreten.";
             throw new Exception(errorMessage);
         } finally
         {
             close();
         }
-        return true;
+        return status == 1;
     }
 
     public static List<Nachrichten> getAllNachrichten(String benutzerid) throws Exception {
@@ -172,5 +175,26 @@ public class DBNachrichten extends DBZugriff {
     public static String getZeitStempel() throws Exception {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         return dateFormat.format(datenmenge.getDate("zeitStempel"));
+    }
+
+    public static int getLastId() throws Exception {
+        connect();
+
+        try
+        {
+            String sql = "SELECT MAX(nachrichtenId) FROM T_Nachrichten";
+            datenmenge = befehl.executeQuery(sql);
+            if (getNext())
+            {
+                return datenmenge.getInt(1);
+            }
+        } catch (SQLException e)
+        {
+            throw new Exception(e.getSQLState());
+        } finally
+        {
+            close();
+        }
+        return 0;
     }
 }

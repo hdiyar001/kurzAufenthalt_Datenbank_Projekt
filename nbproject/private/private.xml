@@ -3,8 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group name="PK1">
-            <file>file:/C:/Users/49179/Desktop/Github/kurzAufenthalt_Datenbank_Projekt/src/datenhaltungsschicht/DBBuchung.java</file>
-            <file>file:/C:/Users/49179/Desktop/Github/kurzAufenthalt_Datenbank_Projekt/src/datenhaltungsschicht/DBBenutzer.java</file>
+            <file>file:/C:/Users/49179/Desktop/Github/kurzAufenthalt_Datenbank_Projekt/src/praesentationsschicht_GUI/Controllers/AccountController.java</file>
+            <file>file:/C:/Users/49179/Desktop/Github/kurzAufenthalt_Datenbank_Projekt/src/praesentationsschicht_GUI/MainApp.java</file>
+            <file>file:/C:/Users/49179/Desktop/Github/kurzAufenthalt_Datenbank_Projekt/src/logikschicht/Nachrichten.java</file>
+            <file>file:/C:/Users/49179/Desktop/Github/kurzAufenthalt_Datenbank_Projekt/src/datenhaltungsschicht/DBNachrichten.java</file>
+            <file>file:/C:/Users/49179/Desktop/Github/kurzAufenthalt_Datenbank_Projekt/src/logikschicht/Nachrichtenverwaltung.java</file>
+            <file>file:/C:/Users/49179/Desktop/Github/kurzAufenthalt_Datenbank_Projekt/src/praesentationsschicht_GUI/Controllers/NachrichtenController.java</file>
         </group>
     </open-files>
 </project-private>

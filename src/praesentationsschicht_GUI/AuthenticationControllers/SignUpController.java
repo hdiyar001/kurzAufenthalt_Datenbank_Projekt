@@ -79,10 +79,8 @@ public class SignUpController implements Initializable {
             if (checkInputs())
             {
                 Benutzer neueBenutzer = getBenutzer();
-                System.out.println(neueBenutzer);
                 if (Benutzerverwaltung.storeBenutzer(neueBenutzer))
                 {
-                    System.out.println("Der Benutzer wurde hinzugefügt.");
                     Stage stage = (Stage) btn_signup.getScene().getWindow();
                     Modell.getInstance().getViewFacotry().closeStage(stage);
                     Modell.getInstance().getViewFacotry().showLoginWindow();

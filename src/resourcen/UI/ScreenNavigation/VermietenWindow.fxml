@@ -16,7 +16,7 @@
         <Button fx:id="btn_vermieten" layoutX="14.0" layoutY="293.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="135.0" styleClass="btns" text="Vermieten" />
         <TableView fx:id="tv_wohnungen" layoutX="14.0" layoutY="187.0" prefHeight="316.0" prefWidth="880.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
       <Button fx:id="btn_loeschen" layoutX="189.0" layoutY="293.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="135.0" styleClass="btns" text="Löschen" />
-      <Button fx:id="btn_aendern" layoutX="440.0" layoutY="293.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="207.0" styleClass="btns" text="Aktualisieren" />
+      <Button fx:id="btn_hinzufuegen" layoutX="440.0" layoutY="293.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="207.0" styleClass="btns" text="Hinzufügen" />
       <Text fx:id="fehlerMeldungen" fill="#404040" layoutX="26.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="432.9814453125">
          <font>
             <Font size="13.0" />
@@ -38,5 +38,6 @@
          </font>
       </Label>
       <ComboBox fx:id="comb_wohnId" layoutX="14.0" layoutY="228.0" prefHeight="26.0" prefWidth="196.0" promptText="*Wohnung  Id" />
+      <Button fx:id="btn_aendern" layoutX="603.0" layoutY="293.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="207.0" styleClass="btns" text="Aktualisieren" />
     </children>
 </AnchorPane>

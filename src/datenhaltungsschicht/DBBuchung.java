@@ -21,7 +21,7 @@ public class DBBuchung extends DBZugriff {
     private static ResultSet datenmenge;
 
     public static boolean Insert(Buchung buchung) throws Exception {
-        String buchungsId = (buchung.getBuchungId().equals("-1") ? (getLastId() + 1) + "" : buchung.getBuchungId());
+        String buchungsId = (buchung.getBuchungId() == null ? (getLastId() + 1) + "" : buchung.getBuchungId());
         connect();
         String insertCommand = "INSERT INTO T_Buchung VALUES  (" + buchungsId
                 + "  , " + buchung.getMieterId()
@@ -65,50 +65,78 @@ public class DBBuchung extends DBZugriff {
         return true;
     }
 
-    public static boolean Delete(Buchung buchung) throws Exception {
+    public static boolean Delete(String buchungId) throws Exception {
+        int stauts = -1;
         connect();
-        String deleteCommand = "DELETE FROM T_Buchung WHERE buchungId = " + buchung.getBuchungId();
+        String deleteCommand = "DELETE FROM T_Buchung WHERE buchungId = " + buchungId;
 
         try
         {
-            befehl.executeUpdate(deleteCommand);
+            stauts = befehl.executeUpdate(deleteCommand);
+
         } catch (SQLException ex)
         {
-            String errorMessage = "Es ist ein Fehler beim Löschen des Buchungs " + buchung.getBuchungId() + " aufgetreten.";
+            String errorMessage = "Es ist ein Fehler beim Löschen des Buchungs " + buchungId + " aufgetreten.";
             throw new Exception(errorMessage);
         } finally
         {
             close();
         }
-        return true;
+        return stauts == 1;
     }
 
-    public static List<FilterBuchung> getAllBuchung(String benutzerId) throws Exception {
+    public static List<FilterBuchung> getAllBuchung(String benutzerId,
+            String buchungId,
+            String ortP,
+            String buchungsdatum) throws Exception {
+
+        String whereKlausel = "WHERE ";
+        whereKlausel += benutzerId == null ? "" : " Mieterid = " + benutzerId + " AND ";
+        whereKlausel += buchungId == null ? "" : " t_buchung.buchungId = " + buchungId + " AND ";
+        whereKlausel += ortP == null ? "" : " t_wohnung.ort = '" + ortP + "' AND ";
+        whereKlausel += buchungsdatum == null ? "" : " t_buchung.buchungsdatum = '" + buchungsdatum + "' AND ";
+        whereKlausel = whereKlausel.length() == 6 ? "" : whereKlausel.substring(0, whereKlausel.length() - 4);
+
+        String sql = "SELECT t_buchung.buchungid,t_buchung.buchungsdatum, t_buchung.startdatum, t_buchung.enddatum, "
+                + "t_wohnung.strasse, t_wohnung.ort, t_wohnung.plz, t_wohnung.preispronacht, "
+                + "t_bewertung.bewertungstext, t_bewertung.sternebewertung, (t_buchung.enddatum - t_buchung.startdatum) AS AnzahlDerNaechte, "
+                + "t_zahlungen.betrag, t_zahlungen.zahlungsdatum, t_zahlungen.zahlungsart "
+                + "FROM t_benutzer JOIN t_wohnung ON t_benutzer.benutzerid = t_wohnung.eigentuemerid "
+                + "JOIN t_buchung ON t_wohnung.wohnungid = t_buchung.wohnungid "
+                + "JOIN t_zahlungen ON t_buchung.BuchungID = t_zahlungen.BuchungID "
+                + "JOIN t_bewertung ON t_buchung.buchungid = t_bewertung.buchungid " + whereKlausel;
 
         ArrayList<FilterBuchung> filterBuchungen = new ArrayList<>();
         connect();
         try
         {
-            datenmenge = befehl.executeQuery("SELECT t_buchung.buchungsdatum, t_buchung.startdatum,t_buchung.enddatum,t_wohnung.strasse,t_wohnung.ort,t_wohnung.plz,t_wohnung.preispronacht,t_bewertung.bewertungstext,t_bewertung.sternebewertung "
-                    + "FROM t_benutzer JOIN t_wohnung ON t_benutzer.benutzerid = t_wohnung.eigentuemerid JOIN t_buchung ON t_wohnung.wohnungid = t_buchung.wohnungid JOIN t_bewertung ON t_buchung.buchungid = t_bewertung.buchungid  WHERE Mieterid= " + benutzerId);
-            while (getNext())
+
+            datenmenge = befehl.executeQuery(sql);
+            while (datenmenge.next())
             {
-                String buchungsDatum = getBuchungsDatum();
-                String startDatum = getStartDatum();
-                String endDatum = getEndDatum();
-                String strasse = datenmenge.getString("Strasse");
+                String buchungid = datenmenge.getString("buchungid");
+                String buchungsDatum = datenmenge.getString("buchungsdatum");
+                String startDatum = datenmenge.getString("startdatum");
+                String endDatum = datenmenge.getString("enddatum");
+                String strasse = datenmenge.getString("strasse");
                 String ort = datenmenge.getString("Ort");
                 String plz = datenmenge.getString("PLZ");
                 String anschrift = strasse + " " + plz + " " + ort;
                 String preisProNacht = datenmenge.getString("preisProNacht") + " €";
                 String textBewertung = datenmenge.getString("bewertungstext");
-                String sternBewertung = getSternImo(datenmenge.getString("sterneBewertung"));
+                String sternBewertung = getSternImo(datenmenge.getString("sternebewertung"));
+                String anzahlDerNaechte = datenmenge.getString("AnzahlDerNaechte");
+                String betrag = datenmenge.getString("betrag") + " €";
+                String zahlungsdatum = datenmenge.getString("zahlungsdatum");
+                String zahlungsart = datenmenge.getString("zahlungsart");
 
-                FilterBuchung buchung = new FilterBuchung(buchungsDatum, startDatum, endDatum, anschrift, preisProNacht, textBewertung, sternBewertung);
+                FilterBuchung buchung = new FilterBuchung(buchungid, buchungsDatum, startDatum, endDatum, anschrift, preisProNacht,
+                        textBewertung, sternBewertung, anzahlDerNaechte, betrag, zahlungsdatum, zahlungsart);
                 filterBuchungen.add(buchung);
             }
         } catch (Exception e)
         {
+            e.printStackTrace();
             throw new Exception("Es ist ein Fehler beim Lesen der Buchungdaten aufgetreten. ");
         } finally
         {
@@ -126,7 +154,6 @@ public class DBBuchung extends DBZugriff {
         try
         {
             datenmenge = befehl.executeQuery(query);
-
             if (datenmenge.next())
             {
                 return true;
