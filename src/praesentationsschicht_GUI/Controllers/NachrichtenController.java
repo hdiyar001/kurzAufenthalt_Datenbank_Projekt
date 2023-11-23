@@ -36,7 +36,7 @@ public class NachrichtenController implements Initializable {
     @FXML
     private DatePicker dp_nachrichtZeitraum;
     @FXML
-    private Text fehlerMeldungen;
+    private Text ta_meldungen;
     @FXML
     private TextField tf_empfaengerId;
     @FXML
@@ -45,6 +45,7 @@ public class NachrichtenController implements Initializable {
     private TextArea ta_nachricht;
     @FXML
     private TableView<Nachrichten> tv_nachrichten;
+    private String message = "";
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -88,10 +89,12 @@ public class NachrichtenController implements Initializable {
                 {
                     if (getValue())
                     {
-                        fehlerMeldungen.setText(successMessage);
+                        message += "> " + successMessage + "\n";
+                        ta_meldungen.setText(message);
                     } else
                     {
-                        fehlerMeldungen.setText(failureMessage);
+                        message += "> " + failureMessage + "\n";
+                        ta_meldungen.setText(message);
                     }
                     refreshTableView();
                 });
@@ -100,7 +103,12 @@ public class NachrichtenController implements Initializable {
             @Override
             protected void failed() {
                 super.failed();
-                Platform.runLater(() -> fehlerMeldungen.setText("Ein unerwarteter Fehler ist aufgetreten."));
+                Platform.runLater(() ->
+                {
+                    message += "> " + "Ein unerwarteter Fehler ist aufgetreten." + "\n";
+                    ta_meldungen.setText(message);
+                }
+                );
             }
         };
         new Thread(task).start();
@@ -116,7 +124,8 @@ public class NachrichtenController implements Initializable {
                 tv_nachrichten.setItems(data);
             } catch (Exception e)
             {
-                fehlerMeldungen.setText("Fehler beim Laden der Nachrichten.");
+                message += "> " + "Fehler beim Laden der Nachrichten." + "\n";
+                ta_meldungen.setText(message);
                 Logger.getLogger(NachrichtenController.class.getName()).log(Level.SEVERE, null, e);
             }
         });

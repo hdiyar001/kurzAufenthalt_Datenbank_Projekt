@@ -26,16 +26,12 @@ public class Wohnungenverwaltung {
         return DBWohnung.getWohnungByWohnungId(wohnungid);
     }
 
-//    public static boolean checkUserExists(String bNameOEmail, String passwort) throws Exception {
-//
-//        return DBWohnung.getWohnungByLogin(bNameOEmail, passwort) != null;
-//    }
     public static List<Wohnung> getAllWohnungen() throws Exception {
         return DBWohnung.getAllWohnung();
     }
 
-    public static List<FilterWohnung> getAllGefWohnungen(String preisProNachtP, String ortP) throws Exception {
-        return DBWohnung.getAllWohnungenGefiltert(preisProNachtP, ortP);
+    public static List<FilterWohnung> getAllGefWohnungen(String benutzerId, String preisProNachtP, String ortP) throws Exception {
+        return DBWohnung.getAllWohnungenGefiltert(benutzerId, preisProNachtP, ortP);
 
     }
 

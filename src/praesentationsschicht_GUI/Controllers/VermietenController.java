@@ -37,7 +37,7 @@ public class VermietenController implements Initializable {
     @FXML
     private Button btn_hinzufuegen;
     @FXML
-    private Text fehlerMeldungen;
+    private Text ta_meldungen;
     @FXML
     private TextArea ta_beschreibungAendern;
     @FXML
@@ -54,6 +54,7 @@ public class VermietenController implements Initializable {
     private ComboBox<String> comb_verfuegbarkeit;
     @FXML
     private TableView<FilterWohnung> tv_wohnungen;
+    private String message = "";
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -138,10 +139,12 @@ public class VermietenController implements Initializable {
                 {
                     if (getValue())
                     {
-                        fehlerMeldungen.setText(successMessage);
+                        message += "> " + successMessage + "\n";
+                        ta_meldungen.setText(message);
                     } else
                     {
-                        fehlerMeldungen.setText(failureMessage);
+                        message += "> " + failureMessage + "\n";
+                        ta_meldungen.setText(message);
                     }
                     refreshTableView();
                 });
@@ -152,7 +155,8 @@ public class VermietenController implements Initializable {
                 super.failed();
                 Platform.runLater(() ->
                 {
-                    fehlerMeldungen.setText("Ein unerwarteter Fehler ist aufgetreten.");
+                    message += "> " + "Ein unerwarteter Fehler ist aufgetreten." + "\n";
+                    ta_meldungen.setText(message);
                 });
             }
         };
@@ -171,7 +175,8 @@ public class VermietenController implements Initializable {
                 fillTableView();
             } catch (Exception e)
             {
-                fehlerMeldungen.setText("Fehler beim Laden der Tabellendaten.");
+                message += "> " + "Fehler beim Laden der Tabellendaten." + "\n";
+                ta_meldungen.setText(message);
                 Logger.getLogger(VermietenController.class.getName()).log(Level.SEVERE, null, e);
             }
         });

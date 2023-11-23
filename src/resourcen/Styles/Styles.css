@@ -17,3 +17,9 @@
     -fx-pref-height: 30.0;
     -fx-pref-width: 180.0;
 }
+.meldungen{
+    -fx-background-color: #222;
+    -fx-text-fill: black;
+
+
+}

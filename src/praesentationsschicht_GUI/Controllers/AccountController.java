@@ -33,7 +33,7 @@ public class AccountController implements Initializable {
     @FXML
     private DatePicker dp_gebDat;
     @FXML
-    private Text fehlerMeldungen;
+    private Text ta_meldungen;
     @FXML
     private TextField tf_benutzername;
     @FXML
@@ -52,6 +52,7 @@ public class AccountController implements Initializable {
     private TextField tf_vorname;
     @FXML
     private TableView<Benutzer> tv_account;
+    private String message = "";
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -113,10 +114,12 @@ public class AccountController implements Initializable {
                 {
                     if (getValue())
                     {
-                        fehlerMeldungen.setText(successMessage);
+                        message += "> " + successMessage + "\n";
+                        ta_meldungen.setText(message);
                     } else
                     {
-                        fehlerMeldungen.setText(failureMessage);
+                        message += "> " + failureMessage + "\n";
+                        ta_meldungen.setText(failureMessage);
                     }
                     refreshTableView();
                 });
@@ -125,7 +128,7 @@ public class AccountController implements Initializable {
             @Override
             protected void failed() {
                 super.failed();
-                Platform.runLater(() -> fehlerMeldungen.setText("Ein unerwarteter Fehler ist aufgetreten."));
+                Platform.runLater(() -> ta_meldungen.setText("Ein unerwarteter Fehler ist aufgetreten."));
             }
         };
         new Thread(task).start();
@@ -140,15 +143,23 @@ public class AccountController implements Initializable {
                 tv_account.setItems(FXCollections.observableArrayList(benutzer));
             } catch (Exception e)
             {
-                fehlerMeldungen.setText("Fehler beim Laden der Konto-Daten.");
+                ta_meldungen.setText("Fehler beim Laden der Konto-Daten.");
                 Logger.getLogger(AccountController.class.getName()).log(Level.SEVERE, null, e);
             }
         });
     }
 
     private Boolean onKontoDatenAendern() throws Exception {
-        Benutzer benutzer = new Benutzer(LoginController.benutzerId, tf_nachname.getText(), tf_vorname.getText(), null, tf_benutzername.getText(),
-                tf_email.getText(), tf_passwort.getText(), tf_strasse.getText(), tf_ort.getText(), tf_plz.getText(),
+        Benutzer benutzer = new Benutzer(LoginController.benutzerId,
+                tf_nachname.getText() != null ? tf_nachname.getText() : null,
+                tf_vorname.getText() != null ? tf_vorname.getText() : null,
+                null,
+                tf_benutzername.getText() != null ? tf_benutzername.getText() : null,
+                tf_email.getText() != null ? tf_email.getText() : null,
+                tf_passwort.getText() != null ? tf_passwort.getText() : null,
+                tf_strasse.getText() != null ? tf_strasse.getText() : null,
+                tf_ort.getText() != null ? tf_ort.getText() : null,
+                tf_plz.getText() != null ? tf_plz.getText() : null,
                 dp_gebDat.getValue().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")), null, null);
         return Benutzerverwaltung.updateBenutzer(benutzer);
     }

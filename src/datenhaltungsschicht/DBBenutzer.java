@@ -81,6 +81,26 @@ public class DBBenutzer extends DBZugriff {
         return true;
     }
 
+    public static boolean updatePasswort(String BNameemail, String passwort) throws SQLException, Exception {
+        connect();
+        String updateCommand = "UPDATE T_Benutzer SET passwort='" + passwort + "' WHERE benutzername = '" + BNameemail + "' OR Email= '" + BNameemail + "'";
+
+        try
+        {
+            befehl.executeUpdate(updateCommand);    
+        } catch (SQLException ex)
+        {
+            String errorMessage = "Es ist ein Fehler beim Aktualisieren des Benutzers " + BNameemail + " aufgetreten.";
+            ex.printStackTrace();
+            throw new Exception(errorMessage);
+        } finally
+        {
+            close();
+        }
+        return true;
+
+    }
+
     public static boolean Delete(String benutzerId) throws Exception {
         connect();
         int status = -1;
@@ -311,4 +331,5 @@ public class DBBenutzer extends DBZugriff {
         sql += benutzer.getVerft() != null ? " verifiziert= '" + benutzer.getVerft() + "', " : "";
         return sql.substring(0, sql.length() - 2);
     }
+
 }

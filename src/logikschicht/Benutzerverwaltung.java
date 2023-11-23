@@ -39,4 +39,8 @@ public class Benutzerverwaltung {
     public static List<Benutzer> getAllBenutzern() throws Exception {
         return DBBenutzer.getAllBenutzer();
     }
+
+    public static boolean PasswortVergessen(String BNameemail, String passwort) {
+        return DBBenutzer.updatePasswort(BNameemail, passwort);
+    }
 }

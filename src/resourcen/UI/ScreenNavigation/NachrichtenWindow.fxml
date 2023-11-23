@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
@@ -9,12 +10,11 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="880.0" styleClass="main" stylesheets="@../../Styles/Styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="praesentationsschicht_GUI.Controllers.NachrichtenController">
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1247.0" styleClass="main" stylesheets="@../../Styles/Styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="praesentationsschicht_GUI.Controllers.NachrichtenController">
     <children>
         <TextField fx:id="tf_nachrichtId" layoutX="233.0" layoutY="67.0" prefHeight="32.0" prefWidth="176.0" promptText="Nachricht  Id" />
         <Button fx:id="btn_loeschen" layoutX="233.0" layoutY="108.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="69.0" styleClass="btns" text="Löschen" />
-        <TableView fx:id="tv_nachrichten" layoutX="14.0" layoutY="187.0" prefHeight="359.0" prefWidth="880.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+        <TableView fx:id="tv_nachrichten" layoutX="14.0" layoutY="271.0" prefHeight="245.0" prefWidth="1247.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
       <Button fx:id="btn_senden" layoutX="21.0" layoutY="227.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="193.0" styleClass="btns" text="Senden" />
       <TextField fx:id="tf_empfaengerId" layoutX="26.0" layoutY="67.0" prefHeight="32.0" prefWidth="182.0" promptText="EmpfängerId" />
       <Text fx:id="fehlerMeldungen" fill="#3c3c3c" layoutX="243.0" layoutY="248.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="332.13671875" />
@@ -24,6 +24,14 @@
          </font>
       </Label>
       <TextArea fx:id="ta_nachricht" layoutX="21.0" layoutY="110.0" prefHeight="105.0" prefWidth="193.0" promptText="Ihre nachricht..." />
+      <ScrollPane layoutX="10.0" layoutY="497.0" prefHeight="116.0" prefWidth="1230.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <content>
+            <Text fx:id="ta_meldungen" fill="#2c2c2c" strokeType="OUTSIDE" strokeWidth="0.0" text="Hier werden die Meldungen angezeigt..." wrappingWidth="1225.9830722808838">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Text>
+         </content>
+      </ScrollPane>
     </children>
 </AnchorPane>
-    

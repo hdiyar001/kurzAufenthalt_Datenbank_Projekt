@@ -145,10 +145,10 @@ public class DBWohnung extends DBZugriff {
         return wohnungen;
     }
 
-    public static List<FilterWohnung> getAllWohnungenGefiltert(String preisProNachtP, String ortP) throws Exception {
+    public static List<FilterWohnung> getAllWohnungenGefiltert(String benutzerId, String preisProNachtP, String ortP) throws Exception {
         connect();
         ArrayList<FilterWohnung> filterW = new ArrayList<>();
-        String whereBedingungen = "WHERE verfuegbarkeit != 'N'";
+        String whereBedingungen = "WHERE verfuegbarkeit != 'N' AND benutzerid != " + benutzerId;
         whereBedingungen += preisProNachtP.isBlank() ? "" : " AND preispronacht >" + preisProNachtP;
         whereBedingungen += ortP.isBlank() ? "" : " AND t_wohnung.ort = '" + ortP + "'";
 

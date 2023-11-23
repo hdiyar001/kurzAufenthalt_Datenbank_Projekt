@@ -56,7 +56,8 @@ public class WohnungController implements Initializable {
     private DatePicker dp_enddatum;
 
     @FXML
-    private Text meldungen;
+    private Text ta_meldungen;
+    private String message = "";
 
     private static final Logger LOGGER = Logger.getLogger(WohnungController.class.getName());
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
@@ -96,16 +97,20 @@ public class WohnungController implements Initializable {
                 if (Buchungenverwaltung.storeBuchung(buchung))
                 {
                     Wohnungenverwaltung.updateWohnungStatus(buchung.getWohnungId(), "N");
-                    meldungen.setText("Die Wohnung wurde erfolgreich gebucht :)");
+                    message += "> " + "Die Wohnung wurde erfolgreich gebucht :)" + "\n";
+
+                    ta_meldungen.setText(message);
                     reloadTableView();
                 } else
                 {
-                    meldungen.setText("Buchung fehlgeschlagen. Überprüfen Sie Ihre Eingaben.");
+                    message += "> " + "Buchung fehlgeschlagen. Überprüfen Sie Ihre Eingaben." + "\n";
+                    ta_meldungen.setText(message);
                 }
             }
         } catch (Exception ex)
         {
-            meldungen.setText("Ein Fehler ist aufgetreten.");
+            message += "> " + "Ein Fehler ist aufgetreten." + "\n";
+            ta_meldungen.setText(message);
             LOGGER.log(Level.SEVERE, "Buchung fehlgeschlagen", ex);
         }
     }
@@ -116,7 +121,8 @@ public class WohnungController implements Initializable {
             return true;
         } else
         {
-            meldungen.setText("Das Enddatum muss nach dem Startdatum liegen.");
+            message += "> " + "Das Enddatum muss nach dem Startdatum liegen." + "\n";
+            ta_meldungen.setText(message);
             return false;
         }
     }
@@ -142,7 +148,7 @@ public class WohnungController implements Initializable {
     private List<FilterWohnung> getAllWohnungen() throws Exception {
         double minPreis = slider_mindPreis.getValue();
         String ort = tf_ort.getText();
-        return Wohnungenverwaltung.getAllGefWohnungen(String.valueOf(minPreis), ort);
+        return Wohnungenverwaltung.getAllGefWohnungen(LoginController.benutzerId, String.valueOf(minPreis), ort);
     }
 
     private void setupTableViewColumns() {

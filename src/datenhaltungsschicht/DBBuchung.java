@@ -23,6 +23,7 @@ public class DBBuchung extends DBZugriff {
     public static boolean Insert(Buchung buchung) throws Exception {
         String buchungsId = (buchung.getBuchungId() == null ? (getLastId() + 1) + "" : buchung.getBuchungId());
         connect();
+        System.out.println(buchung);
         String insertCommand = "INSERT INTO T_Buchung VALUES  (" + buchungsId
                 + "  , " + buchung.getMieterId()
                 + "  , " + buchung.getWohnungId()
@@ -90,21 +91,20 @@ public class DBBuchung extends DBZugriff {
             String ortP,
             String buchungsdatum) throws Exception {
 
-        String whereKlausel = "WHERE ";
+        String whereKlausel = "WHERE t_buchung.enddatum > CURRENT_DATE AND ";
         whereKlausel += benutzerId == null ? "" : " Mieterid = " + benutzerId + " AND ";
         whereKlausel += buchungId == null ? "" : " t_buchung.buchungId = " + buchungId + " AND ";
         whereKlausel += ortP == null ? "" : " t_wohnung.ort = '" + ortP + "' AND ";
         whereKlausel += buchungsdatum == null ? "" : " t_buchung.buchungsdatum = '" + buchungsdatum + "' AND ";
+
         whereKlausel = whereKlausel.length() == 6 ? "" : whereKlausel.substring(0, whereKlausel.length() - 4);
 
         String sql = "SELECT t_buchung.buchungid,t_buchung.buchungsdatum, t_buchung.startdatum, t_buchung.enddatum, "
-                + "t_wohnung.strasse, t_wohnung.ort, t_wohnung.plz, t_wohnung.preispronacht, "
-                + "t_bewertung.bewertungstext, t_bewertung.sternebewertung, (t_buchung.enddatum - t_buchung.startdatum) AS AnzahlDerNaechte, "
-                + "t_zahlungen.betrag, t_zahlungen.zahlungsdatum, t_zahlungen.zahlungsart "
-                + "FROM t_benutzer JOIN t_wohnung ON t_benutzer.benutzerid = t_wohnung.eigentuemerid "
-                + "JOIN t_buchung ON t_wohnung.wohnungid = t_buchung.wohnungid "
-                + "JOIN t_zahlungen ON t_buchung.BuchungID = t_zahlungen.BuchungID "
-                + "JOIN t_bewertung ON t_buchung.buchungid = t_bewertung.buchungid " + whereKlausel;
+                + "t_wohnung.strasse, t_wohnung.ort, t_wohnung.plz, t_wohnung.preispronacht, (t_buchung.enddatum - t_buchung.startdatum) AS AnzahlDerNaechte ,"
+                + " (t_buchung.enddatum - t_buchung.startdatum)* t_wohnung.preispronacht as betrag "
+                + "FROM    t_benutzer "
+                + "   JOIN t_buchung ON t_benutzer.benutzerid = t_buchung.mieterid "
+                + "   JOIN t_wohnung ON t_buchung.wohnungid = t_wohnung.wohnungid " + whereKlausel;
 
         ArrayList<FilterBuchung> filterBuchungen = new ArrayList<>();
         connect();
@@ -123,15 +123,12 @@ public class DBBuchung extends DBZugriff {
                 String plz = datenmenge.getString("PLZ");
                 String anschrift = strasse + " " + plz + " " + ort;
                 String preisProNacht = datenmenge.getString("preisProNacht") + " €";
-                String textBewertung = datenmenge.getString("bewertungstext");
-                String sternBewertung = getSternImo(datenmenge.getString("sternebewertung"));
                 String anzahlDerNaechte = datenmenge.getString("AnzahlDerNaechte");
                 String betrag = datenmenge.getString("betrag") + " €";
-                String zahlungsdatum = datenmenge.getString("zahlungsdatum");
-                String zahlungsart = datenmenge.getString("zahlungsart");
 
-                FilterBuchung buchung = new FilterBuchung(buchungid, buchungsDatum, startDatum, endDatum, anschrift, preisProNacht,
-                        textBewertung, sternBewertung, anzahlDerNaechte, betrag, zahlungsdatum, zahlungsart);
+//                FilterBuchung buchung = new FilterBuchung(buchungid, buchungsDatum, startDatum, endDatum, anschrift, preisProNacht,
+//                        textBewertung, sternBewertung, anzahlDerNaechte, betrag, zahlungsdatum, zahlungsart);
+                FilterBuchung buchung = new FilterBuchung(buchungid, buchungsDatum, startDatum, endDatum, anschrift, preisProNacht, anzahlDerNaechte, betrag);
                 filterBuchungen.add(buchung);
             }
         } catch (Exception e)
@@ -283,5 +280,27 @@ public class DBBuchung extends DBZugriff {
         }
 
         return sterne;
+    }
+
+    public static String getBetragByBuchungId(String buchungid) throws SQLException, Exception {
+        connect();
+        String query = " SELECT (t_buchung.enddatum - t_buchung.startdatum)* t_wohnung.preispronacht as betrag "
+                + "FROM T_Buchung,t_wohnung WHERE t_buchung.wohnungid=t_wohnung.wohnungid AND buchungId = " + buchungid;
+
+        try
+        {
+            datenmenge = befehl.executeQuery(query);
+            if (datenmenge.next())
+            {
+                return datenmenge.getString(1);
+            }
+        } catch (Exception e)
+        {
+            throw new Exception("Es ist ein Fehler beim Lesen der Benutzerdaten aufgetreten. ");
+        } finally
+        {
+            close();
+        }
+        return null;
     }
 }

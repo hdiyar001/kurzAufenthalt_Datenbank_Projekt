@@ -34,6 +34,17 @@ public class FilterBuchung {
         this.zahlungsart = zahlungsart;
     }
 
+    public FilterBuchung(String buchungid, String buchungsDatum, String startDatum, String endDatum, String anschrift, String preisProNacht, String anzahlDerNaechte, String betrag) {
+        this.buchungid = buchungid;
+        this.buchungsDatum = buchungsDatum;
+        this.startDatum = startDatum;
+        this.endDatum = endDatum;
+        this.anschrift = anschrift;
+        this.preisProNacht = preisProNacht;
+        this.anzahlDerNaechte = anzahlDerNaechte;
+        this.betrag = betrag;
+    }
+
     public String getBuchungid() {
         return buchungid;
     }

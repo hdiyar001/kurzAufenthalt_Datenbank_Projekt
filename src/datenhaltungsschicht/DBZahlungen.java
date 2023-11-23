@@ -19,18 +19,21 @@ public class DBZahlungen extends DBZugriff {
     private static ResultSet datenmenge;
 
     public static boolean Insert(Zahlungen zahlungen) throws Exception {
+        String zahlungsid = zahlungen.getZahlungsId() == null ? (getLastId() + 1) + "" : zahlungen.getZahlungsId();
         connect();
         String insertCommand = "INSERT INTO T_Zahlungen VALUES ("
-                + zahlungen.getZahlungsId()
+                + zahlungsid
                 + ", " + zahlungen.getBuchungId()
-                + ", '" + zahlungen.getBetrag()
-                + ", TO_DATE('" + zahlungen.getZahlungsdatum() + "', 'dd.MM.yyyy') ', '"
-                + zahlungen.getZahlungsart() + "'";
+                + ", " + zahlungen.getBetrag()
+                + ",'" + zahlungen.getZahlungsdatum()
+                + "', '" + zahlungen.getZahlungsart() + "')";
+        System.out.println(insertCommand);
         try
         {
             befehl.executeUpdate(insertCommand);
         } catch (SQLException ex)
         {
+            ex.printStackTrace();
             String errorMessage = "Es ist ein Fehler beim Hinzufügen des zahlungs " + zahlungen.getZahlungsId() + " aufgetreten.";
             throw new Exception(errorMessage);
         } finally
@@ -38,6 +41,27 @@ public class DBZahlungen extends DBZugriff {
             close();
         }
         return true;
+    }
+
+    public static int getLastId() throws Exception {
+        connect();
+
+        try
+        {
+            String sql = "SELECT MAX(zahlungsid) FROM T_Zahlungen";
+            datenmenge = befehl.executeQuery(sql);
+            if (getNext())
+            {
+                return datenmenge.getInt(1);
+            }
+        } catch (SQLException e)
+        {
+            throw new Exception(e.getSQLState());
+        } finally
+        {
+            close();
+        }
+        return 0;
     }
 
     public static boolean update(Zahlungen zahlungen) throws Exception {
@@ -78,18 +102,19 @@ public class DBZahlungen extends DBZugriff {
         return true;
     }
 
-    public static List<Zahlungen> getAllZahlungen() throws Exception {
+    public static List<Zahlungen> getAllZahlungen(String benutzerid) throws Exception {
 
         ArrayList<Zahlungen> zahlungenListe = new ArrayList<>();
         connect();
         try
         {
-            datenmenge = befehl.executeQuery("SELECT * FROM T_Zahlungen");
+            datenmenge = befehl.executeQuery("SELECT * FROM T_Zahlungen,T_buchung , T_benutzer "
+                    + "WHERE t_buchung.mieterid=T_benutzer.benutzerid AND t_zahlungen.buchungid = t_buchung.buchungid AND mieterid=" + benutzerid);
             while (getNext())
             {
                 String zahlungsId = getzahlungsId();
                 String buchungId = getBuchungId();
-                String betrag = getBetrag();
+                String betrag = getBetrag() + " €";
                 String zahlungsdatum = getZahlungsdatum();
                 String zahlungsart = getZahlungsart();
 
