@@ -177,9 +177,11 @@ public class VermietenController implements Initializable {
                 setupTableViewColumns();
                 tv_wohnungen.getItems().clear();
                 fillTableView();
+                message += "> " + "Tabelldaten wurde erflogreich aktuallisiert. " + "\n";
+                ta_meldungen.setText(message);
             } catch (Exception e)
             {
-                message += "> " + "Fehler beim Laden der Tabellendaten." + "\n";
+                message += "> " + "Fehler beim Laden der Tabelldaten." + "\n";
                 ta_meldungen.setText(message);
                 Logger.getLogger(VermietenController.class.getName()).log(Level.SEVERE, null, e);
             }

@@ -5,8 +5,6 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
@@ -22,7 +20,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
@@ -179,6 +176,8 @@ public class BuchungenController implements Initializable {
             {
                 ObservableList<FilterBuchung> buchungen = FXCollections.observableArrayList(getBuchungen());
                 tv_buchungen.setItems(buchungen);
+                message += "> " + "Buchungstabelle wurde erflogreich aktuallisiert. " + "\n";
+                ta_meldungen.setText(message);
             } catch (Exception e)
             {
                 message += "> " + "Fehler beim Laden der Buchungsdaten: " + e.getMessage() + "\n";
@@ -195,9 +194,11 @@ public class BuchungenController implements Initializable {
             {
                 ObservableList<Zahlungen> zahlungen = FXCollections.observableArrayList(getZahlungen());
                 tv_Zahlungen.setItems(zahlungen);
+                message += "> " + "Zahlungstabelle wurde erflogreich aktuallisiert. " + "\n";
+                ta_meldungen.setText(message);
             } catch (Exception e)
             {
-                message += "> " + "Fehler beim Laden der Buchungsdaten: " + e.getMessage() + "\n";
+                message += "> " + "Fehler beim Laden der Zahlungssdaten: " + e.getMessage() + "\n";
                 ta_meldungen.setText(message);
                 Logger.getLogger(BuchungenController.class.getName()).log(Level.SEVERE, "Fehler beim Laden der Zahlungsdaten", e);
             }

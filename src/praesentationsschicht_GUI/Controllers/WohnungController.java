@@ -115,7 +115,6 @@ public class WohnungController implements Initializable {
         {
             message += "> " + "Ein Fehler ist aufgetreten." + "\n";
             ta_meldungen.setText(message);
-            LOGGER.log(Level.SEVERE, "Buchung fehlgeschlagen", ex);
         }
     }
 
@@ -143,9 +142,12 @@ public class WohnungController implements Initializable {
         {
             ObservableList<FilterWohnung> data = FXCollections.observableArrayList(getAllWohnungen());
             tv_wohnungen.setItems(data);
+            message += "> " + "Wohnungentablle wurde erflogreich aktuallisiert. " + "\n";
+            ta_meldungen.setText(message);
         } catch (Exception ex)
         {
-            LOGGER.log(Level.SEVERE, "Fehler beim Laden der Wohnungen", ex);
+            message += "> " + "Fehler beim Laden der Wohnungdaten." + "\n";
+            ta_meldungen.setText(message);
         }
     }
 
