@@ -44,6 +44,9 @@ public class WohnungController implements Initializable {
     private TextField tf_wohnungId;
 
     @FXML
+    private Button btn_ReloadTable;
+
+    @FXML
     private Button btn_buchung;
 
     @FXML
@@ -64,6 +67,7 @@ public class WohnungController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        btn_ReloadTable.setOnAction(e -> reloadTableView());
         configureSlider();
         configureBuchungButton();
         configureFilterButton();

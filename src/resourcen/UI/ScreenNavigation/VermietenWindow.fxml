@@ -7,6 +7,8 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -16,38 +18,47 @@
     <children>
         <Button fx:id="btn_vermieten" layoutX="14.0" layoutY="293.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="135.0" styleClass="btns" text="Vermieten" />
         <TableView fx:id="tv_wohnungen" layoutX="14.0" layoutY="338.0" prefHeight="183.0" prefWidth="1237.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-      <Button fx:id="btn_loeschen" layoutX="189.0" layoutY="293.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="135.0" styleClass="btns" text="Löschen" />
-      <Button fx:id="btn_hinzufuegen" layoutX="440.0" layoutY="293.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="207.0" styleClass="btns" text="Hinzufügen" />
-      <Text fx:id="fehlerMeldungen" fill="#404040" layoutX="26.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="432.9814453125">
-         <font>
-            <Font size="13.0" />
-         </font>
-      </Text>
-      <VBox layoutX="440.0" layoutY="38.0" prefHeight="231.0" prefWidth="150.0" spacing="5.0">
-         <children>
-            <TextField fx:id="tf_strasseAendern" prefHeight="32.0" prefWidth="195.0" promptText="Straße" />
-            <TextField fx:id="tf_ortAendern" layoutX="10.0" layoutY="10.0" prefHeight="32.0" prefWidth="195.0" promptText="Ort" />
-            <TextField fx:id="tf_plzAendern" layoutX="10.0" layoutY="42.0" prefHeight="32.0" prefWidth="195.0" promptText="Plz" />
-            <TextField fx:id="tf_preisAendern" layoutX="10.0" layoutY="74.0" prefHeight="32.0" prefWidth="195.0" promptText="Preis " />
-            <ComboBox fx:id="comb_verfuegbarkeit" prefHeight="26.0" prefWidth="196.0" promptText="Veröffentlichen" />
-            <TextArea fx:id="ta_beschreibungAendern" prefHeight="200.0" prefWidth="200.0" promptText="Beschreibung" />
-         </children>
-      </VBox>
-      <Label layoutX="25.0" layoutY="18.0" text="Wohnung vermieten" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
-         <font>
-            <Font name="System Bold" size="23.0" />
-         </font>
-      </Label>
-      <ComboBox fx:id="comb_wohnId" layoutX="14.0" layoutY="228.0" prefHeight="26.0" prefWidth="196.0" promptText="*Wohnung  Id" />
-      <Button fx:id="btn_aendern" layoutX="603.0" layoutY="293.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="207.0" styleClass="btns" text="Daten aktualisieren" />
-      <ScrollPane layoutY="536.0" prefHeight="116.0" prefWidth="1230.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-         <content>
-            <Text fx:id="ta_meldungen" fill="#2c2c2c" strokeType="OUTSIDE" strokeWidth="0.0" text="Hier werden die Meldungen angezeigt..." wrappingWidth="1225.9830722808838">
-               <font>
-                  <Font size="13.0" />
-               </font>
-            </Text>
-         </content>
-      </ScrollPane>
+        <Button fx:id="btn_loeschen" layoutX="189.0" layoutY="293.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="135.0" styleClass="btns" text="Löschen" />
+        <Button fx:id="btn_hinzufuegen" layoutX="440.0" layoutY="293.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="207.0" styleClass="btns" text="Hinzufügen" />
+        <Text fx:id="fehlerMeldungen" fill="#404040" layoutX="26.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="432.9814453125">
+            <font>
+                <Font size="13.0" />
+            </font>
+        </Text>
+        <VBox layoutX="440.0" layoutY="38.0" prefHeight="231.0" prefWidth="150.0" spacing="5.0">
+            <children>
+                <TextField fx:id="tf_strasseAendern" prefHeight="32.0" prefWidth="195.0" promptText="Straße" />
+                <TextField fx:id="tf_ortAendern" layoutX="10.0" layoutY="10.0" prefHeight="32.0" prefWidth="195.0" promptText="Ort" />
+                <TextField fx:id="tf_plzAendern" layoutX="10.0" layoutY="42.0" prefHeight="32.0" prefWidth="195.0" promptText="Plz" />
+                <TextField fx:id="tf_preisAendern" layoutX="10.0" layoutY="74.0" prefHeight="32.0" prefWidth="195.0" promptText="Preis " />
+                <ComboBox fx:id="comb_verfuegbarkeit" prefHeight="26.0" prefWidth="196.0" promptText="Veröffentlichen" />
+                <TextArea fx:id="ta_beschreibungAendern" prefHeight="200.0" prefWidth="200.0" promptText="Beschreibung" />
+            </children>
+        </VBox>
+        <Label layoutX="25.0" layoutY="18.0" text="Wohnung vermieten" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+            <font>
+                <Font name="System Bold" size="23.0" />
+            </font>
+        </Label>
+        <ComboBox fx:id="comb_wohnId" layoutX="14.0" layoutY="228.0" prefHeight="26.0" prefWidth="196.0" promptText="*Wohnung  Id" />
+        <Button fx:id="btn_aendern" layoutX="603.0" layoutY="293.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="207.0" styleClass="btns" text="Daten aktualisieren" />
+        <ScrollPane layoutY="536.0" prefHeight="116.0" prefWidth="1230.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <content>
+                <Text fx:id="ta_meldungen" fill="#2c2c2c" strokeType="OUTSIDE" strokeWidth="0.0" text="Hier werden die Meldungen angezeigt..." wrappingWidth="1225.9830722808838">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                </Text>
+            </content>
+        </ScrollPane>
+        <Button fx:id="btn_ReloadTable" alignment="CENTER" contentDisplay="CENTER" layoutX="1169.0" layoutY="285.0" minWidth="36.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="52.0" style="-fx-pref-width: 50; -fx-pref-height: 40;" styleClass="btns" textAlignment="CENTER" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="270.0">
+            <graphic>
+                <ImageView fitHeight="45.0" fitWidth="45.0" nodeOrientation="INHERIT" style="-fx-translate-x: -5;">
+                    <image>
+                        <Image url="@../../../Bilder/icons8_refresh_64px_5.png" />
+                    </image>
+                </ImageView>
+            </graphic>
+        </Button>
     </children>
 </AnchorPane>

@@ -34,6 +34,10 @@ import praesentationsschicht_GUI.AuthenticationControllers.LoginController;
 public class BuchungenController implements Initializable {
 
     @FXML
+    private Button btn_myZahlnungenReloadTable;
+    @FXML
+    private Button btn_myBuchungenReloadTable;
+    @FXML
     private Button btn_bezahlen;
     @FXML
     private Button btn_loeschen;
@@ -65,6 +69,8 @@ public class BuchungenController implements Initializable {
         setupTableViewColumns();
         setupZahlungTableViewColumns();
         onActionEvents();
+        btn_myBuchungenReloadTable.setOnAction(e -> refreshTableView());
+        btn_myZahlnungenReloadTable.setOnAction(e -> refreshZahlungTableView());
         refreshTableView();
         refreshZahlungTableView();
     }

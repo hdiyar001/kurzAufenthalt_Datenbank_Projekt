@@ -1,6 +1,5 @@
 package logikschicht;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import datenhaltungsschicht.DBBuchung;

@@ -40,7 +40,7 @@ public class Benutzerverwaltung {
         return DBBenutzer.getAllBenutzer();
     }
 
-    public static boolean PasswortVergessen(String BNameemail, String passwort) {
+    public static boolean PasswortVergessen(String BNameemail, String passwort) throws Exception {
         return DBBenutzer.updatePasswort(BNameemail, passwort);
     }
 }

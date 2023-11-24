@@ -4,7 +4,8 @@ import logikschicht.Modell;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-/**
+/*
+
  *
  * @author Diyar
  */

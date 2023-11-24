@@ -27,12 +27,16 @@ import logikschicht.Nachrichtenverwaltung;
 import praesentationsschicht_GUI.AuthenticationControllers.LoginController;
 
 public class NachrichtenController implements Initializable {
-
+    
     @FXML
     private Button btn_loeschen;
+    
+    @FXML
+    private Button refreshTableView;
+    
     @FXML
     private Button btn_senden;
-
+    
     @FXML
     private DatePicker dp_nachrichtZeitraum;
     @FXML
@@ -46,14 +50,15 @@ public class NachrichtenController implements Initializable {
     @FXML
     private TableView<Nachrichten> tv_nachrichten;
     private String message = "";
-
+    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setupTableViewColumns();
         onActionEvents();
+        refreshTableView.setOnAction(e -> refreshTableView());
         refreshTableView();
     }
-
+    
     private void setupTableViewColumns() {
         TableColumn<Nachrichten, String> nachrichtenIdColumn = new TableColumn<>("NachrichtID");
         nachrichtenIdColumn.setCellValueFactory(new PropertyValueFactory<>("nachrichtenId"));
@@ -71,19 +76,19 @@ public class NachrichtenController implements Initializable {
         status.setCellValueFactory(new PropertyValueFactory<>("status"));
         tv_nachrichten.getColumns().addAll(nachrichtenIdColumn, benutzerNameColumn, senderIdColumn, empfaengerIdColumn, nachrichtenTextColumn, zeitStempelColumn, status);
     }
-
+    
     private void onActionEvents() {
         btn_loeschen.setOnAction(e -> runTask(this::onLoeschen, "Die Nachricht wurde erfolgreich gelöscht.", "Die Nachricht konnte nicht gelöscht werden."));
         btn_senden.setOnAction(e -> runTask(this::onSenden, "Die Nachricht wurde erfolgreich gesendet.", "Die Nachricht konnte nicht gesendet werden."));
     }
-
+    
     private void runTask(Callable<Boolean> action, String successMessage, String failureMessage) {
         Task<Boolean> task = new Task<Boolean>() {
             @Override
             protected Boolean call() throws Exception {
                 return action.call();
             }
-
+            
             @Override
             protected void succeeded() {
                 super.succeeded();
@@ -101,7 +106,7 @@ public class NachrichtenController implements Initializable {
                     refreshTableView();
                 });
             }
-
+            
             @Override
             protected void failed() {
                 super.failed();
@@ -115,7 +120,7 @@ public class NachrichtenController implements Initializable {
         };
         new Thread(task).start();
     }
-
+    
     private void refreshTableView() {
         Platform.runLater(() ->
         {
@@ -132,23 +137,23 @@ public class NachrichtenController implements Initializable {
             }
         });
     }
-
+    
     private Boolean onLoeschen() throws Exception {
         return Nachrichtenverwaltung.deleteNachricht(tf_nachrichtId.getText());
     }
-
+    
     private Boolean onSenden() throws Exception {
         if (LoginController.benutzerId.equals(tf_empfaengerId.getText()))
         {
             return false;
         }
         String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-
+        
         Nachrichten nachricht = new Nachrichten(null, LoginController.benutzerId, tf_empfaengerId.getText(), ta_nachricht.getText(), currentDate);
         System.out.println(nachricht);
         return Nachrichtenverwaltung.sendNachricht(nachricht);
     }
-
+    
     private List<Nachrichten> getNachrichten() throws Exception {
         return Nachrichtenverwaltung.getAllNachrichten(LoginController.benutzerId);
     }

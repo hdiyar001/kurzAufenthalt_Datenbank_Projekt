@@ -18,13 +18,15 @@ public class DBBewertung extends DBZugriff {
     private static ResultSet datenmenge;
 
     public static boolean Insert(Bewertung bewertung) throws Exception {
+        String bewrtungId = bewertung.getBewertungId() == null ? (getLastId() + 1) + "" : bewertung.getBewertungId();
         connect();
         String insertCommand = "INSERT INTO T_Bewertung VALUES ("
-                + bewertung.getBewertungId()
+                + bewrtungId
                 + ", " + bewertung.getBuchungId()
                 + ", '" + bewertung.getBewertungText()
                 + "', '" + bewertung.getSternBewertung()
-                + "'";
+                + "')";
+        System.out.println(insertCommand);
         try
         {
             befehl.executeUpdate(insertCommand);
@@ -37,6 +39,27 @@ public class DBBewertung extends DBZugriff {
             close();
         }
         return true;
+    }
+
+    public static int getLastId() throws Exception {
+        connect();
+
+        try
+        {
+            String sql = "SELECT MAX(bewertungid) FROM T_Bewertung";
+            datenmenge = befehl.executeQuery(sql);
+            if (getNext())
+            {
+                return datenmenge.getInt(1);
+            }
+        } catch (SQLException e)
+        {
+            throw new Exception(e.getSQLState());
+        } finally
+        {
+            close();
+        }
+        return 0;
     }
 
     public static boolean update(Bewertung bewertung) throws Exception {
@@ -104,24 +127,48 @@ public class DBBewertung extends DBZugriff {
         return bewertungen;
     }
 
-    public static Bewertung getBewertungByBewertungId(String benutzerid) throws Exception {
+    public static List<Bewertung> getAllBewertungIdByBenutzerId(String benutzerId) throws SQLException {
+
+        ArrayList<Bewertung> Bewertungen_Id = new ArrayList<>();
         connect();
-        Bewertung bewertung = null;
-        String query = "SELECT bewertungid, t_bewertung.buchungid, bewertungstext, sternebewertung FROM t_benutzer, t_buchung, t_bewertung "
-                + "WHERE t_benutzer.benutzerid = t_buchung.mieterid AND t_buchung.buchungid = t_bewertung.buchungid AND t_benutzer.benutzerid = " + benutzerid;
+        String sql = "SELECT bewertungid FROM T_Bewertung, T_Buchung WHERE T_Bewertung.buchungid=T_Buchung.buchungid AND mieterId= " + benutzerId;
+        try
+        {
+
+            datenmenge = befehl.executeQuery(sql);
+            while (datenmenge.next())
+            {
+                Bewertungen_Id.add(new Bewertung(datenmenge.getString(1), null, null, null));
+            }
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        } finally
+        {
+            close();
+        }
+        return Bewertungen_Id;
+    }
+
+    public static List<Bewertung> getBewertungByBewertungId(String benutzerid) throws Exception {
+        List<Bewertung> bewertungen = new ArrayList<>();
+        connect();
+        String query = "SELECT bewertungid, t_bewertung.buchungid, bewertungstext, sternebewertung FROM t_buchung, t_bewertung "
+                + "WHERE  t_buchung.buchungid = t_bewertung.buchungid AND mieterid = " + benutzerid;
 
         try
         {
             datenmenge = befehl.executeQuery(query);
 
-            if (datenmenge.next())
+            while (datenmenge.next())
             {
                 String bewertungId = datenmenge.getString(1);
                 String buchungId = getBuchungId();
                 String bewertungText = getBewertungsText();
                 String sternBewertung = getSternImo(getSternBewertung());
 
-                bewertung = new Bewertung(bewertungId, buchungId, bewertungText, sternBewertung);
+                Bewertung bewertung = new Bewertung(bewertungId, buchungId, bewertungText, sternBewertung);
+                bewertungen.add(bewertung);
             }
         } catch (Exception e)
         {
@@ -130,7 +177,7 @@ public class DBBewertung extends DBZugriff {
         {
             close();
         }
-        return bewertung;
+        return bewertungen;
     }
 
     public static boolean getNext() throws Exception {
@@ -170,4 +217,5 @@ public class DBBewertung extends DBZugriff {
 
         return sterne;
     }
+
 }

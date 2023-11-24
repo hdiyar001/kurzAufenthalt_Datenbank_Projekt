@@ -29,6 +29,9 @@ import praesentationsschicht_GUI.AuthenticationControllers.LoginController;
 public class VermietenController implements Initializable {
 
     @FXML
+    private Button btn_ReloadTable;
+
+    @FXML
     private Button btn_aendern;
     @FXML
     private Button btn_loeschen;
@@ -61,6 +64,7 @@ public class VermietenController implements Initializable {
         setupTableViewColumns();
         onActionEvents();
         comb_verfuegbarkeit.getItems().setAll("JA", "NEIN");
+        btn_ReloadTable.setOnAction(e -> refreshTableView());
         refreshTableView();
     }
 

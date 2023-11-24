@@ -4,12 +4,15 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -27,6 +30,8 @@ import logikschicht.Benutzer;
 import logikschicht.Benutzerverwaltung;
 import logikschicht.Bewertung;
 import logikschicht.Bewertungverwaltung;
+import logikschicht.Buchungenverwaltung;
+import logikschicht.FilterBuchung;
 import logikschicht.Modell;
 import praesentationsschicht_GUI.AuthenticationControllers.LoginController;
 
@@ -34,11 +39,18 @@ public class AccountController implements Initializable {
 
     @FXML
     private ComboBox<String> comb_buchungid;
+    @FXML
+    private ComboBox<String> comb_bewertungid;
 
     @FXML
     private ComboBox<String> comb_sterne;
     @FXML
     private TextArea ta_bewertungstext;
+
+    @FXML
+    private Button btn_myHistoryReloadTable;
+    @FXML
+    private Button btn_myAccountReloadTable;
 
     @FXML
     private Button btn_bewerten;
@@ -77,13 +89,38 @@ public class AccountController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        comb_sterne.getItems().setAll("*", "**", "***", "****", "*****");
-//        comb_buchungid.getItems().setAll("")
-        setupTableViewColumns();
-        setupBewertungTableViewColumns();
-        onActionEvents();
-        refreshTableView();
-        refreshBewertungTableView();
+        try
+        {
+            btn_myHistoryReloadTable.setOnAction(e -> refreshBewertungTableView());
+            btn_myAccountReloadTable.setOnAction(e -> refreshTableView());
+            comb_sterne.getItems().setAll("*", "**", "***", "****", "*****");
+
+            ObservableList<FilterBuchung> data = FXCollections.observableArrayList(getAllBuchungId());
+            comb_buchungid.getItems().clear();
+            comb_buchungid.getItems().addAll(
+                    data.stream()
+                            .map(FilterBuchung::getBuchungid)
+                            .collect(Collectors.toList())
+            );
+
+            setupTableViewColumns();
+            setupBewertungTableViewColumns();
+            onActionEvents();
+            refreshTableView();
+            refreshBewertungTableView();
+        } catch (Exception ex)
+        {
+            Logger.getLogger(AccountController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private List<FilterBuchung> getAllBuchungId() throws Exception {
+
+        return Buchungenverwaltung.getAllBuchungen(LoginController.benutzerId, null, null, null);
+    }
+
+    private List<Bewertung> getAllBewertungId() throws Exception {
+        return Bewertungverwaltung.getAllBewertungIdByBenutzerId(LoginController.benutzerId);
     }
 
     private void setupTableViewColumns() {
@@ -139,8 +176,8 @@ public class AccountController implements Initializable {
 
         }
         );
-//        btn_bewerten.setOnAction(e -> runTask(this::onBewerten "Bewrtung ist erfolgreich veröffentlicht worden.", "Bewrtung könnte leider nicht veröffentlicht werden."));
-//        btn_bewloeschen.setOnAction(e -> runTask(this::onBewLoeschen, "Bewrtung ist erfolgreich gelöscht worden.", "Bewrtung könnte leider nicht gelöscht werden."));
+        btn_bewerten.setOnAction(e -> runTask(this::onBewerten, "Bewrtung ist erfolgreich veröffentlicht worden.", "Bewrtung könnte leider nicht veröffentlicht werden."));
+        btn_bewloeschen.setOnAction(e -> runTask(this::onBewLoeschen, "Bewrtung ist erfolgreich gelöscht worden.", "Bewrtung könnte leider nicht gelöscht werden."));
     }
 
     private void runTask(Callable<Boolean> action, String successMessage, String failureMessage) {
@@ -241,7 +278,22 @@ public class AccountController implements Initializable {
         {
             try
             {
-                Bewertung bewertung = getBewertung();
+
+                ObservableList<FilterBuchung> data = FXCollections.observableArrayList(getAllBuchungId());
+                comb_buchungid.getItems().clear();
+                comb_buchungid.getItems().addAll(
+                        data.stream()
+                                .map(FilterBuchung::getBuchungid)
+                                .collect(Collectors.toList()));
+
+                ObservableList<Bewertung> dataBewertungID = FXCollections.observableArrayList(getAllBewertungId());
+                comb_bewertungid.getItems().clear();
+                comb_bewertungid.getItems().addAll(
+                        dataBewertungID.stream()
+                                .map(Bewertung::getBewertungId)
+                                .collect(Collectors.toList()));
+
+                List<Bewertung> bewertung = getBewertung();
                 tv_history.setItems(FXCollections.observableArrayList(bewertung));
             } catch (Exception e)
             {
@@ -251,15 +303,45 @@ public class AccountController implements Initializable {
         });
     }
 
-    private Bewertung getBewertung() throws Exception {
+    private List<Bewertung> getBewertung() throws Exception {
         return Bewertungverwaltung.getBewertungBybewertungId(LoginController.benutzerId);
     }
 
     private Boolean onBewerten() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+
+        Bewertung bewertung = new Bewertung(null,
+                comb_buchungid.getValue(),
+                ta_bewertungstext.getText().isBlank() ? null : ta_bewertungstext.getText(),
+                getBewrtungStern());
+        try
+        {
+            return Bewertungverwaltung.Bewertungschreiben(bewertung);
+        } catch (Exception ex)
+        {
+            Logger.getLogger(AccountController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
-    private Boolean onBewLoeschen() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    private Boolean onBewLoeschen() throws Exception {
+        return Bewertungverwaltung.deleteBewrtung(comb_bewertungid.getValue());
+    }
+
+    private String getBewrtungStern() {
+        String anz = "";
+        anz = switch (comb_sterne.getValue())
+        {
+            case "*" ->
+                "1";
+            case "**" ->
+                "2";
+            case "***" ->
+                "3";
+            case "****" ->
+                "4";
+            default ->
+                "5";
+        };
+        return anz;
     }
 }
