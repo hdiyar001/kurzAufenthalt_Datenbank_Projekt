@@ -67,7 +67,9 @@ public class NachrichtenController implements Initializable {
         nachrichtenTextColumn.setCellValueFactory(new PropertyValueFactory<>("nachrichtenText"));
         TableColumn<Nachrichten, String> zeitStempelColumn = new TableColumn<>("Zeitstempel");
         zeitStempelColumn.setCellValueFactory(new PropertyValueFactory<>("zeitStempel"));
-        tv_nachrichten.getColumns().addAll(nachrichtenIdColumn, benutzerNameColumn, senderIdColumn, empfaengerIdColumn, nachrichtenTextColumn, zeitStempelColumn);
+        TableColumn<Nachrichten, String> status = new TableColumn<>("status");
+        status.setCellValueFactory(new PropertyValueFactory<>("status"));
+        tv_nachrichten.getColumns().addAll(nachrichtenIdColumn, benutzerNameColumn, senderIdColumn, empfaengerIdColumn, nachrichtenTextColumn, zeitStempelColumn, status);
     }
 
     private void onActionEvents() {

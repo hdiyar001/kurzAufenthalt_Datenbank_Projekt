@@ -65,7 +65,7 @@ public class DBBenutzer extends DBZugriff {
         String dataToUpdate = getDataToUpdate(benutzer);
         System.out.println(dataToUpdate);
         String updateCommand = "UPDATE T_Benutzer SET " + dataToUpdate + " WHERE benutzerId = " + benutzer.getBenutzerId();
-
+        System.out.println(updateCommand);
         try
         {
             befehl.executeUpdate(updateCommand);
@@ -87,7 +87,7 @@ public class DBBenutzer extends DBZugriff {
 
         try
         {
-            befehl.executeUpdate(updateCommand);    
+            befehl.executeUpdate(updateCommand);
         } catch (SQLException ex)
         {
             String errorMessage = "Es ist ein Fehler beim Aktualisieren des Benutzers " + BNameemail + " aufgetreten.";

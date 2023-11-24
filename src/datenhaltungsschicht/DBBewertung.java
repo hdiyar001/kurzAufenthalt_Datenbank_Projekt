@@ -59,16 +59,16 @@ public class DBBewertung extends DBZugriff {
         return true;
     }
 
-    public static boolean Delete(Bewertung bewertung) throws Exception {
+    public static boolean Delete(String bewertungId) throws Exception {
         connect();
-        String deleteCommand = "DELETE FROM T_Bewertung WHERE bewertungId = " + bewertung.getBewertungId();
+        String deleteCommand = "DELETE FROM T_Bewertung WHERE bewertungId = " + bewertungId;
 
         try
         {
             befehl.executeUpdate(deleteCommand);
         } catch (SQLException ex)
         {
-            String errorMessage = "Es ist ein Fehler beim Löschen des Bewertungs " + bewertung.getBewertungId() + " aufgetreten.";
+            String errorMessage = "Es ist ein Fehler beim Löschen des Bewertungs " + bewertungId + " aufgetreten.";
             throw new Exception(errorMessage);
         } finally
         {
@@ -104,10 +104,11 @@ public class DBBewertung extends DBZugriff {
         return bewertungen;
     }
 
-    public static Bewertung getBewertungByBewertungId(String bewertungId) throws Exception {
+    public static Bewertung getBewertungByBewertungId(String benutzerid) throws Exception {
         connect();
         Bewertung bewertung = null;
-        String query = "SELECT * FROM T_Bewertung WHERE bewertungid = " + bewertungId;
+        String query = "SELECT bewertungid, t_bewertung.buchungid, bewertungstext, sternebewertung FROM t_benutzer, t_buchung, t_bewertung "
+                + "WHERE t_benutzer.benutzerid = t_buchung.mieterid AND t_buchung.buchungid = t_bewertung.buchungid AND t_benutzer.benutzerid = " + benutzerid;
 
         try
         {
@@ -115,9 +116,10 @@ public class DBBewertung extends DBZugriff {
 
             if (datenmenge.next())
             {
+                String bewertungId = datenmenge.getString(1);
                 String buchungId = getBuchungId();
                 String bewertungText = getBewertungsText();
-                String sternBewertung = getSternBewertung();
+                String sternBewertung = getSternImo(getSternBewertung());
 
                 bewertung = new Bewertung(bewertungId, buchungId, bewertungText, sternBewertung);
             }
@@ -156,5 +158,16 @@ public class DBBewertung extends DBZugriff {
 
     public static String getSternBewertung() throws Exception {
         return datenmenge.getString("sterneBewertung");
+    }
+
+    private static String getSternImo(String anzahl) {
+
+        String sterne = "";
+        for (int i = 0; i < Integer.parseInt(anzahl); i++)
+        {
+            sterne += "⭐";
+        }
+
+        return sterne;
     }
 }

@@ -1,5 +1,7 @@
 package logikschicht;
 
+import praesentationsschicht_GUI.AuthenticationControllers.LoginController;
+
 /**
  *
  * @author Diyar
@@ -12,6 +14,7 @@ public class Nachrichten {
     private String empfaengerId;
     private String nachrichtenText;
     private String zeitStempel;
+    private String status;
 
     public Nachrichten(String nachrichtenId, String senderId, String empfaengerId, String nachrichtenText, String zeitStempel) {
         this.nachrichtenId = nachrichtenId;
@@ -28,6 +31,11 @@ public class Nachrichten {
         this.empfaengerId = empfaengerId;
         this.nachrichtenText = nachrichtenText;
         this.zeitStempel = zeitStempel;
+    }
+
+    public String getStatus() {
+
+        return senderId.equals(LoginController.benutzerId) ? "Gesendt" : "Empfangen";
     }
 
     public String getBenutzerName() {

@@ -1,6 +1,8 @@
 package praesentationsschicht_GUI.Controllers;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import java.util.concurrent.Callable;
@@ -12,20 +14,36 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import logikschicht.Benutzer;
 import logikschicht.Benutzerverwaltung;
+import logikschicht.Bewertung;
+import logikschicht.Bewertungverwaltung;
 import logikschicht.Modell;
 import praesentationsschicht_GUI.AuthenticationControllers.LoginController;
 
 public class AccountController implements Initializable {
 
+    @FXML
+    private ComboBox<String> comb_buchungid;
+
+    @FXML
+    private ComboBox<String> comb_sterne;
+    @FXML
+    private TextArea ta_bewertungstext;
+
+    @FXML
+    private Button btn_bewerten;
+    @FXML
+    private Button btn_bewloeschen;
     @FXML
     private Button btn_kontoDatenAendern;
     @FXML
@@ -52,13 +70,20 @@ public class AccountController implements Initializable {
     private TextField tf_vorname;
     @FXML
     private TableView<Benutzer> tv_account;
+
+    @FXML
+    private TableView<Bewertung> tv_history;
     private String message = "";
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        comb_sterne.getItems().setAll("*", "**", "***", "****", "*****");
+//        comb_buchungid.getItems().setAll("")
         setupTableViewColumns();
+        setupBewertungTableViewColumns();
         onActionEvents();
         refreshTableView();
+        refreshBewertungTableView();
     }
 
     private void setupTableViewColumns() {
@@ -87,6 +112,22 @@ public class AccountController implements Initializable {
         tv_account.getColumns().addAll(benutzerIdColumn, nachnameColumn, vornameColumn, anredeColumn, benutzerNameColumn, emailColumn, passwortColumn, strasseColumn, ortColumn, plzColumn, geburtsdatumColumn);
     }
 
+    private void setupBewertungTableViewColumns() {
+        TableColumn<Bewertung, String> bewertungId = new TableColumn<>("bewertungId");
+        bewertungId.setCellValueFactory(new PropertyValueFactory<>("bewertungId"));
+
+        TableColumn<Bewertung, String> buchungId = new TableColumn<>("buchungId");
+        buchungId.setCellValueFactory(new PropertyValueFactory<>("buchungId"));
+
+        TableColumn<Bewertung, String> bewertungText = new TableColumn<>("bewertungText");
+        bewertungText.setCellValueFactory(new PropertyValueFactory<>("bewertungText"));
+
+        TableColumn<Bewertung, String> sternBewertung = new TableColumn<>("sternBewertung");
+        sternBewertung.setCellValueFactory(new PropertyValueFactory<>("sternBewertung"));
+
+        tv_history.getColumns().addAll(bewertungId, buchungId, bewertungText, sternBewertung);
+    }
+
     private void onActionEvents() {
         btn_kontoDatenAendern.setOnAction(e -> runTask(this::onKontoDatenAendern, "Konto-Daten erfolgreich geändert.", "Konto-Daten konnten nicht geändert werden."));
         btn_kontoloeschen.setOnAction(e ->
@@ -98,6 +139,8 @@ public class AccountController implements Initializable {
 
         }
         );
+//        btn_bewerten.setOnAction(e -> runTask(this::onBewerten "Bewrtung ist erfolgreich veröffentlicht worden.", "Bewrtung könnte leider nicht veröffentlicht werden."));
+//        btn_bewloeschen.setOnAction(e -> runTask(this::onBewLoeschen, "Bewrtung ist erfolgreich gelöscht worden.", "Bewrtung könnte leider nicht gelöscht werden."));
     }
 
     private void runTask(Callable<Boolean> action, String successMessage, String failureMessage) {
@@ -122,13 +165,20 @@ public class AccountController implements Initializable {
                         ta_meldungen.setText(failureMessage);
                     }
                     refreshTableView();
+                    refreshBewertungTableView();
                 });
             }
 
             @Override
             protected void failed() {
                 super.failed();
-                Platform.runLater(() -> ta_meldungen.setText("Ein unerwarteter Fehler ist aufgetreten."));
+                Platform.runLater(()
+                        ->
+                {
+                    message += "> " + "Ein unerwarteter Fehler ist aufgetreten." + "\n";
+                    ta_meldungen.setText(message);
+                }
+                );
             }
         };
         new Thread(task).start();
@@ -143,24 +193,38 @@ public class AccountController implements Initializable {
                 tv_account.setItems(FXCollections.observableArrayList(benutzer));
             } catch (Exception e)
             {
-                ta_meldungen.setText("Fehler beim Laden der Konto-Daten.");
+                message += "> " + "Fehler beim Laden der Konto-Daten." + "\n";
+                ta_meldungen.setText(message);
                 Logger.getLogger(AccountController.class.getName()).log(Level.SEVERE, null, e);
             }
         });
     }
 
     private Boolean onKontoDatenAendern() throws Exception {
+
+        LocalDate geburtsdatum = dp_gebDat.getValue();
+        if (geburtsdatum != null)
+        {
+            int alter = Period.between(geburtsdatum, LocalDate.now()).getYears();
+            if (alter < 18)
+            {
+                message += "> " + "Sie müssen mindestens 18 Jahre alt alt sein." + "\n";
+                ta_meldungen.setText(message);
+                return false;
+            }
+        }
         Benutzer benutzer = new Benutzer(LoginController.benutzerId,
-                tf_nachname.getText() != null ? tf_nachname.getText() : null,
-                tf_vorname.getText() != null ? tf_vorname.getText() : null,
+                !tf_nachname.getText().isBlank() ? tf_nachname.getText() : null,
+                !tf_vorname.getText().isBlank() ? tf_vorname.getText() : null,
                 null,
-                tf_benutzername.getText() != null ? tf_benutzername.getText() : null,
-                tf_email.getText() != null ? tf_email.getText() : null,
-                tf_passwort.getText() != null ? tf_passwort.getText() : null,
-                tf_strasse.getText() != null ? tf_strasse.getText() : null,
-                tf_ort.getText() != null ? tf_ort.getText() : null,
-                tf_plz.getText() != null ? tf_plz.getText() : null,
-                dp_gebDat.getValue().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")), null, null);
+                !tf_benutzername.getText().isBlank() ? tf_benutzername.getText() : null,
+                !tf_email.getText().isBlank() ? tf_email.getText() : null,
+                !tf_passwort.getText().isBlank() ? tf_passwort.getText() : null,
+                !tf_strasse.getText().isBlank() ? tf_strasse.getText() : null,
+                !tf_ort.getText().isBlank() ? tf_ort.getText() : null,
+                !tf_plz.getText().isBlank() ? tf_plz.getText() : null,
+                geburtsdatum != null ? geburtsdatum.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) : null,
+                null, null);
         return Benutzerverwaltung.updateBenutzer(benutzer);
     }
 
@@ -170,5 +234,32 @@ public class AccountController implements Initializable {
 
     private Benutzer getBenutzer() throws Exception {
         return Benutzerverwaltung.getBenutzer(LoginController.benutzerId);
+    }
+
+    private void refreshBewertungTableView() {
+        Platform.runLater(() ->
+        {
+            try
+            {
+                Bewertung bewertung = getBewertung();
+                tv_history.setItems(FXCollections.observableArrayList(bewertung));
+            } catch (Exception e)
+            {
+                ta_meldungen.setText("Fehler beim Laden der Bewertungen.");
+                Logger.getLogger(AccountController.class.getName()).log(Level.SEVERE, null, e);
+            }
+        });
+    }
+
+    private Bewertung getBewertung() throws Exception {
+        return Bewertungverwaltung.getBewertungBybewertungId(LoginController.benutzerId);
+    }
+
+    private Boolean onBewerten() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    private Boolean onBewLoeschen() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
