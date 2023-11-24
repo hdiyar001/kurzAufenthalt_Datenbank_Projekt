@@ -32,8 +32,6 @@ public class ClientController implements Initializable {
                     client_parent.setCenter(Modell.getInstance().getViewFacotry().getNachrichtenView());
                 case "Account" ->
                     client_parent.setCenter(Modell.getInstance().getViewFacotry().getAccountView());
-//                default ->
-//                    client_parent.setCenter(Modell.getInstance().getViewFacotry().getView("Auslogen"));
             }
         });
 

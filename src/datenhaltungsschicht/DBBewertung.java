@@ -1,4 +1,4 @@
-package datenhaltungsschicht;
+    package datenhaltungsschicht;
 
 import logikschicht.Bewertung;
 import static datenhaltungsschicht.DBZugriff.close;
@@ -9,15 +9,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * -
+ * Die Klasse DBBewertung ist verantwortlich für die Verwaltung von
+ * Bewertungsdaten in der Datenbank. Sie bietet Methoden zum Einfügen,
+ * Aktualisieren, Löschen und Abrufen von Bewertungen. Diese Klasse ist ein Teil
+ * der Datenhaltungsschicht in der 3-Schichten-Architektur.
  *
- * @author Diyar+
+ * @author Diyar, Hussam und Ronida
  */
 public class DBBewertung {
 
     private static ResultSet datenmenge;
     private static DBZugriff dbZugriff = DBZugriff.getInstance();
 
+    /**
+     * Fügt eine neue Bewertung in die Datenbank ein.
+     *
+     * @param bewertung Das Bewertungsobjekt, das in die Datenbank eingefügt
+     * werden soll.
+     * @return true, wenn die Bewertung erfolgreich hinzugefügt wurde, sonst
+     * false.
+     * @throws Exception Wirft eine Exception bei Fehlern während des
+     * Datenbankzugriffs.
+     */
     public static boolean Insert(Bewertung bewertung) throws Exception {
         String bewrtungId = bewertung.getBewertungId() == null ? (getLastId() + 1) + "" : bewertung.getBewertungId();
         String insertCommand = "INSERT INTO T_Bewertung VALUES (?, ?, ?, ?)";
@@ -40,6 +53,13 @@ public class DBBewertung {
         return true;
     }
 
+    /**
+     * Ruft die höchste Bewertungs-ID aus der Datenbank ab.
+     *
+     * @return Die höchste vorhandene Bewertungs-ID.
+     * @throws Exception Wirft eine Exception bei Fehlern während des
+     * Datenbankzugriffs.
+     */
     public static int getLastId() throws Exception {
 
         String sql = "SELECT MAX(bewertungid) FROM T_Bewertung";
@@ -60,6 +80,14 @@ public class DBBewertung {
         return 0;
     }
 
+    /**
+     * Aktualisiert die Daten einer existierenden Bewertung in der Datenbank.
+     *
+     * @param bewertung Das Bewertungsobjekt mit aktualisierten Daten.
+     * @return true, wenn die Aktualisierung erfolgreich war, sonst false.
+     * @throws Exception Wirft eine Exception bei Fehlern während des
+     * Datenbankzugriffs.
+     */
     public static boolean update(Bewertung bewertung) throws Exception {
 
         String updateCommand = "UPDATE T_Bewertung SET buchungId = ?, bewertungstext= ?, sternBewertung = ? WHERE bewertungId = ?";
@@ -81,6 +109,14 @@ public class DBBewertung {
         return true;
     }
 
+    /**
+     * Löscht eine Bewertung aus der Datenbank anhand ihrer Bewertungs-ID.
+     *
+     * @param bewertungId Die ID der zu löschenden Bewertung.
+     * @return true, wenn die Bewertung erfolgreich gelöscht wurde, sonst false.
+     * @throws Exception Wirft eine Exception bei Fehlern während des
+     * Datenbankzugriffs.
+     */
     public static boolean Delete(String bewertungId) throws Exception {
         String deleteCommand = "DELETE FROM T_Bewertung WHERE bewertungId = ?";
 
@@ -99,6 +135,13 @@ public class DBBewertung {
         return true;
     }
 
+    /**
+     * Ruft eine Liste aller Bewertungen aus der Datenbank ab.
+     *
+     * @return Eine Liste von Bewertungsobjekten.
+     * @throws Exception Wirft eine Exception bei Fehlern während der
+     * Datenbankabfrage.
+     */
     public static List<Bewertung> getAllBewertung() throws Exception {
 
         ArrayList<Bewertung> bewertungen = new ArrayList<>();
@@ -125,6 +168,17 @@ public class DBBewertung {
         return bewertungen;
     }
 
+    /**
+     * Ruft alle Bewertungs-IDs ab, die einem bestimmten Benutzer zugeordnet
+     * sind.
+     *
+     * @param benutzerId Die ID des Benutzers, für den die Bewertungen abgerufen
+     * werden sollen.
+     * @return Eine Liste von Bewertungsobjekten, die dem Benutzer zugeordnet
+     * sind.
+     * @throws SQLException Wirft eine SQLException bei Fehlern während des
+     * Datenbankzugriffs.
+     */
     public static List<Bewertung> getAllBewertungIdByBenutzerId(String benutzerId) throws SQLException {
         ArrayList<Bewertung> Bewertungen_Id = new ArrayList<>();
         String sql = "SELECT bewertungid FROM T_Bewertung, T_Buchung WHERE T_Bewertung.buchungid=T_Buchung.buchungid AND mieterId= ?";
@@ -146,6 +200,17 @@ public class DBBewertung {
         return Bewertungen_Id;
     }
 
+    /**
+     * Ruft Bewertungen anhand der Bewertungs-ID ab, die einem bestimmten
+     * Benutzer zugeordnet sind.
+     *
+     * @param benutzerid Die ID des Benutzers, für den die Bewertungen abgerufen
+     * werden sollen.
+     * @return Eine Liste von Bewertungen, die dem angegebenen Benutzer
+     * zugeordnet sind.
+     * @throws Exception Wirft eine Exception bei Fehlern während der
+     * Datenbankabfrage.
+     */
     public static List<Bewertung> getBewertungByBewertungId(String benutzerid) throws Exception {
         List<Bewertung> bewertungen = new ArrayList<>();
         String query = "SELECT bewertungid, t_bewertung.buchungid, bewertungstext, sternebewertung FROM t_buchung, t_bewertung WHERE t_buchung.buchungid = t_bewertung.buchungid AND mieterid = ?";
@@ -173,6 +238,14 @@ public class DBBewertung {
         return bewertungen;
     }
 
+    /**
+     * Hilfsmethode, um zu prüfen, ob weitere Daten in der ResultSet vorhanden
+     * sind.
+     *
+     * @return true, wenn weitere Daten vorhanden sind, sonst false.
+     * @throws Exception Wirft eine Exception bei Fehlern während der
+     * Datenbankabfrage.
+     */
     public static boolean getNext() throws Exception {
         if (datenmenge.next())
         {
@@ -182,6 +255,23 @@ public class DBBewertung {
             close();
             return false;
         }
+    }
+
+    /**
+     * Konvertiert die numerische Bewertung in eine Stern-Darstellung.
+     *
+     * @param anzahl Die Anzahl der Sterne als numerischer Wert.
+     * @return Eine String-Darstellung der Sternebewertung.
+     */
+    private static String getSternImo(String anzahl) {
+
+        String sterne = "";
+        for (int i = 0; i < Integer.parseInt(anzahl); i++)
+        {
+            sterne += "⭐";
+        }
+
+        return sterne;
     }
 
     public static String getbewertungId() throws SQLException {
@@ -198,17 +288,6 @@ public class DBBewertung {
 
     public static String getSternBewertung() throws Exception {
         return datenmenge.getString("sterneBewertung");
-    }
-
-    private static String getSternImo(String anzahl) {
-
-        String sterne = "";
-        for (int i = 0; i < Integer.parseInt(anzahl); i++)
-        {
-            sterne += "⭐";
-        }
-
-        return sterne;
     }
 
 }

@@ -8,14 +8,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Die Klasse DBNachrichten ist verantwortlich für die Verwaltung von
+ * Nachrichtendaten in der Datenbank. Sie bietet Methoden zum Einfügen,
+ * Aktualisieren, Löschen und Abrufen von Nachrichten. Diese Klasse ist ein Teil
+ * der Datenhaltungsschicht in der 3-Schichten-Architektur.
  *
- * @author Diyar
+ * @author Diyar, Hussam und Ronida
  */
 public class DBNachrichten {
 
     private static ResultSet datenmenge;
     private static DBZugriff dbZugriff = DBZugriff.getInstance();
 
+    /**
+     * Fügt eine neue Nachricht in die Datenbank ein.
+     *
+     * @param nachrichten Das Nachrichtenobjekt, das in die Datenbank eingefügt
+     * werden soll.
+     * @return true, wenn die Nachricht erfolgreich hinzugefügt wurde, sonst
+     * false.
+     * @throws Exception Wirft eine Exception bei Fehlern während des
+     * Datenbankzugriffs.
+     */
     public static boolean Insert(Nachrichten nachrichten) throws Exception {
         String nachrichtId = nachrichten.getNachrichtenId() == null ? (getLastId() + 1) + "" : nachrichten.getNachrichtenId();
         String insertCommand = "INSERT INTO T_Nachrichten VALUES (?, ?, ?, ?, ?)";
@@ -37,6 +51,14 @@ public class DBNachrichten {
         return true;
     }
 
+    /**
+     * Aktualisiert die Daten einer existierenden Nachricht in der Datenbank.
+     *
+     * @param nachrichten Das Nachrichtenobjekt mit aktualisierten Daten.
+     * @return true, wenn die Aktualisierung erfolgreich war, sonst false.
+     * @throws Exception Wirft eine Exception bei Fehlern während des
+     * Datenbankzugriffs.
+     */
     public static boolean update(Nachrichten nachrichten) throws Exception {
         String updateCommand = "UPDATE T_Nachrichten SET senderId = ?, empfaengerId = ?, nachrichtentext = ?, zeitstempel = ? WHERE nachrichtenId = ?";
         try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(updateCommand))
@@ -57,6 +79,14 @@ public class DBNachrichten {
         return true;
     }
 
+    /**
+     * Löscht eine Nachricht aus der Datenbank anhand ihrer Nachrichten-ID.
+     *
+     * @param nachrichtId Die ID der zu löschenden Nachricht.
+     * @return true, wenn die Nachricht erfolgreich gelöscht wurde, sonst false.
+     * @throws Exception Wirft eine Exception bei Fehlern während des
+     * Datenbankzugriffs.
+     */
     public static boolean Delete(String nachrichtId) throws Exception {
         String deleteCommand = "DELETE FROM T_Nachrichten WHERE nachrichtenId = ?";
         try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(deleteCommand))
@@ -73,6 +103,15 @@ public class DBNachrichten {
         }
     }
 
+    /**
+     * Ruft alle Nachrichten für einen bestimmten Benutzer ab.
+     *
+     * @param benutzerid Die ID des Benutzers, für den die Nachrichten abgerufen
+     * werden sollen.
+     * @return Eine Liste von Nachrichtenobjekten.
+     * @throws Exception Wirft eine Exception bei Fehlern während des
+     * Datenbankzugriffs.
+     */
     public static List<Nachrichten> getAllNachrichten(String benutzerid) throws Exception {
 
         ArrayList<Nachrichten> nachrichtenenList = new ArrayList<>();
@@ -110,6 +149,15 @@ public class DBNachrichten {
         return nachrichtenenList;
     }
 
+    /**
+     * Ruft eine spezifische Nachricht anhand ihrer Nachrichten-ID ab.
+     *
+     * @param nachrichtenId Die ID der Nachricht, die abgerufen werden soll.
+     * @return Ein Nachrichtenobjekt, wenn eine Nachricht mit der angegebenen ID
+     * gefunden wurde, sonst null.
+     * @throws Exception Wirft eine Exception bei Fehlern während des
+     * Datenbankzugriffs.
+     */
     public static Nachrichten getNachrichtenByNachrichtenId(String nachrichtenId) throws Exception {
         Nachrichten nachrichten = null;
         String query = "SELECT * FROM T_Nachrichten WHERE nachrichtenid = ?";
@@ -138,6 +186,14 @@ public class DBNachrichten {
         return nachrichten;
     }
 
+    /**
+     * Hilfsmethode zum Überprüfen, ob im aktuellen ResultSet weitere Daten
+     * vorhanden sind.
+     *
+     * @return true, wenn weitere Daten vorhanden sind, sonst false.
+     * @throws Exception Wirft eine Exception, wenn Fehler während der Abfrage
+     * auftreten.
+     */
     public static boolean getNext() throws Exception {
         if (datenmenge.next())
         {
@@ -147,6 +203,32 @@ public class DBNachrichten {
             close();
             return false;
         }
+    }
+
+    /**
+     * Ruft die höchste Nachrichten-ID aus der Datenbank ab.
+     *
+     * @return Die höchste vorhandene Nachrichten-ID.
+     * @throws Exception Wirft eine Exception bei Fehlern während des
+     * Datenbankzugriffs.
+     */
+    public static int getLastId() throws Exception {
+        String sql = "SELECT MAX(nachrichtenId) FROM T_Nachrichten";
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(sql))
+        {
+            datenmenge = ps.executeQuery();
+            if (datenmenge.next())
+            {
+                return datenmenge.getInt(1);
+            }
+        } catch (SQLException e)
+        {
+            throw new Exception("Fehler beim Abrufen der letzten Nachrichten-ID", e);
+        } finally
+        {
+            close();
+        }
+        return 0;
     }
 
     public static String getnachrichtenId() throws SQLException {
@@ -168,25 +250,6 @@ public class DBNachrichten {
     public static String getZeitStempel() throws Exception {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         return dateFormat.format(datenmenge.getDate("zeitStempel"));
-    }
-
-    public static int getLastId() throws Exception {
-        String sql = "SELECT MAX(nachrichtenId) FROM T_Nachrichten";
-        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(sql))
-        {
-            datenmenge = ps.executeQuery();
-            if (datenmenge.next())
-            {
-                return datenmenge.getInt(1);
-            }
-        } catch (SQLException e)
-        {
-            throw new Exception("Fehler beim Abrufen der letzten Nachrichten-ID", e);
-        } finally
-        {
-            close();
-        }
-        return 0;
     }
 
 }

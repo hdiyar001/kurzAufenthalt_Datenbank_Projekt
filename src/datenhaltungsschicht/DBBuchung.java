@@ -10,14 +10,28 @@ import java.util.List;
 import java.sql.Date;
 
 /**
+ * Die Klasse DBBuchung ist zuständig für die Verwaltung von Buchungsdaten in
+ * der Datenbank. Sie bietet Methoden zum Einfügen, Aktualisieren, Löschen und
+ * Abrufen von Buchungsinformationen. Diese Klasse ist ein Teil der
+ * Datenhaltungsschicht in der 3-Schichten-Architektur.
  *
- * @author Diyar
+ * @author Diyar, Hussam und Ronida
  */
 public class DBBuchung {
 
     private static ResultSet datenmenge;
     private static DBZugriff dbZugriff = DBZugriff.getInstance();
 
+    /**
+     * Fügt eine neue Buchung in die Datenbank ein.
+     *
+     * @param buchung Das Buchungsobjekt, das in die Datenbank eingefügt werden
+     * soll.
+     * @return true, wenn die Buchung erfolgreich hinzugefügt wurde, sonst
+     * false.
+     * @throws Exception Wirft eine Exception bei Fehlern während des
+     * Datenbankzugriffs.
+     */
     public static boolean Insert(Buchung buchung) throws Exception {
         String buchungsId = (buchung.getBuchungId() == null ? (getLastId() + 1) + "" : buchung.getBuchungId());
         String insertCommand = "INSERT INTO T_Buchung VALUES (?, ?, ?, ?, ?, ?)";
@@ -40,6 +54,14 @@ public class DBBuchung {
         return true;
     }
 
+    /**
+     * Aktualisiert die Daten einer existierenden Buchung in der Datenbank.
+     *
+     * @param buchung Das Buchungsobjekt mit aktualisierten Daten.
+     * @return true, wenn die Aktualisierung erfolgreich war, sonst false.
+     * @throws Exception Wirft eine Exception bei Fehlern während des
+     * Datenbankzugriffs.
+     */
     public static boolean update(Buchung buchung) throws Exception {
         String updateCommand = "UPDATE T_Buchung SET mieterId = ?, wohnungId = ?, buchungsdatum = ?, startDatum = ?, endDatum = ? WHERE buchungId = ?";
         try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(updateCommand))
@@ -61,6 +83,14 @@ public class DBBuchung {
         return true;
     }
 
+    /**
+     * Löscht eine Buchung aus der Datenbank anhand ihrer Buchungs-ID.
+     *
+     * @param buchungId Die ID der zu löschenden Buchung.
+     * @return true, wenn die Buchung erfolgreich gelöscht wurde, sonst false.
+     * @throws Exception Wirft eine Exception bei Fehlern während des
+     * Datenbankzugriffs.
+     */
     public static boolean Delete(String buchungId) throws Exception {
         String deleteCommand = "DELETE FROM T_Buchung WHERE buchungId = ?";
         try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(deleteCommand))
@@ -77,6 +107,18 @@ public class DBBuchung {
         }
     }
 
+    /**
+     * Ruft alle Buchungen ab, die bestimmten Filterkriterien entsprechen.
+     *
+     * @param benutzerId Der Benutzer, dessen Buchungen abgerufen werden sollen.
+     * @param buchungId Die spezifische Buchungs-ID, nach der gefiltert wird.
+     * @param ortP Der Ort, nach dem gefiltert wird.
+     * @param buchungsdatum Das Datum, nach dem gefiltert wird.
+     * @return Eine Liste von FilterBuchungen, die den angegebenen Kriterien
+     * entsprechen.
+     * @throws Exception Wirft eine Exception bei Fehlern während des
+     * Datenbankzugriffs.
+     */
     public static List<FilterBuchung> getAllBuchung(String benutzerId,
             String buchungId,
             String ortP,
@@ -130,6 +172,16 @@ public class DBBuchung {
         return filterBuchungen;
     }
 
+    /**
+     * Überprüft, ob eine Buchung für eine bestimmte Kombination aus Benutzer
+     * und Wohnung existiert.
+     *
+     * @param benutzerid Die ID des Benutzers.
+     * @param wohnungId Die ID der Wohnung.
+     * @return true, wenn eine solche Buchung existiert, sonst false.
+     * @throws Exception Wirft eine Exception bei Fehlern während des
+     * Datenbankzugriffs.
+     */
     public static boolean checkBuchungExists(String benutzerid, String wohnungId) throws Exception {
         String query = " SELECT benutzerid, wohnungid FROM t_benutzer "
                 + "JOIN t_buchung ON t_benutzer.benutzerid = t_buchung.mieterid"
@@ -152,6 +204,15 @@ public class DBBuchung {
         return false;
     }
 
+    /**
+     * Ruft eine spezifische Buchung anhand ihrer Buchungs-ID ab.
+     *
+     * @param buchungId Die ID der Buchung, die abgerufen werden soll.
+     * @return Ein Buchungsobjekt, wenn eine Buchung mit der angegebenen ID
+     * gefunden wurde, sonst null.
+     * @throws Exception Wirft eine Exception bei Fehlern während des
+     * Datenbankzugriffs.
+     */
     public static Buchung getBuchungByBuchungId(String buchungId) throws Exception {
         Buchung buchung = null;
         String query = "SELECT * FROM T_Buchung WHERE buchungid = " + buchungId;
@@ -180,6 +241,13 @@ public class DBBuchung {
         return buchung;
     }
 
+    /**
+     * Prüft, ob im aktuellen ResultSet weitere Daten vorhanden sind.
+     *
+     * @return true, wenn weitere Daten vorhanden sind, sonst false.
+     * @throws Exception Wirft eine Exception, wenn Fehler während der Abfrage
+     * auftreten.
+     */
     public static boolean getNext() throws Exception {
         if (datenmenge.next())
         {
@@ -189,6 +257,81 @@ public class DBBuchung {
             close();
             return false;
         }
+    }
+
+    /**
+     * Ruft die höchste Buchungs-ID aus der Datenbank ab.
+     *
+     * @return Die höchste vorhandene Buchungs-ID.
+     * @throws Exception Wirft eine Exception bei Fehlern während des
+     * Datenbankzugriffs.
+     */
+    public static int getLastId() throws Exception {
+        String sql = "SELECT MAX(buchungId) FROM T_Buchung";
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(sql))
+        {
+            ResultSet datenmenge = ps.executeQuery();
+            if (datenmenge.next())
+            {
+                return datenmenge.getInt(1);
+            }
+        } catch (SQLException e)
+        {
+            throw new Exception("Fehler beim Abrufen der letzten Buchungs-ID.", e);
+        } finally
+        {
+            close();
+        }
+        return 0;
+    }
+
+    /**
+     * Konvertiert die numerische Bewertung in eine Stern-Darstellung.
+     *
+     * @param anzahl Die Anzahl der Sterne als numerischer Wert.
+     * @return Eine String-Darstellung der Sternebewertung.
+     */
+    private static String getSternImo(String anzahl) {
+
+        String sterne = "";
+        for (int i = 0; i < Integer.parseInt(anzahl); i++)
+        {
+            sterne += "⭐";
+        }
+
+        return sterne;
+    }
+
+    /**
+     * Ermittelt den Gesamtbetrag einer bestimmten Buchung anhand ihrer
+     * Buchungs-ID.
+     *
+     * @param buchungid Die ID der Buchung, für die der Betrag berechnet werden
+     * soll.
+     * @return Der berechnete Gesamtbetrag der Buchung als String.
+     * @throws SQLException Wirft eine SQLException bei Fehlern während des
+     * Datenbankzugriffs.
+     * @throws Exception Wirft eine allgemeine Exception, wenn zusätzliche
+     * Fehler auftreten.
+     */
+    public static String getBetragByBuchungId(String buchungid) throws SQLException, Exception {
+        String query = "SELECT (t_buchung.enddatum - t_buchung.startdatum)* t_wohnung.preispronacht as betrag FROM T_Buchung, t_wohnung WHERE t_buchung.wohnungid=t_wohnung.wohnungid AND buchungId = ?";
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(query))
+        {
+            ps.setString(1, buchungid);
+            ResultSet datenmenge = ps.executeQuery();
+            if (datenmenge.next())
+            {
+                return datenmenge.getString(1);
+            }
+        } catch (Exception e)
+        {
+            throw new Exception("Fehler beim Lesen des Betrags für Buchung ID " + buchungid, e);
+        } finally
+        {
+            close();
+        }
+        return null;
     }
 
     public static String getbuchungId() throws SQLException {
@@ -234,56 +377,6 @@ public class DBBuchung {
         {
             throw new Exception("Enddatum ist null oder im falschen Format");
         }
-    }
-
-    public static int getLastId() throws Exception {
-        String sql = "SELECT MAX(buchungId) FROM T_Buchung";
-        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(sql))
-        {
-            ResultSet datenmenge = ps.executeQuery();
-            if (datenmenge.next())
-            {
-                return datenmenge.getInt(1);
-            }
-        } catch (SQLException e)
-        {
-            throw new Exception("Fehler beim Abrufen der letzten Buchungs-ID.", e);
-        } finally
-        {
-            close();
-        }
-        return 0;
-    }
-
-    private static String getSternImo(String anzahl) {
-
-        String sterne = "";
-        for (int i = 0; i < Integer.parseInt(anzahl); i++)
-        {
-            sterne += "⭐";
-        }
-
-        return sterne;
-    }
-
-    public static String getBetragByBuchungId(String buchungid) throws SQLException, Exception {
-        String query = "SELECT (t_buchung.enddatum - t_buchung.startdatum)* t_wohnung.preispronacht as betrag FROM T_Buchung, t_wohnung WHERE t_buchung.wohnungid=t_wohnung.wohnungid AND buchungId = ?";
-        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(query))
-        {
-            ps.setString(1, buchungid);
-            ResultSet datenmenge = ps.executeQuery();
-            if (datenmenge.next())
-            {
-                return datenmenge.getString(1);
-            }
-        } catch (Exception e)
-        {
-            throw new Exception("Fehler beim Lesen des Betrags für Buchung ID " + buchungid, e);
-        } finally
-        {
-            close();
-        }
-        return null;
     }
 
 }

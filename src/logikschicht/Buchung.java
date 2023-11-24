@@ -1,9 +1,5 @@
 package logikschicht;
 
-/**
- *
- * @author Diyar
- */
 public class Buchung {
 
     private String buchungId;

@@ -2,10 +2,6 @@ package logikschicht;
 
 import praesentationsschicht_GUI.AuthenticationControllers.LoginController;
 
-/**
- *
- * @author Diyar
- */
 public class Nachrichten {
 
     private String nachrichtenId;

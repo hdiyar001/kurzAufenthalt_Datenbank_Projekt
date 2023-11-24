@@ -5,12 +5,13 @@ import javafx.beans.property.StringProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-//import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import logikschicht.Modell;
 
 /**
+ * Die Klasse ViewFactory ist verantwortlich für die Erstellung und Verwaltung
+ * der grafischen Benutzeroberfläche. Sie lädt und initialisiert verschiedene
+ * Ansichten (Views) und Fenster für die Anwendung.
  *
  * @author Diyar
  */

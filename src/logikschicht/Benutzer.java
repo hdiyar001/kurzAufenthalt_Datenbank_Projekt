@@ -1,9 +1,5 @@
 package logikschicht;
 
-/**
- *
- * @author Diyar
- */
 public class Benutzer {
 
     private String benutzerId;
@@ -20,24 +16,6 @@ public class Benutzer {
     private String refBenutzer;
     private String verft;
 
-    /**
-     * Autor: Diyar, Hier wird ein Nutzer bean erstellt um nachher die daten
-     * über java klasse zu manipulieren
-     *
-     * @param benutzerId
-     * @param nachname
-     * @param vorname
-     * @param anrede
-     * @param benutzerName
-     * @param email
-     * @param passwort
-     * @param strasse
-     * @param ort
-     * @param plz
-     * @param geburtsdatum
-     * @param refBenutzer
-     * @param verft
-     */
     public Benutzer(String benutzerId, String nachname, String vorname, String anrede, String benutzerName, String email, String passwort, String strasse, String ort, String plz, String geburtsdatum, String refBenutzer, String verft) {
         this.benutzerId = benutzerId;
         this.nachname = nachname;

@@ -8,8 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Die Klasse DBBenutzer verwaltet die Benutzerdaten in der Datenbank. Sie
+ * bietet Methoden zum Einfügen, Aktualisieren, Löschen und Abfragen von
+ * Benutzerdaten. Diese Klasse ist Teil der Datenhaltungsschicht in der
+ * 3-Schichten-Architektur.
  *
- * @author Diyar
+ * @author Diyar, Hussam und Ronida
  */
 public class DBBenutzer {
 
@@ -17,13 +21,12 @@ public class DBBenutzer {
     private static DBZugriff dbZugriff = DBZugriff.getInstance();
 
     /**
-     * Author Diyar
+     * Fügt einen neuen Benutzer in die Datenbank ein.
      *
-     *
-     * Hier werden neue Daten hizugefügt
-     *
-     * @param benutzer
-     * @return true, wenn erfolgreich hinzugefügt wurde!
+     * @param benutzer Das Benutzerobjekt, das in die Datenbank eingefügt werden
+     * soll.
+     * @return true, wenn der Benutzer erfolgreich hinzugefügt wurde, sonst
+     * false.
      */
     public static boolean Insert(Benutzer benutzer) {
         String insertCommand = "INSERT INTO T_Benutzer VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -52,6 +55,12 @@ public class DBBenutzer {
         }
     }
 
+    /**
+     * Aktualisiert die Daten eines existierenden Benutzers in der Datenbank.
+     *
+     * @param benutzer Das Benutzerobjekt mit aktualisierten Daten.
+     * @return true, wenn die Aktualisierung erfolgreich war, sonst false.
+     */
     public static boolean update(Benutzer benutzer) {
         String dataToUpdate = getDataToUpdate(benutzer);
 
@@ -85,6 +94,17 @@ public class DBBenutzer {
         return sql.substring(0, sql.length() - 2);
     }
 
+    /**
+     * Aktualisiert das Passwort eines Benutzers in der Datenbank.
+     *
+     * @param BNameemail Der Benutzername oder die E-Mail-Adresse des Benutzers,
+     * dessen Passwort aktualisiert werden soll.
+     * @param passwort Das neue Passwort des Benutzers.
+     * @return true, wenn das Passwort erfolgreich aktualisiert wurde, sonst
+     * false.
+     * @throws SQLException Wirft eine Ausnahme bei Fehlern während der
+     * Datenbankaktualisierung.
+     */
     public static boolean updatePasswort(String BNameemail, String passwort) throws SQLException {
         String updateCommand = "UPDATE T_Benutzer SET passwort = ? WHERE benutzername = ? OR Email = ?";
 
@@ -102,6 +122,14 @@ public class DBBenutzer {
         }
     }
 
+    /**
+     * Löscht einen Benutzer aus der Datenbank anhand seiner Benutzer-ID.
+     *
+     * @param benutzerId Die ID des zu löschenden Benutzers.
+     * @return true, wenn der Benutzer erfolgreich gelöscht wurde, sonst false.
+     * @throws SQLException Wirft eine SQLException bei Fehlern während des
+     * Datenbankzugriffs.
+     */
     public static boolean Delete(String benutzerId) throws SQLException {
         String deleteCommand = "DELETE FROM T_Benutzer WHERE benutzerId = ?";
 
@@ -117,6 +145,13 @@ public class DBBenutzer {
         }
     }
 
+    /**
+     * Ruft eine Liste aller Benutzer aus der Datenbank ab.
+     *
+     * @return Eine Liste von Benutzerobjekten.
+     * @throws Exception Wirft eine Ausnahme bei Fehlern während der
+     * Datenbankabfrage.
+     */
     public static List<Benutzer> getAllBenutzer() throws Exception {
 
         List<Benutzer> benutzerListe = new ArrayList<>();
@@ -153,6 +188,15 @@ public class DBBenutzer {
         return benutzerListe;
     }
 
+    /**
+     * Ruft einen Benutzer anhand seiner Benutzer-ID aus der Datenbank ab.
+     *
+     * @param benutzerId Die ID des abzurufenden Benutzers.
+     * @return Ein Benutzerobjekt, wenn ein Benutzer mit der angegebenen ID
+     * gefunden wurde, sonst null.
+     * @throws Exception Wirft eine Ausnahme bei Fehlern während der
+     * Datenbankabfrage.
+     */
     public static Benutzer getBenutzerByBenutzerId(String benutzerId) throws Exception {
         String query = "SELECT * FROM T_Benutzer WHERE benutzerid = ?";
         Benutzer benutzer = null;
@@ -188,6 +232,17 @@ public class DBBenutzer {
         return benutzer;
     }
 
+    /**
+     * Ruft einen Benutzer aus der Datenbank ab, basierend auf Login-Daten
+     * (Benutzername oder E-Mail und Passwort).
+     *
+     * @param l_bNameOEmail Der Benutzername oder die E-Mail des Benutzers.
+     * @param l_passwort Das Passwort des Benutzers.
+     * @return Ein Benutzerobjekt, wenn ein entsprechender Benutzer gefunden
+     * wurde, sonst null.
+     * @throws Exception Wirft eine Ausnahme bei Fehlern während der
+     * Datenbankabfrage.
+     */
     public static Benutzer getBenutzerByLogin(String l_bNameOEmail, String l_passwort) throws Exception {
         String query = "SELECT * FROM T_Benutzer WHERE (benutzerName = ? OR email = ?) AND passwort = ?";
         Benutzer benutzer = null;
@@ -225,6 +280,13 @@ public class DBBenutzer {
         return benutzer;
     }
 
+    /**
+     * Prüft, ob weitere Daten in der Ergebnismenge vorhanden sind.
+     *
+     * @return true, wenn weitere Daten vorhanden sind, sonst false.
+     * @throws Exception Wirft eine Ausnahme bei Fehlern während der
+     * Datenbankabfrage.
+     */
     public static boolean getNext() throws Exception {
         if (datenmenge.next())
         {
@@ -236,6 +298,13 @@ public class DBBenutzer {
         }
     }
 
+    /**
+     * Ruft die höchste Benutzer-ID aus der Datenbank ab.
+     *
+     * @return Die höchste vorhandene Benutzer-ID.
+     * @throws Exception Wirft eine Ausnahme bei Fehlern während der
+     * Datenbankabfrage.
+     */
     public static String getLastId() throws Exception {
         String sql = "SELECT MAX(benutzerId) FROM T_Benutzer";
 

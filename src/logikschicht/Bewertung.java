@@ -1,9 +1,5 @@
 package logikschicht;
 
-/**
- *
- * @author Diyar
- */
 public class Bewertung {
 
     private String bewertungId;
@@ -22,10 +18,6 @@ public class Bewertung {
         return bewertungId;
     }
 
-    /**
-     *
-     * @param bewertungId
-     */
     public void setBewertungId(String bewertungId) {
         this.bewertungId = bewertungId;
     }
