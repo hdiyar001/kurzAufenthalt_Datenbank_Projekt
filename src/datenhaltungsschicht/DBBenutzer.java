@@ -1,11 +1,8 @@
 package datenhaltungsschicht;
 
-import static datenhaltungsschicht.DBZugriff.befehl;
 import static datenhaltungsschicht.DBZugriff.close;
-import static datenhaltungsschicht.DBZugriff.connect;
 import logikschicht.Benutzer;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,9 +11,10 @@ import java.util.List;
  *
  * @author Diyar
  */
-public class DBBenutzer extends DBZugriff {
+public class DBBenutzer {
 
     private static ResultSet datenmenge;
+    private static DBZugriff dbZugriff = DBZugriff.getInstance();
 
     /**
      * Author Diyar
@@ -25,182 +23,196 @@ public class DBBenutzer extends DBZugriff {
      * Hier werden neue Daten hizugefügt
      *
      * @param benutzer
-     * @return
-     * @throws Exception
+     * @return true, wenn erfolgreich hinzugefügt wurde!
      */
-    public static boolean Insert(Benutzer benutzer) throws Exception {
-        connect();
-        String insertCommand = "INSERT INTO T_Benutzer VALUES ("
-                + benutzer.getBenutzerId()
-                + ", '" + benutzer.getNachname()
-                + "', '" + benutzer.getVorname()
-                + "', '" + benutzer.getAnrede()
-                + "', '" + benutzer.getBenutzerName()
-                + "', '" + benutzer.getEmail()
-                + "', '" + benutzer.getPasswort()
-                + "', '" + benutzer.getStrasse()
-                + "', '" + benutzer.getOrt()
-                + "', " + benutzer.getPlz()
-                + ", '" + benutzer.getGeburtsdatum()
-                + "', " + benutzer.getRefBenutzer()
-                + ", '" + benutzer.getVerft()
-                + "')";
-
-        try
+    public static boolean Insert(Benutzer benutzer) {
+        String insertCommand = "INSERT INTO T_Benutzer VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(insertCommand))
         {
-            befehl.executeUpdate(insertCommand);
+            pstmt.setString(1, benutzer.getBenutzerId());
+            pstmt.setString(2, benutzer.getNachname());
+            pstmt.setString(3, benutzer.getVorname());
+            pstmt.setString(4, benutzer.getAnrede());
+            pstmt.setString(5, benutzer.getBenutzerName());
+            pstmt.setString(6, benutzer.getEmail());
+            pstmt.setString(7, benutzer.getPasswort());
+            pstmt.setString(8, benutzer.getStrasse());
+            pstmt.setString(9, benutzer.getOrt());
+            pstmt.setString(10, benutzer.getPlz());
+            pstmt.setString(11, benutzer.getGeburtsdatum());
+            pstmt.setString(12, benutzer.getRefBenutzer());
+            pstmt.setString(13, benutzer.getVerft());
+
+            pstmt.executeUpdate();
+            return true;
         } catch (SQLException ex)
         {
-            String errorMessage = "Es ist ein Fehler beim Hinzufügen des Benutzers " + benutzer.getBenutzerId() + " aufgetreten.";
-            throw new Exception(errorMessage);
-        } finally
-        {
-            close();
+            System.err.println("Fehler beim Hinzufügen des Benutzers: " + ex.getMessage());
+            return false;
         }
-        return true;
     }
 
-    public static boolean update(Benutzer benutzer) throws Exception {
-        connect();
+//    public static boolean Insert(Benutzer benutzer) throws Exception {
+//        connect();
+//        String insertCommand = "INSERT INTO T_Benutzer VALUES ("
+//                + benutzer.getBenutzerId()
+//                + ", '" + benutzer.getNachname()
+//                + "', '" + benutzer.getVorname()
+//                + "', '" + benutzer.getAnrede()
+//                + "', '" + benutzer.getBenutzerName()
+//                + "', '" + benutzer.getEmail()
+//                + "', '" + benutzer.getPasswort()
+//                + "', '" + benutzer.getStrasse()
+//                + "', '" + benutzer.getOrt()
+//                + "', " + benutzer.getPlz()
+//                + ", '" + benutzer.getGeburtsdatum()
+//                + "', " + benutzer.getRefBenutzer()
+//                + ", '" + benutzer.getVerft()
+//                + "')";
+//
+//        try
+//        {
+//            befehl.executeUpdate(insertCommand);
+//        } catch (SQLException ex)
+//        {
+//            String errorMessage = "Es ist ein Fehler beim Hinzufügen des Benutzers " + benutzer.getBenutzerId() + " aufgetreten.";
+//            throw new Exception(errorMessage);
+//        } finally
+//        {
+//            close();
+//        }
+//        return true;
+//    }
+    public static boolean update(Benutzer benutzer) {
         String dataToUpdate = getDataToUpdate(benutzer);
-        System.out.println(dataToUpdate);
+
         String updateCommand = "UPDATE T_Benutzer SET " + dataToUpdate + " WHERE benutzerId = " + benutzer.getBenutzerId();
-        System.out.println(updateCommand);
-        try
+        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(updateCommand))
         {
-            befehl.executeUpdate(updateCommand);
+            pstmt.executeUpdate();
+            return true;
         } catch (SQLException ex)
         {
-            String errorMessage = "Es ist ein Fehler beim Aktualisieren des Benutzers " + benutzer.getBenutzerId() + " aufgetreten.";
-            ex.printStackTrace();
-            throw new Exception(errorMessage);
-        } finally
-        {
-            close();
+            System.err.println("Fehler beim Aktualisieren des Benutzers: " + ex.getMessage());
+            return false;
         }
-        return true;
     }
 
-    public static boolean updatePasswort(String BNameemail, String passwort) throws SQLException, Exception {
-        connect();
-        String updateCommand = "UPDATE T_Benutzer SET passwort='" + passwort + "' WHERE benutzername = '" + BNameemail + "' OR Email= '" + BNameemail + "'";
+//    public static boolean update(Benutzer benutzer) throws Exception {
+//        connect();
+//        String dataToUpdate = getDataToUpdate(benutzer);
+//        System.out.println(dataToUpdate);
+//        String updateCommand = "UPDATE T_Benutzer SET " + dataToUpdate + " WHERE benutzerId = " + benutzer.getBenutzerId();
+//        System.out.println(updateCommand);
+//        try
+//        {
+//            befehl.executeUpdate(updateCommand);
+//        } catch (SQLException ex)
+//        {
+//            String errorMessage = "Es ist ein Fehler beim Aktualisieren des Benutzers " + benutzer.getBenutzerId() + " aufgetreten.";
+//            ex.printStackTrace();
+//            throw new Exception(errorMessage);
+//        } finally
+//        {
+//            close();
+//        }
+//        return true;
+//    }
+    private static String getDataToUpdate(Benutzer benutzer) {
+        String sql = "";
 
-        try
+        sql += benutzer.getAnrede() != null ? " Anrede = '" + benutzer.getAnrede() + "', " : "";
+        sql += benutzer.getVorname() != null ? " Vorname = '" + benutzer.getVorname() + "', " : "";
+        sql += benutzer.getNachname() != null ? " Nachname = '" + benutzer.getNachname() + "', " : "";
+        sql += benutzer.getGeburtsdatum() != null ? " Geburtsdatum = '" + benutzer.getGeburtsdatum() + "', " : "";
+        sql += benutzer.getEmail() != null ? " Email = '" + benutzer.getEmail() + "', " : "";
+        sql += benutzer.getPlz() != null ? " PLZ = " + benutzer.getPlz() + ", " : "";
+        sql += benutzer.getOrt() != null ? " Ort = '" + benutzer.getOrt() + "', " : "";
+        sql += benutzer.getBenutzerName() != null ? " benutzerName= '" + benutzer.getBenutzerName() + "', " : "";
+        sql += benutzer.getPasswort() != null ? " passwort= '" + benutzer.getPasswort() + "', " : "";
+        sql += benutzer.getStrasse() != null ? " Strasse = '" + benutzer.getStrasse() + "', " : "";
+        sql += benutzer.getRefBenutzer() != null ? " referenzbenutzerid = " + benutzer.getRefBenutzer() + ", " : "";
+        sql += benutzer.getVerft() != null ? " verifiziert= '" + benutzer.getVerft() + "', " : "";
+        return sql.substring(0, sql.length() - 2);
+    }
+
+    public static boolean updatePasswort(String BNameemail, String passwort) throws SQLException {
+        String updateCommand = "UPDATE T_Benutzer SET passwort = ? WHERE benutzername = ? OR Email = ?";
+
+        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(updateCommand))
         {
-            befehl.executeUpdate(updateCommand);
+            pstmt.setString(1, passwort);
+            pstmt.setString(2, BNameemail);
+            pstmt.setString(3, BNameemail);
+            pstmt.executeUpdate();
+            return true;
         } catch (SQLException ex)
         {
-            String errorMessage = "Es ist ein Fehler beim Aktualisieren des Benutzers " + BNameemail + " aufgetreten.";
-            ex.printStackTrace();
-            throw new Exception(errorMessage);
-        } finally
-        {
-            close();
+            System.err.println("Fehler beim Aktualisieren des Passworts für Benutzer " + BNameemail + ": " + ex.getMessage());
+            throw ex;
         }
-        return true;
-
     }
 
-    public static boolean Delete(String benutzerId) throws Exception {
-        connect();
-        int status = -1;
-        String deleteCommand = "DELETE FROM T_Benutzer WHERE benutzerId = " + benutzerId;
+//    public static boolean updatePasswort(String BNameemail, String passwort) throws SQLException, Exception {
+//        connect();
+//        String updateCommand = "UPDATE T_Benutzer SET passwort='" + passwort + "' WHERE benutzername = '" + BNameemail + "' OR Email= '" + BNameemail + "'";
+//
+//        try
+//        {
+//            befehl.executeUpdate(updateCommand);
+//        } catch (SQLException ex)
+//        {
+//            String errorMessage = "Es ist ein Fehler beim Aktualisieren des Benutzers " + BNameemail + " aufgetreten.";
+//            ex.printStackTrace();
+//            throw new Exception(errorMessage);
+//        } finally
+//        {
+//            close();
+//        }
+//        return true;
+//
+//    }
+    public static boolean Delete(String benutzerId) throws SQLException {
+        String deleteCommand = "DELETE FROM T_Benutzer WHERE benutzerId = ?";
 
-        try
+        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(deleteCommand))
         {
-            status = befehl.executeUpdate(deleteCommand);
+            pstmt.setInt(1, Integer.parseInt(benutzerId));
+            int status = pstmt.executeUpdate();
+            return status == 1;
         } catch (SQLException ex)
         {
-            String errorMessage = "Es ist ein Fehler beim Löschen des Benutzers " + benutzerId + " aufgetreten.";
-            throw new Exception(errorMessage);
-        } finally
-        {
-            close();
+            System.err.println("Fehler beim Löschen des Benutzers " + benutzerId + ": " + ex.getMessage());
+            throw ex;
         }
-        return status == 1;
     }
 
+//    public static boolean Delete(String benutzerId) throws Exception {
+//        connect();
+//        int status = -1;
+//        String deleteCommand = "DELETE FROM T_Benutzer WHERE benutzerId = " + benutzerId;
+//
+//        try
+//        {
+//            status = befehl.executeUpdate(deleteCommand);
+//        } catch (SQLException ex)
+//        {
+//            String errorMessage = "Es ist ein Fehler beim Löschen des Benutzers " + benutzerId + " aufgetreten.";
+//            throw new Exception(errorMessage);
+//        } finally
+//        {
+//            close();
+//        }
+//        return status == 1;
+//    }
     public static List<Benutzer> getAllBenutzer() throws Exception {
 
-        ArrayList<Benutzer> benuztern = new ArrayList<>();
-        connect();
-        try
+        List<Benutzer> benutzerListe = new ArrayList<>();
+        String query = "SELECT * FROM T_Benutzer";
+
+        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(query))
         {
-            datenmenge = befehl.executeQuery("SELECT * FROM T_Benutzer");
-            while (getNext())
-            {
-                String benutzerId = getbenutzerId();
-                String nachname = getNachname();
-                String vorname = getVorname();
-                String anrede = getAnrede();
-                String benutzerName = getBenutzerName();
-                String email = getEmail();
-                String passwort = getPasswort();
-                String strasse = getStrasse();
-                String ort = getOrt();
-                String plz = getPLZ();
-                String geburtsdatum = getGeburtsdatum();
-                String refBenutzer = getrefBenutzer();
-                String verft = getverft();
-
-                Benutzer benuzter = new Benutzer(benutzerId, nachname, vorname, anrede, benutzerName, email, passwort, strasse, ort, plz, geburtsdatum, refBenutzer, verft);
-                benuztern.add(benuzter);
-            }
-        } catch (Exception e)
-        {
-            throw new Exception("Es ist ein Fehler beim Lesen der Benutzerdaten aufgetreten. ");
-        } finally
-        {
-            close();
-        }
-        return benuztern;
-    }
-
-    public static Benutzer getBenutzerByBenutzerId(String benutzerId) throws Exception {
-        connect();
-        Benutzer benuzter = null;
-        String query = "SELECT * FROM T_Benutzer WHERE benutzerid = " + benutzerId;
-
-        try
-        {
-            datenmenge = befehl.executeQuery(query);
-
-            if (datenmenge.next())
-            {
-                String nachname = getNachname();
-                String vorname = getVorname();
-                String anrede = getAnrede();
-                String benutzerName = getBenutzerName();
-                String email = getEmail();
-                String passwort = getPasswort();
-                String strasse = getStrasse();
-                String ort = getOrt();
-                String plz = getPLZ();
-                String geburtsdatum = getGeburtsdatum();
-                String refBenutzer = getrefBenutzer();
-                String verft = getverft();
-
-                benuzter = new Benutzer(benutzerId, nachname, vorname, anrede, benutzerName, email, passwort, strasse, ort, plz, geburtsdatum, refBenutzer, verft);
-            }
-        } catch (Exception e)
-        {
-            throw new Exception("Es ist ein Fehler beim Lesen der Benutzerdaten aufgetreten. ");
-        } finally
-        {
-            close();
-        }
-        return benuzter;
-    }
-
-    public static Benutzer getBenutzerByLogin(String l_bNameOEmail, String l_passwort) throws Exception {
-        connect();
-        Benutzer benuzter = null;
-        String query = "SELECT * FROM T_Benutzer WHERE (benutzerName = '" + l_bNameOEmail + "' OR  email = '" + l_bNameOEmail + "') AND passwort = '" + l_passwort + "'";
-
-        try
-        {
-            datenmenge = befehl.executeQuery(query);
-
+            datenmenge = pstmt.executeQuery();
             while (datenmenge.next())
             {
                 String benutzerId = getbenutzerId();
@@ -216,18 +228,196 @@ public class DBBenutzer extends DBZugriff {
                 String geburtsdatum = getGeburtsdatum();
                 String refBenutzer = getrefBenutzer();
                 String verft = getverft();
-                benuzter = new Benutzer(benutzerId, nachname, vorname, anrede, benutzerName, email, passwort, strasse, ort, plz, geburtsdatum, refBenutzer, verft);
-                System.out.println(benuzter);
+
+                Benutzer benutzer = new Benutzer(benutzerId, nachname, vorname, anrede, benutzerName, email, passwort, strasse, ort, plz, geburtsdatum, refBenutzer, verft);
+                benutzerListe.add(benutzer);
             }
         } catch (SQLException e)
         {
-            throw new Exception("Es ist ein Fehler beim Lesen der Benutzerdaten aufgetreten. ");
-        } finally
-        {
-            close();
+            System.err.println("Fehler beim Abrufen der Benutzerliste: " + e.getMessage());
+            throw e;
         }
-        return benuzter;
+
+        return benutzerListe;
     }
+
+//    public static List<Benutzer> getAllBenutzer() throws Exception {
+//
+//        ArrayList<Benutzer> benuztern = new ArrayList<>();
+//        connect();
+//        try
+//        {
+//            datenmenge = befehl.executeQuery("SELECT * FROM T_Benutzer");
+//            while (getNext())
+//            {
+//                String benutzerId = getbenutzerId();
+//                String nachname = getNachname();
+//                String vorname = getVorname();
+//                String anrede = getAnrede();
+//                String benutzerName = getBenutzerName();
+//                String email = getEmail();
+//                String passwort = getPasswort();
+//                String strasse = getStrasse();
+//                String ort = getOrt();
+//                String plz = getPLZ();
+//                String geburtsdatum = getGeburtsdatum();
+//                String refBenutzer = getrefBenutzer();
+//                String verft = getverft();
+//
+//                Benutzer benuzter = new Benutzer(benutzerId, nachname, vorname, anrede, benutzerName, email, passwort, strasse, ort, plz, geburtsdatum, refBenutzer, verft);
+//                benuztern.add(benuzter);
+//            }
+//        } catch (Exception e)
+//        {
+//            throw new Exception("Es ist ein Fehler beim Lesen der Benutzerdaten aufgetreten. ");
+//        } finally
+//        {
+//            close();
+//        }
+//        return benuztern;
+//    }
+    public static Benutzer getBenutzerByBenutzerId(String benutzerId) throws Exception {
+        String query = "SELECT * FROM T_Benutzer WHERE benutzerid = ?";
+        Benutzer benutzer = null;
+
+        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(query))
+        {
+            pstmt.setString(1, benutzerId);
+
+            datenmenge = pstmt.executeQuery();
+            if (datenmenge.next())
+            {
+                String nachname = getNachname();
+                String vorname = getVorname();
+                String anrede = getAnrede();
+                String benutzerName = getBenutzerName();
+                String email = getEmail();
+                String passwort = getPasswort();
+                String strasse = getStrasse();
+                String ort = getOrt();
+                String plz = getPLZ();
+                String geburtsdatum = getGeburtsdatum();
+                String refBenutzer = getrefBenutzer();
+                String verft = getverft();
+
+                benutzer = new Benutzer(benutzerId, nachname, vorname, anrede, benutzerName, email, passwort, strasse, ort, plz, geburtsdatum, refBenutzer, verft);
+            }
+        } catch (SQLException e)
+        {
+            System.err.println("Fehler beim Abrufen des Benutzers mit ID " + benutzerId + ": " + e.getMessage());
+            throw e;
+        }
+
+        return benutzer;
+    }
+//    public static Benutzer getBenutzerByBenutzerId(String benutzerId) throws Exception {
+//        connect();
+//        Benutzer benuzter = null;
+//        String query = "SELECT * FROM T_Benutzer WHERE benutzerid = " + benutzerId;
+//
+//        try
+//        {
+//            datenmenge = befehl.executeQuery(query);
+//
+//            if (datenmenge.next())
+//            {
+//                String nachname = getNachname();
+//                String vorname = getVorname();
+//                String anrede = getAnrede();
+//                String benutzerName = getBenutzerName();
+//                String email = getEmail();
+//                String passwort = getPasswort();
+//                String strasse = getStrasse();
+//                String ort = getOrt();
+//                String plz = getPLZ();
+//                String geburtsdatum = getGeburtsdatum();
+//                String refBenutzer = getrefBenutzer();
+//                String verft = getverft();
+//
+//                benuzter = new Benutzer(benutzerId, nachname, vorname, anrede, benutzerName, email, passwort, strasse, ort, plz, geburtsdatum, refBenutzer, verft);
+//            }
+//        } catch (Exception e)
+//        {
+//            throw new Exception("Es ist ein Fehler beim Lesen der Benutzerdaten aufgetreten. ");
+//        } finally
+//        {
+//            close();
+//        }
+//        return benuzter;
+//    }
+
+    public static Benutzer getBenutzerByLogin(String l_bNameOEmail, String l_passwort) throws Exception {
+        String query = "SELECT * FROM T_Benutzer WHERE (benutzerName = ? OR email = ?) AND passwort = ?";
+        Benutzer benutzer = null;
+
+        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(query))
+        {
+            pstmt.setString(1, l_bNameOEmail);
+            pstmt.setString(2, l_bNameOEmail);
+            pstmt.setString(3, l_passwort);
+            datenmenge = pstmt.executeQuery();
+
+            if (datenmenge.next())
+            {
+                String benutzerId = getbenutzerId();
+                String nachname = getNachname();
+                String vorname = getVorname();
+                String anrede = getAnrede();
+                String benutzerName = getBenutzerName();
+                String email = getEmail();
+                String passwort = getPasswort();
+                String strasse = getStrasse();
+                String ort = getOrt();
+                String plz = getPLZ();
+                String geburtsdatum = getGeburtsdatum();
+                String refBenutzer = getrefBenutzer();
+                String verft = getverft();
+                benutzer = new Benutzer(benutzerId, nachname, vorname, anrede, benutzerName, email, passwort, strasse, ort, plz, geburtsdatum, refBenutzer, verft);
+            }
+        } catch (SQLException e)
+        {
+            System.err.println("Fehler beim Abrufen des Benutzers: " + e.getMessage());
+            throw e;
+        }
+
+        return benutzer;
+    }
+    //    public static Benutzer getBenutzerByLogin(String l_bNameOEmail, String l_passwort) throws Exception {
+    //        connect();
+    //        Benutzer benuzter = null;
+    //        String query = "SELECT * FROM T_Benutzer WHERE (benutzerName = '" + l_bNameOEmail + "' OR  email = '" + l_bNameOEmail + "') AND passwort = '" + l_passwort + "'";
+    //
+    //        try
+    //        {
+    //            datenmenge = befehl.executeQuery(query);
+    //
+    //            while (datenmenge.next())
+    //            {
+    //                String benutzerId = getbenutzerId();
+    //                String nachname = getNachname();
+    //                String vorname = getVorname();
+    //                String anrede = getAnrede();
+    //                String benutzerName = getBenutzerName();
+    //                String email = getEmail();
+    //                String passwort = getPasswort();
+    //                String strasse = getStrasse();
+    //                String ort = getOrt();
+    //                String plz = getPLZ();
+    //                String geburtsdatum = getGeburtsdatum();
+    //                String refBenutzer = getrefBenutzer();
+    //                String verft = getverft();
+    //                benuzter = new Benutzer(benutzerId, nachname, vorname, anrede, benutzerName, email, passwort, strasse, ort, plz, geburtsdatum, refBenutzer, verft);
+    //                System.out.println(benuzter);
+    //            }
+    //        } catch (SQLException e)
+    //        {
+    //            throw new Exception("Es ist ein Fehler beim Lesen der Benutzerdaten aufgetreten. ");
+    //        } finally
+    //        {
+    //            close();
+    //        }
+    //        return benuzter;
+    //    }
 
     public static boolean getNext() throws Exception {
         if (datenmenge.next())
@@ -241,25 +431,44 @@ public class DBBenutzer extends DBZugriff {
     }
 
     public static String getLastId() throws Exception {
-        connect();
+        String sql = "SELECT MAX(benutzerId) FROM T_Benutzer";
 
-        try
+        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(sql);)
         {
-            String sql = "SELECT MAX(benutzerId) FROM T_Benutzer";
-            datenmenge = befehl.executeQuery(sql);
+            datenmenge = pstmt.executeQuery();
             if (getNext())
             {
                 return datenmenge.getString(1);
+            } else
+            {
+                return "0";
             }
         } catch (SQLException e)
         {
-            throw new Exception(e.getSQLState());
-        } finally
-        {
-            close();
+            System.err.println("Fehler beim Abrufen der letzten Benutzer-ID: " + e.getMessage());
+            throw e;
         }
-        return "0";
     }
+//    public static String getLastId() throws Exception {
+//        connect();
+//
+//        try
+//        {
+//            String sql = "SELECT MAX(benutzerId) FROM T_Benutzer";
+//            datenmenge = befehl.executeQuery(sql);
+//            if (getNext())
+//            {
+//                return datenmenge.getString(1);
+//            }
+//        } catch (SQLException e)
+//        {
+//            throw new Exception(e.getSQLState());
+//        } finally
+//        {
+//            close();
+//        }
+//        return "0";
+//    }
 
     public static String getbenutzerId() throws SQLException {
         return datenmenge.getString("benutzerId");
@@ -312,24 +521,6 @@ public class DBBenutzer extends DBZugriff {
 
     public static String getPasswort() throws SQLException {
         return datenmenge.getString("passwort");
-    }
-
-    private static String getDataToUpdate(Benutzer benutzer) {
-        String sql = "";
-
-        sql += benutzer.getAnrede() != null ? " Anrede = '" + benutzer.getAnrede() + "', " : "";
-        sql += benutzer.getVorname() != null ? " Vorname = '" + benutzer.getVorname() + "', " : "";
-        sql += benutzer.getNachname() != null ? " Nachname = '" + benutzer.getNachname() + "', " : "";
-        sql += benutzer.getGeburtsdatum() != null ? " Geburtsdatum = '" + benutzer.getGeburtsdatum() + "', " : "";
-        sql += benutzer.getEmail() != null ? " Email = '" + benutzer.getEmail() + "', " : "";
-        sql += benutzer.getPlz() != null ? " PLZ = " + benutzer.getPlz() + ", " : "";
-        sql += benutzer.getOrt() != null ? " Ort = '" + benutzer.getOrt() + "', " : "";
-        sql += benutzer.getBenutzerName() != null ? " benutzerName= '" + benutzer.getBenutzerName() + "', " : "";
-        sql += benutzer.getPasswort() != null ? " passwort= '" + benutzer.getPasswort() + "', " : "";
-        sql += benutzer.getStrasse() != null ? " Strasse = '" + benutzer.getStrasse() + "', " : "";
-        sql += benutzer.getRefBenutzer() != null ? " referenzbenutzerid = " + benutzer.getRefBenutzer() + ", " : "";
-        sql += benutzer.getVerft() != null ? " verifiziert= '" + benutzer.getVerft() + "', " : "";
-        return sql.substring(0, sql.length() - 2);
     }
 
 }

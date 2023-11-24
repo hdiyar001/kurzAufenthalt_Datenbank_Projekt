@@ -13,7 +13,7 @@ import logikschicht.Wohnung;
  *
  * @author Diyar
  */
-public class Main1 extends DBZugriff {
+public class Main1 {
 
     public static void main(String[] args) throws SQLException, Exception {
 //        DBBuchung.getAllBuchung("1", null, "Teststadt", null).forEach(s -> System.out.println(s));

@@ -1,12 +1,9 @@
 package datenhaltungsschicht;
 
 import logikschicht.FilterBuchung;
-import static datenhaltungsschicht.DBZugriff.befehl;
 import static datenhaltungsschicht.DBZugriff.close;
-import static datenhaltungsschicht.DBZugriff.connect;
 import logikschicht.Buchung;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,29 +13,26 @@ import java.sql.Date;
  *
  * @author Diyar
  */
-public class DBBuchung extends DBZugriff {
+public class DBBuchung {
 
     private static ResultSet datenmenge;
+    private static DBZugriff dbZugriff = DBZugriff.getInstance();
 
     public static boolean Insert(Buchung buchung) throws Exception {
         String buchungsId = (buchung.getBuchungId() == null ? (getLastId() + 1) + "" : buchung.getBuchungId());
-        connect();
-        System.out.println(buchung);
-        String insertCommand = "INSERT INTO T_Buchung VALUES  (" + buchungsId
-                + "  , " + buchung.getMieterId()
-                + "  , " + buchung.getWohnungId()
-                + "  , '" + buchung.getBuchungsDatum()
-                + "' , '" + buchung.getStartDatum()
-                + "' , '" + buchung.getEndDatum()
-                + "')";
-        try
+        String insertCommand = "INSERT INTO T_Buchung VALUES (?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(insertCommand))
         {
-            befehl.executeUpdate(insertCommand);
+            ps.setString(1, buchungsId);
+            ps.setString(2, buchung.getMieterId());
+            ps.setString(3, buchung.getWohnungId());
+            ps.setString(4, buchung.getBuchungsDatum());
+            ps.setString(5, buchung.getStartDatum());
+            ps.setString(6, buchung.getEndDatum());
+            ps.executeUpdate();
         } catch (SQLException ex)
         {
-            String errorMessage = "Es ist ein Fehler beim Hinzufügen des Buchungs " + buchungsId + " aufgetreten.";
-            ex.printStackTrace();
-            throw new Exception(errorMessage);
+            throw new Exception("Fehler beim Hinzufügen des Buchungs " + buchungsId, ex);
         } finally
         {
             close();
@@ -47,18 +41,19 @@ public class DBBuchung extends DBZugriff {
     }
 
     public static boolean update(Buchung buchung) throws Exception {
-        connect();
-
-        String updateCommand = "UPDATE T_Buchung SET mieterId = " + buchung.getMieterId() + ", wohnungId= " + buchung.getWohnungId()
-                + ", buchungsdatum= '" + buchung.getBuchungsDatum() + "', startDatum= '" + buchung.getStartDatum() + "', endDatum = " + buchung.getEndDatum() + "', WHERE buchungId = " + buchung.getBuchungId();
-
-        try
+        String updateCommand = "UPDATE T_Buchung SET mieterId = ?, wohnungId = ?, buchungsdatum = ?, startDatum = ?, endDatum = ? WHERE buchungId = ?";
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(updateCommand))
         {
-            befehl.executeUpdate(updateCommand);
+            ps.setString(1, buchung.getMieterId());
+            ps.setString(2, buchung.getWohnungId());
+            ps.setString(3, buchung.getBuchungsDatum());
+            ps.setString(4, buchung.getStartDatum());
+            ps.setString(5, buchung.getEndDatum());
+            ps.setString(6, buchung.getBuchungId());
+            ps.executeUpdate();
         } catch (SQLException ex)
         {
-            String errorMessage = "Es ist ein Fehler beim Aktualisieren des Buchungs " + buchung.getBuchungId() + " aufgetreten.";
-            throw new Exception(errorMessage);
+            throw new Exception("Fehler beim Aktualisieren des Buchungs " + buchung.getBuchungId(), ex);
         } finally
         {
             close();
@@ -67,23 +62,19 @@ public class DBBuchung extends DBZugriff {
     }
 
     public static boolean Delete(String buchungId) throws Exception {
-        int stauts = -1;
-        connect();
-        String deleteCommand = "DELETE FROM T_Buchung WHERE buchungId = " + buchungId;
-
-        try
+        String deleteCommand = "DELETE FROM T_Buchung WHERE buchungId = ?";
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(deleteCommand))
         {
-            stauts = befehl.executeUpdate(deleteCommand);
-
+            ps.setString(1, buchungId);
+            int status = ps.executeUpdate();
+            return status == 1;
         } catch (SQLException ex)
         {
-            String errorMessage = "Es ist ein Fehler beim Löschen des Buchungs " + buchungId + " aufgetreten.";
-            throw new Exception(errorMessage);
+            throw new Exception("Fehler beim Löschen des Buchungs " + buchungId, ex);
         } finally
         {
             close();
         }
-        return stauts == 1;
     }
 
     public static List<FilterBuchung> getAllBuchung(String benutzerId,
@@ -107,11 +98,10 @@ public class DBBuchung extends DBZugriff {
                 + "   JOIN t_wohnung ON t_buchung.wohnungid = t_wohnung.wohnungid " + whereKlausel;
 
         ArrayList<FilterBuchung> filterBuchungen = new ArrayList<>();
-        connect();
-        try
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(sql))
         {
 
-            datenmenge = befehl.executeQuery(sql);
+            datenmenge = ps.executeQuery();
             while (datenmenge.next())
             {
                 String buchungid = datenmenge.getString("buchungid");
@@ -126,8 +116,6 @@ public class DBBuchung extends DBZugriff {
                 String anzahlDerNaechte = datenmenge.getString("AnzahlDerNaechte");
                 String betrag = datenmenge.getString("betrag") + " €";
 
-//                FilterBuchung buchung = new FilterBuchung(buchungid, buchungsDatum, startDatum, endDatum, anschrift, preisProNacht,
-//                        textBewertung, sternBewertung, anzahlDerNaechte, betrag, zahlungsdatum, zahlungsart);
                 FilterBuchung buchung = new FilterBuchung(buchungid, buchungsDatum, startDatum, endDatum, anschrift, preisProNacht, anzahlDerNaechte, betrag);
                 filterBuchungen.add(buchung);
             }
@@ -143,14 +131,13 @@ public class DBBuchung extends DBZugriff {
     }
 
     public static boolean checkBuchungExists(String benutzerid, String wohnungId) throws Exception {
-        connect();
         String query = " SELECT benutzerid, wohnungid FROM t_benutzer "
                 + "JOIN t_buchung ON t_benutzer.benutzerid = t_buchung.mieterid"
                 + " WHERE benutzerid = " + benutzerid + " AND wohnungid =" + wohnungId;
 
-        try
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(query))
         {
-            datenmenge = befehl.executeQuery(query);
+            datenmenge = ps.executeQuery();
             if (datenmenge.next())
             {
                 return true;
@@ -166,13 +153,12 @@ public class DBBuchung extends DBZugriff {
     }
 
     public static Buchung getBuchungByBuchungId(String buchungId) throws Exception {
-        connect();
         Buchung buchung = null;
         String query = "SELECT * FROM T_Buchung WHERE buchungid = " + buchungId;
 
-        try
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(query))
         {
-            datenmenge = befehl.executeQuery(query);
+            datenmenge = ps.executeQuery();
 
             if (datenmenge.next())
             {
@@ -251,19 +237,17 @@ public class DBBuchung extends DBZugriff {
     }
 
     public static int getLastId() throws Exception {
-        connect();
-
-        try
+        String sql = "SELECT MAX(buchungId) FROM T_Buchung";
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(sql))
         {
-            String sql = "SELECT MAX(buchungId) FROM T_Buchung";
-            datenmenge = befehl.executeQuery(sql);
-            if (getNext())
+            ResultSet datenmenge = ps.executeQuery();
+            if (datenmenge.next())
             {
                 return datenmenge.getInt(1);
             }
         } catch (SQLException e)
         {
-            throw new Exception(e.getSQLState());
+            throw new Exception("Fehler beim Abrufen der letzten Buchungs-ID.", e);
         } finally
         {
             close();
@@ -283,24 +267,23 @@ public class DBBuchung extends DBZugriff {
     }
 
     public static String getBetragByBuchungId(String buchungid) throws SQLException, Exception {
-        connect();
-        String query = " SELECT (t_buchung.enddatum - t_buchung.startdatum)* t_wohnung.preispronacht as betrag "
-                + "FROM T_Buchung,t_wohnung WHERE t_buchung.wohnungid=t_wohnung.wohnungid AND buchungId = " + buchungid;
-
-        try
+        String query = "SELECT (t_buchung.enddatum - t_buchung.startdatum)* t_wohnung.preispronacht as betrag FROM T_Buchung, t_wohnung WHERE t_buchung.wohnungid=t_wohnung.wohnungid AND buchungId = ?";
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(query))
         {
-            datenmenge = befehl.executeQuery(query);
+            ps.setString(1, buchungid);
+            ResultSet datenmenge = ps.executeQuery();
             if (datenmenge.next())
             {
                 return datenmenge.getString(1);
             }
         } catch (Exception e)
         {
-            throw new Exception("Es ist ein Fehler beim Lesen der Benutzerdaten aufgetreten. ");
+            throw new Exception("Fehler beim Lesen des Betrags für Buchung ID " + buchungid, e);
         } finally
         {
             close();
         }
         return null;
     }
+
 }

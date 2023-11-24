@@ -228,6 +228,8 @@ public class AccountController implements Initializable {
             {
                 Benutzer benutzer = getBenutzer();
                 tv_account.setItems(FXCollections.observableArrayList(benutzer));
+                message += "> " + "Benutzertabelle wurde erfolgreich geladen." + "\n";
+                ta_meldungen.setText(message);
             } catch (Exception e)
             {
                 message += "> " + "Fehler beim Laden der Konto-Daten." + "\n";
@@ -295,9 +297,12 @@ public class AccountController implements Initializable {
 
                 List<Bewertung> bewertung = getBewertung();
                 tv_history.setItems(FXCollections.observableArrayList(bewertung));
+                message += "> " + "Bewertungtabelle wurde erfolgreich geladen." + "\n";
+                ta_meldungen.setText(message);
             } catch (Exception e)
             {
-                ta_meldungen.setText("Fehler beim Laden der Bewertungen.");
+                message += "> " + "Fehler beim Laden der Bewertungdaten." + "\n";
+                ta_meldungen.setText(message);
                 Logger.getLogger(AccountController.class.getName()).log(Level.SEVERE, null, e);
             }
         });

@@ -1,11 +1,8 @@
 package datenhaltungsschicht;
 
-import static datenhaltungsschicht.DBZugriff.befehl;
 import static datenhaltungsschicht.DBZugriff.close;
-import static datenhaltungsschicht.DBZugriff.connect;
 import logikschicht.Zahlungen;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,28 +11,25 @@ import java.util.List;
  *
  * @author Diyar
  */
-public class DBZahlungen extends DBZugriff {
+public class DBZahlungen {
 
     private static ResultSet datenmenge;
+    private static DBZugriff dbZugriff = DBZugriff.getInstance();
 
     public static boolean Insert(Zahlungen zahlungen) throws Exception {
         String zahlungsid = zahlungen.getZahlungsId() == null ? (getLastId() + 1) + "" : zahlungen.getZahlungsId();
-        connect();
-        String insertCommand = "INSERT INTO T_Zahlungen VALUES ("
-                + zahlungsid
-                + ", " + zahlungen.getBuchungId()
-                + ", " + zahlungen.getBetrag()
-                + ",'" + zahlungen.getZahlungsdatum()
-                + "', '" + zahlungen.getZahlungsart() + "')";
-        System.out.println(insertCommand);
-        try
+        String insertCommand = "INSERT INTO T_Zahlungen VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(insertCommand))
         {
-            befehl.executeUpdate(insertCommand);
+            ps.setString(1, zahlungsid);
+            ps.setString(2, zahlungen.getBuchungId());
+            ps.setString(3, zahlungen.getBetrag());
+            ps.setString(4, zahlungen.getZahlungsdatum());
+            ps.setString(5, zahlungen.getZahlungsart());
+            ps.executeUpdate();
         } catch (SQLException ex)
         {
-            ex.printStackTrace();
-            String errorMessage = "Es ist ein Fehler beim Hinzufügen des zahlungs " + zahlungen.getZahlungsId() + " aufgetreten.";
-            throw new Exception(errorMessage);
+            throw new Exception("Fehler beim Hinzufügen der Zahlung " + zahlungen.getZahlungsId(), ex);
         } finally
         {
             close();
@@ -44,19 +38,17 @@ public class DBZahlungen extends DBZugriff {
     }
 
     public static int getLastId() throws Exception {
-        connect();
-
-        try
+        String sql = "SELECT MAX(zahlungsid) FROM T_Zahlungen";
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(sql))
         {
-            String sql = "SELECT MAX(zahlungsid) FROM T_Zahlungen";
-            datenmenge = befehl.executeQuery(sql);
-            if (getNext())
+            ResultSet datenmenge = ps.executeQuery();
+            if (datenmenge.next())
             {
                 return datenmenge.getInt(1);
             }
         } catch (SQLException e)
         {
-            throw new Exception(e.getSQLState());
+            throw new Exception("Fehler beim Abrufen der letzten Zahlungs-ID", e);
         } finally
         {
             close();
@@ -65,18 +57,18 @@ public class DBZahlungen extends DBZugriff {
     }
 
     public static boolean update(Zahlungen zahlungen) throws Exception {
-        connect();
-
-        String updateCommand = "UPDATE T_Zahlungen SET buchungId = " + zahlungen.getBuchungId() + ", betrag= " + zahlungen.getBetrag()
-                + ", zahlungsdatum = '" + zahlungen.getZahlungsdatum() + "', zahlungsart = '" + zahlungen.getZahlungsart() + "' WHERE zahlungsId = " + zahlungen.getZahlungsId();
-
-        try
+        String updateCommand = "UPDATE T_Zahlungen SET buchungId = ?, betrag = ?, zahlungsdatum = ?, zahlungsart = ? WHERE zahlungsId = ?";
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(updateCommand))
         {
-            befehl.executeUpdate(updateCommand);
+            ps.setString(1, zahlungen.getBuchungId());
+            ps.setString(2, zahlungen.getBetrag());
+            ps.setString(3, zahlungen.getZahlungsdatum());
+            ps.setString(4, zahlungen.getZahlungsart());
+            ps.setString(5, zahlungen.getZahlungsId());
+            ps.executeUpdate();
         } catch (SQLException ex)
         {
-            String errorMessage = "Es ist ein Fehler beim Aktualisieren des zahlungs " + zahlungen.getZahlungsId() + " aufgetreten.";
-            throw new Exception(errorMessage);
+            throw new Exception("Fehler beim Aktualisieren der Zahlung " + zahlungen.getZahlungsId(), ex);
         } finally
         {
             close();
@@ -85,31 +77,30 @@ public class DBZahlungen extends DBZugriff {
     }
 
     public static boolean Delete(Zahlungen zahlungen) throws Exception {
-        connect();
-        String deleteCommand = "DELETE FROM T_Zahlungen WHERE zahlungsId = " + zahlungen.getZahlungsId();
-
-        try
+        String deleteCommand = "DELETE FROM T_Zahlungen WHERE zahlungsId = ?";
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(deleteCommand))
         {
-            befehl.executeUpdate(deleteCommand);
+            ps.setString(1, zahlungen.getZahlungsId());
+            int status = ps.executeUpdate();
+            return status == 1;
         } catch (SQLException ex)
         {
-            String errorMessage = "Es ist ein Fehler beim Löschen des Zahlungens " + zahlungen.getZahlungsId() + " aufgetreten.";
-            throw new Exception(errorMessage);
+            throw new Exception("Fehler beim Löschen der Zahlung " + zahlungen.getZahlungsId(), ex);
         } finally
         {
             close();
         }
-        return true;
     }
 
     public static List<Zahlungen> getAllZahlungen(String benutzerid) throws Exception {
+        String query = "SELECT * FROM T_Zahlungen,T_buchung , T_benutzer "
+                + "WHERE t_buchung.mieterid=T_benutzer.benutzerid AND t_zahlungen.buchungid = t_buchung.buchungid AND mieterid= ? ";
 
         ArrayList<Zahlungen> zahlungenListe = new ArrayList<>();
-        connect();
-        try
+        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(query))
         {
-            datenmenge = befehl.executeQuery("SELECT * FROM T_Zahlungen,T_buchung , T_benutzer "
-                    + "WHERE t_buchung.mieterid=T_benutzer.benutzerid AND t_zahlungen.buchungid = t_buchung.buchungid AND mieterid=" + benutzerid);
+            pstmt.setString(1, benutzerid);
+            datenmenge = pstmt.executeQuery();
             while (getNext())
             {
                 String zahlungsId = getzahlungsId();
@@ -132,13 +123,14 @@ public class DBZahlungen extends DBZugriff {
     }
 
     public static Zahlungen getZahlungenByZahlungenId(String zahlungsId) throws Exception {
-        connect();
         Zahlungen zahlungen = null;
-        String query = "SELECT * FROM T_Zahlungen WHERE zahlungenid = " + zahlungsId;
+        String query = "SELECT * FROM T_Zahlungen WHERE zahlungenid = ?";
 
-        try
+        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(query))
         {
-            datenmenge = befehl.executeQuery(query);
+            pstmt.setString(1, zahlungsId);
+
+            datenmenge = pstmt.executeQuery(query);
 
             if (datenmenge.next())
             {
