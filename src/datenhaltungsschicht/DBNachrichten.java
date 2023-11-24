@@ -1,11 +1,8 @@
 package datenhaltungsschicht;
 
-import static datenhaltungsschicht.DBZugriff.befehl;
 import static datenhaltungsschicht.DBZugriff.close;
-import static datenhaltungsschicht.DBZugriff.connect;
 import logikschicht.Nachrichten;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,27 +11,25 @@ import java.util.List;
  *
  * @author Diyar
  */
-public class DBNachrichten extends DBZugriff {
+public class DBNachrichten {
 
     private static ResultSet datenmenge;
+    private static DBZugriff dbZugriff = DBZugriff.getInstance();
 
     public static boolean Insert(Nachrichten nachrichten) throws Exception {
         String nachrichtId = nachrichten.getNachrichtenId() == null ? (getLastId() + 1) + "" : nachrichten.getNachrichtenId();
-        connect();
-        String insertCommand = "INSERT INTO T_Nachrichten VALUES ("
-                + nachrichtId
-                + ", " + nachrichten.getSenderId()
-                + ", " + nachrichten.getEmpfaengerId()
-                + ", '" + nachrichten.getNachrichtenText()
-                + "','" + nachrichten.getZeitStempel() + "')";
-        System.out.println(insertCommand);
-        try
+        String insertCommand = "INSERT INTO T_Nachrichten VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(insertCommand))
         {
-            befehl.executeUpdate(insertCommand);
+            ps.setString(1, nachrichtId);
+            ps.setString(2, nachrichten.getSenderId());
+            ps.setString(3, nachrichten.getEmpfaengerId());
+            ps.setString(4, nachrichten.getNachrichtenText());
+            ps.setString(5, nachrichten.getZeitStempel());
+            ps.executeUpdate();
         } catch (SQLException ex)
         {
-            String errorMessage = "Es ist ein Fehler beim Hinzufügen des Nachricht " + nachrichten.getNachrichtenId() + " aufgetreten.";
-            throw new Exception(errorMessage);
+            throw new Exception("Fehler beim Hinzufügen der Nachricht " + nachrichtId, ex);
         } finally
         {
             close();
@@ -43,18 +38,18 @@ public class DBNachrichten extends DBZugriff {
     }
 
     public static boolean update(Nachrichten nachrichten) throws Exception {
-        connect();
-
-        String updateCommand = "UPDATE T_Nachrichten SET senderId = " + nachrichten.getSenderId() + ", empfaengerId= " + nachrichten.getEmpfaengerId()
-                + ", nachrichtentext = '" + nachrichten.getNachrichtenText() + "', zeitstempel = '" + nachrichten.getZeitStempel() + "'";
-
-        try
+        String updateCommand = "UPDATE T_Nachrichten SET senderId = ?, empfaengerId = ?, nachrichtentext = ?, zeitstempel = ? WHERE nachrichtenId = ?";
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(updateCommand))
         {
-            befehl.executeUpdate(updateCommand);
+            ps.setString(1, nachrichten.getSenderId());
+            ps.setString(2, nachrichten.getEmpfaengerId());
+            ps.setString(3, nachrichten.getNachrichtenText());
+            ps.setString(4, nachrichten.getZeitStempel());
+            ps.setString(5, nachrichten.getNachrichtenId());
+            ps.executeUpdate();
         } catch (SQLException ex)
         {
-            String errorMessage = "Es ist ein Fehler beim Aktualisieren des Nachricht " + nachrichten.getNachrichtenId() + " aufgetreten.";
-            throw new Exception(errorMessage);
+            throw new Exception("Fehler beim Aktualisieren der Nachricht " + nachrichten.getNachrichtenId(), ex);
         } finally
         {
             close();
@@ -63,38 +58,36 @@ public class DBNachrichten extends DBZugriff {
     }
 
     public static boolean Delete(String nachrichtId) throws Exception {
-        int status = -1;
-        connect();
-        String deleteCommand = "DELETE FROM T_Nachrichten WHERE nachrichtenId = " + nachrichtId;
-
-        try
+        String deleteCommand = "DELETE FROM T_Nachrichten WHERE nachrichtenId = ?";
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(deleteCommand))
         {
-            status = befehl.executeUpdate(deleteCommand);
+            ps.setString(1, nachrichtId);
+            int status = ps.executeUpdate();
+            return status == 1;
         } catch (SQLException ex)
         {
-            String errorMessage = "Es ist ein Fehler beim Löschen des Nachrichtens " + nachrichtId + " aufgetreten.";
-            throw new Exception(errorMessage);
+            throw new Exception("Fehler beim Löschen der Nachricht " + nachrichtId, ex);
         } finally
         {
             close();
         }
-        return status == 1;
     }
 
     public static List<Nachrichten> getAllNachrichten(String benutzerid) throws Exception {
 
         ArrayList<Nachrichten> nachrichtenenList = new ArrayList<>();
-        connect();
-        try
+        String sql = "SELECT t_nachrichten.nachrichtenid,t_benutzer.benutzername,t_nachrichten.senderid,t_nachrichten.empfaengerid,t_nachrichten.nachrichtentext,t_nachrichten.zeitstempel "
+                + "FROM t_benutzer JOIN t_nachrichten ON t_benutzer.benutzerid = t_nachrichten.senderid "
+                + "WHERE t_nachrichten.senderid = ?"
+                + "UNION ALL "
+                + "SELECT t_nachrichten.nachrichtenid,t_benutzer.benutzername,t_nachrichten.senderid,t_nachrichten.empfaengerid,t_nachrichten.nachrichtentext,t_nachrichten.zeitstempel "
+                + "FROM t_benutzer JOIN t_nachrichten ON t_benutzer.benutzerid = t_nachrichten.senderid "
+                + "WHERE t_nachrichten.empfaengerid = ?";
+        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(sql))
         {
-            String sql = "SELECT t_nachrichten.nachrichtenid,t_benutzer.benutzername,t_nachrichten.senderid,t_nachrichten.empfaengerid,t_nachrichten.nachrichtentext,t_nachrichten.zeitstempel "
-                    + "FROM t_benutzer JOIN t_nachrichten ON t_benutzer.benutzerid = t_nachrichten.senderid "
-                    + "WHERE t_nachrichten.senderid = " + benutzerid
-                    + "UNION ALL "
-                    + "SELECT t_nachrichten.nachrichtenid,t_benutzer.benutzername,t_nachrichten.senderid,t_nachrichten.empfaengerid,t_nachrichten.nachrichtentext,t_nachrichten.zeitstempel "
-                    + "FROM t_benutzer JOIN t_nachrichten ON t_benutzer.benutzerid = t_nachrichten.senderid "
-                    + "WHERE t_nachrichten.empfaengerid = " + benutzerid;
-            datenmenge = befehl.executeQuery(sql);
+            pstmt.setString(1, benutzerid);
+            pstmt.setString(2, benutzerid);
+            datenmenge = pstmt.executeQuery();
             while (getNext())
             {
                 String nachrichtenid = getnachrichtenId();
@@ -118,13 +111,13 @@ public class DBNachrichten extends DBZugriff {
     }
 
     public static Nachrichten getNachrichtenByNachrichtenId(String nachrichtenId) throws Exception {
-        connect();
         Nachrichten nachrichten = null;
-        String query = "SELECT * FROM T_Nachrichten WHERE nachrichtenid = " + nachrichtenId;
-
-        try
+        String query = "SELECT * FROM T_Nachrichten WHERE nachrichtenid = ?";
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(query))
         {
-            datenmenge = befehl.executeQuery(query);
+            ps.setString(1, nachrichtenId);
+
+            datenmenge = ps.executeQuery(query);
 
             if (datenmenge.next())
             {
@@ -178,23 +171,22 @@ public class DBNachrichten extends DBZugriff {
     }
 
     public static int getLastId() throws Exception {
-        connect();
-
-        try
+        String sql = "SELECT MAX(nachrichtenId) FROM T_Nachrichten";
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(sql))
         {
-            String sql = "SELECT MAX(nachrichtenId) FROM T_Nachrichten";
-            datenmenge = befehl.executeQuery(sql);
-            if (getNext())
+            datenmenge = ps.executeQuery();
+            if (datenmenge.next())
             {
                 return datenmenge.getInt(1);
             }
         } catch (SQLException e)
         {
-            throw new Exception(e.getSQLState());
+            throw new Exception("Fehler beim Abrufen der letzten Nachrichten-ID", e);
         } finally
         {
             close();
         }
         return 0;
     }
+
 }

@@ -1,38 +1,37 @@
 package datenhaltungsschicht;
 
 import logikschicht.Bewertung;
-import static datenhaltungsschicht.DBZugriff.befehl;
 import static datenhaltungsschicht.DBZugriff.close;
-import static datenhaltungsschicht.DBZugriff.connect;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * -
  *
  * @author Diyar+
  */
-public class DBBewertung extends DBZugriff {
+public class DBBewertung {
 
     private static ResultSet datenmenge;
+    private static DBZugriff dbZugriff = DBZugriff.getInstance();
 
     public static boolean Insert(Bewertung bewertung) throws Exception {
         String bewrtungId = bewertung.getBewertungId() == null ? (getLastId() + 1) + "" : bewertung.getBewertungId();
-        connect();
-        String insertCommand = "INSERT INTO T_Bewertung VALUES ("
-                + bewrtungId
-                + ", " + bewertung.getBuchungId()
-                + ", '" + bewertung.getBewertungText()
-                + "', '" + bewertung.getSternBewertung()
-                + "')";
-        System.out.println(insertCommand);
-        try
+        String insertCommand = "INSERT INTO T_Bewertung VALUES (?, ?, ?, ?)";
+
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(insertCommand))
         {
-            befehl.executeUpdate(insertCommand);
+            ps.setString(1, bewrtungId);
+            ps.setString(2, bewertung.getBuchungId());
+            ps.setString(3, bewertung.getBewertungText());
+            ps.setString(4, bewertung.getSternBewertung());
+            ps.executeUpdate();
         } catch (SQLException ex)
         {
-            String errorMessage = "Es ist ein Fehler beim Hinzufügen des Bewertungs " + bewertung.getBewertungId() + " aufgetreten.";
+            String errorMessage = "Es ist ein Fehler beim Hinzufügen des Bewertungs " + bewrtungId + " aufgetreten.";
             throw new Exception(errorMessage);
         } finally
         {
@@ -42,12 +41,11 @@ public class DBBewertung extends DBZugriff {
     }
 
     public static int getLastId() throws Exception {
-        connect();
 
-        try
+        String sql = "SELECT MAX(bewertungid) FROM T_Bewertung";
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(sql))
         {
-            String sql = "SELECT MAX(bewertungid) FROM T_Bewertung";
-            datenmenge = befehl.executeQuery(sql);
+            datenmenge = ps.executeQuery(sql);
             if (getNext())
             {
                 return datenmenge.getInt(1);
@@ -63,14 +61,15 @@ public class DBBewertung extends DBZugriff {
     }
 
     public static boolean update(Bewertung bewertung) throws Exception {
-        connect();
 
-        String updateCommand = "UPDATE T_Bewertung SET buchungId = " + bewertung.getBuchungId() + ", bewertungstext= " + bewertung.getBewertungText()
-                + ", sternBewertung = " + bewertung.getSternBewertung() + " WHERE bewertungId = " + bewertung.getBewertungId();
-
-        try
+        String updateCommand = "UPDATE T_Bewertung SET buchungId = ?, bewertungstext= ?, sternBewertung = ? WHERE bewertungId = ?";
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(updateCommand))
         {
-            befehl.executeUpdate(updateCommand);
+            ps.setString(1, bewertung.getBuchungId());
+            ps.setString(2, bewertung.getBewertungText());
+            ps.setString(3, bewertung.getSternBewertung());
+            ps.setString(4, bewertung.getBewertungId());
+            ps.executeUpdate();
         } catch (SQLException ex)
         {
             String errorMessage = "Es ist ein Fehler beim Aktualisieren des Bewertungs " + bewertung.getBewertungId() + " aufgetreten.";
@@ -83,12 +82,12 @@ public class DBBewertung extends DBZugriff {
     }
 
     public static boolean Delete(String bewertungId) throws Exception {
-        connect();
-        String deleteCommand = "DELETE FROM T_Bewertung WHERE bewertungId = " + bewertungId;
+        String deleteCommand = "DELETE FROM T_Bewertung WHERE bewertungId = ?";
 
-        try
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(deleteCommand))
         {
-            befehl.executeUpdate(deleteCommand);
+            ps.setString(1, bewertungId);
+            ps.executeUpdate();
         } catch (SQLException ex)
         {
             String errorMessage = "Es ist ein Fehler beim Löschen des Bewertungs " + bewertungId + " aufgetreten.";
@@ -103,10 +102,9 @@ public class DBBewertung extends DBZugriff {
     public static List<Bewertung> getAllBewertung() throws Exception {
 
         ArrayList<Bewertung> bewertungen = new ArrayList<>();
-        connect();
-        try
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement("SELECT * FROM T_Bewertung"))
         {
-            datenmenge = befehl.executeQuery("SELECT * FROM T_Bewertung");
+            datenmenge = ps.executeQuery();
             while (getNext())
             {
                 String bewertungId = getbewertungId();
@@ -128,14 +126,12 @@ public class DBBewertung extends DBZugriff {
     }
 
     public static List<Bewertung> getAllBewertungIdByBenutzerId(String benutzerId) throws SQLException {
-
         ArrayList<Bewertung> Bewertungen_Id = new ArrayList<>();
-        connect();
-        String sql = "SELECT bewertungid FROM T_Bewertung, T_Buchung WHERE T_Bewertung.buchungid=T_Buchung.buchungid AND mieterId= " + benutzerId;
-        try
+        String sql = "SELECT bewertungid FROM T_Bewertung, T_Buchung WHERE T_Bewertung.buchungid=T_Buchung.buchungid AND mieterId= ?";
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(sql))
         {
-
-            datenmenge = befehl.executeQuery(sql);
+            ps.setString(1, benutzerId);
+            ResultSet datenmenge = ps.executeQuery();
             while (datenmenge.next())
             {
                 Bewertungen_Id.add(new Bewertung(datenmenge.getString(1), null, null, null));
@@ -152,14 +148,11 @@ public class DBBewertung extends DBZugriff {
 
     public static List<Bewertung> getBewertungByBewertungId(String benutzerid) throws Exception {
         List<Bewertung> bewertungen = new ArrayList<>();
-        connect();
-        String query = "SELECT bewertungid, t_bewertung.buchungid, bewertungstext, sternebewertung FROM t_buchung, t_bewertung "
-                + "WHERE  t_buchung.buchungid = t_bewertung.buchungid AND mieterid = " + benutzerid;
-
-        try
+        String query = "SELECT bewertungid, t_bewertung.buchungid, bewertungstext, sternebewertung FROM t_buchung, t_bewertung WHERE t_buchung.buchungid = t_bewertung.buchungid AND mieterid = ?";
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(query))
         {
-            datenmenge = befehl.executeQuery(query);
-
+            ps.setString(1, benutzerid);
+            datenmenge = ps.executeQuery();
             while (datenmenge.next())
             {
                 String bewertungId = datenmenge.getString(1);

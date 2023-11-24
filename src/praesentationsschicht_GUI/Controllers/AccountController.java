@@ -228,7 +228,7 @@ public class AccountController implements Initializable {
             {
                 Benutzer benutzer = getBenutzer();
                 tv_account.setItems(FXCollections.observableArrayList(benutzer));
-                message += "> " + "Benutzertabelle wurde erfolgreich aktuallisiert." + "\n";
+                message += "> " + "Benutzertabelle wurde erfolgreich geladen." + "\n";
                 ta_meldungen.setText(message);
             } catch (Exception e)
             {
@@ -302,7 +302,6 @@ public class AccountController implements Initializable {
             {
                 message += "> " + "Fehler beim Laden der Bewertungen." + "\n";
                 ta_meldungen.setText(message);
-                Logger.getLogger(AccountController.class.getName()).log(Level.SEVERE, null, e);
             }
         });
     }
