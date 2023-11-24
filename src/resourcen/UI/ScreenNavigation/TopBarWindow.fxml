@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="50.0" prefWidth="1147.0" styleClass="main" stylesheets="@../../Styles/topBarMenu.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="praesentationsschicht_GUI.Controllers.DashboardTopController">
+    <children>
+        <MenuBar fx:id="menuBar" prefHeight="1.0" prefWidth="1147.0" style="-fx-background-color: white;" stylesheets="@../../Styles/topBarMenu.css">
+            <menus>
+                <Menu mnemonicParsing="false" text="Bearbeiten">
+                    <items>
+                  <Menu mnemonicParsing="false" text="Design">
+                     <items>
+                        <MenuItem mnemonicParsing="false" text="Schwarz" />
+                        <MenuItem mnemonicParsing="false" text="Weiß" />
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Sprache">
+                     <items>
+                        <MenuItem mnemonicParsing="false" text="Englisch" />
+                        <MenuItem mnemonicParsing="false" text="Deutsch" />
+                     </items>
+                  </Menu>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Hilfe">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Über uns" />
+                  <MenuItem fx:id="testDaten" mnemonicParsing="false" text="TestDaten" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+      <AnchorPane layoutX="930.0" layoutY="14.0" prefHeight="47.0" prefWidth="186.0" AnchorPane.rightAnchor="0.0">
+         <children>
+                <Text fx:id="tf_benutzername" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Diyar " textAlignment="RIGHT" wrappingWidth="226.0" AnchorPane.rightAnchor="55.0">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Text>
+                  <ImageView fitHeight="47.0" fitWidth="50.0" layoutX="139.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="5.0">
+                      <image>
+                          <Image url="@../../../Bilder/icons8_person_48px.png" />
+                      </image>
+                  </ImageView>
+         </children>
+      </AnchorPane>
+      <ImageView fitHeight="40.0" fitWidth="47.0" layoutX="14.0" layoutY="18.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../Bilder/icons8_building_with_rooftop_terrace_48px_1.png" />
+         </image>
+      </ImageView>
+    </children>
+</AnchorPane>

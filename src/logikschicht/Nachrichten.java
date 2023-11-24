@@ -1,16 +1,16 @@
 package logikschicht;
 
-/**
- *
- * @author Diyar
- */
+import praesentationsschicht_GUI.AuthenticationControllers.LoginController;
+
 public class Nachrichten {
 
     private String nachrichtenId;
+    private String benutzerName;
     private String senderId;
     private String empfaengerId;
     private String nachrichtenText;
     private String zeitStempel;
+    private String status;
 
     public Nachrichten(String nachrichtenId, String senderId, String empfaengerId, String nachrichtenText, String zeitStempel) {
         this.nachrichtenId = nachrichtenId;
@@ -18,6 +18,28 @@ public class Nachrichten {
         this.empfaengerId = empfaengerId;
         this.nachrichtenText = nachrichtenText;
         this.zeitStempel = zeitStempel;
+    }
+
+    public Nachrichten(String nachrichtenId, String benutzerName, String senderId, String empfaengerId, String nachrichtenText, String zeitStempel) {
+        this.nachrichtenId = nachrichtenId;
+        this.benutzerName = benutzerName;
+        this.senderId = senderId;
+        this.empfaengerId = empfaengerId;
+        this.nachrichtenText = nachrichtenText;
+        this.zeitStempel = zeitStempel;
+    }
+
+    public String getStatus() {
+
+        return senderId.equals(LoginController.benutzerId) ? "Gesendt" : "Empfangen";
+    }
+
+    public String getBenutzerName() {
+        return benutzerName;
+    }
+
+    public void setBenutzerName(String benutzerName) {
+        this.benutzerName = benutzerName;
     }
 
     public String getNachrichtenId() {
@@ -62,7 +84,7 @@ public class Nachrichten {
 
     @Override
     public String toString() {
-        return "Nachrichten{" + "nachrichtenId=" + nachrichtenId + ", senderId=" + senderId + ", empfaengerId=" + empfaengerId + ", nachrichtenText=" + nachrichtenText + ", zeitStempel=" + zeitStempel + '}';
+        return "Nachrichten{" + "nachrichtenId=" + nachrichtenId + ", benutzerName=" + benutzerName + ", senderId=" + senderId + ", empfaengerId=" + empfaengerId + ", nachrichtenText=" + nachrichtenText + ", zeitStempel=" + zeitStempel + '}';
     }
 
 }

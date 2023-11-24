@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1236.0" styleClass="main" stylesheets="@../../Styles/Styles.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="praesentationsschicht_GUI.Controllers.BuchungenController">
+    <children>
+        <TextField fx:id="tf_buchungsid" layoutX="22.0" layoutY="70.0" prefHeight="32.0" prefWidth="130.0" promptText="*Buchung_id" styleClass="tf_inputs" />
+        <DatePicker fx:id="buchungsdatum" layoutX="22.0" layoutY="169.0" prefHeight="32.0" prefWidth="150.0" promptText="Buchungsdatum" styleClass="tf_inputs" />
+        <TextField fx:id="tf_ort" layoutX="22.0" layoutY="117.0" prefHeight="32.0" prefWidth="176.0" promptText="Ort" styleClass="tf_inputs" />
+        <TableView fx:id="tv_buchungen" layoutY="284.0" maxWidth="-Infinity" prefHeight="236.0" prefWidth="1236.0" AnchorPane.bottomAnchor="130.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="284.0" />
+        <Button fx:id="btn_suchen" layoutX="22.0" layoutY="224.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="128.0" styleClass="btns" text="Aktuallisieren" />
+        <Button fx:id="btn_loeschen" layoutX="178.0" layoutY="224.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="128.0" styleClass="btns" text="Löschen" />
+        <Label layoutX="35.0" layoutY="28.0" text="Buchungen" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+            <font>
+                <Font name="System Bold" size="23.0" />
+            </font>
+        </Label>
+        <Button fx:id="btn_bezahlen" layoutX="741.0" layoutY="100.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="128.0" styleClass="btns" text="Bezahlen" />
+        <ComboBox fx:id="cb_zahlungsart" layoutX="589.0" layoutY="100.0" prefHeight="32.0" prefWidth="131.0" promptText="*Zahlungsart" />
+        <TableView fx:id="tv_Zahlungen" layoutX="379.0" layoutY="147.0" maxWidth="-Infinity" prefHeight="116.0" prefWidth="750.0" />
+        <TextField fx:id="tf_buchungsid1" layoutX="379.0" layoutY="103.0" prefHeight="32.0" prefWidth="130.0" promptText="*Buchung_id" styleClass="tf_inputs" />
+        <ScrollPane layoutX="655.0" layoutY="534.0" prefHeight="116.0" prefWidth="1230.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <content>
+                <Text fx:id="ta_meldungen" fill="#2c2c2c" strokeType="OUTSIDE" strokeWidth="0.0" text="Hier werden die Meldungen angezeigt..." wrappingWidth="1225.9830722808838">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                </Text>
+            </content>
+        </ScrollPane>
+        <Label layoutX="379.0" layoutY="53.0" text="Zahlungen">
+            <font>
+                <Font name="System Bold" size="23.0" />
+            </font>
+        </Label>
+        <Button fx:id="btn_myZahlnungenReloadTable" alignment="CENTER" contentDisplay="CENTER" layoutX="1156.0" layoutY="97.0" minWidth="36.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="52.0" style="-fx-pref-width: 50; -fx-pref-height: 40;" styleClass="btns" textAlignment="CENTER" AnchorPane.rightAnchor="175.0" AnchorPane.topAnchor="80.0">
+            <graphic>
+                <ImageView fitHeight="45.0" fitWidth="45.0" nodeOrientation="INHERIT" style="-fx-translate-x: -5;">
+                    <image>
+                        <Image url="@../../../Bilder/icons8_refresh_64px_5.png" />
+                    </image>
+                </ImageView>
+            </graphic>
+        </Button>
+        <Button fx:id="btn_myBuchungenReloadTable" alignment="CENTER" contentDisplay="CENTER" layoutX="1162.0" layoutY="236.0" minWidth="36.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="52.0" style="-fx-pref-width: 50; -fx-pref-height: 40;" styleClass="btns" textAlignment="CENTER" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="220.0">
+            <graphic>
+                <ImageView fitHeight="45.0" fitWidth="45.0" nodeOrientation="INHERIT" style="-fx-translate-x: -5;">
+                    <image>
+                        <Image url="@../../../Bilder/icons8_refresh_64px_5.png" />
+                    </image>
+                </ImageView>
+            </graphic>
+        </Button>
+    </children>
+</AnchorPane>

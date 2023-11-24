@@ -1,9 +1,5 @@
 package logikschicht;
 
-/**
- *
- * @author Diyar
- */
 public class Wohnung {
 
     private String wohnungId;

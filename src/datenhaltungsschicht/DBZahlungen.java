@@ -1,38 +1,49 @@
 package datenhaltungsschicht;
 
-import static datenhaltungsschicht.DBZugriff.befehl;
 import static datenhaltungsschicht.DBZugriff.close;
-import static datenhaltungsschicht.DBZugriff.connect;
 import logikschicht.Zahlungen;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Die Klasse DBZahlungen ist verantwortlich für die Verwaltung von
+ * Zahlungsinformationen in der Datenbank. Sie bietet Methoden zum Einfügen,
+ * Aktualisieren, Löschen und Abrufen von Zahlungsdaten. Diese Klasse ist ein
+ * Teil der Datenhaltungsschicht in der 3-Schichten-Architektur.
  *
- * @author Diyar
+ * @author Diyar, Hussam und Ronida
  */
-public class DBZahlungen extends DBZugriff {
+public class DBZahlungen {
 
     private static ResultSet datenmenge;
+    private static DBZugriff dbZugriff = DBZugriff.getInstance();
 
+    /**
+     * Fügt eine neue Zahlung in die Datenbank ein.
+     *
+     * @param zahlungen Das Zahlungsobjekt, das in die Datenbank eingefügt
+     * werden soll.
+     * @return true, wenn die Zahlung erfolgreich hinzugefügt wurde, sonst
+     * false.
+     * @throws Exception Wirft eine Exception bei Fehlern während des
+     * Datenbankzugriffs.
+     */
     public static boolean Insert(Zahlungen zahlungen) throws Exception {
-        connect();
-        String insertCommand = "INSERT INTO T_Zahlungen VALUES ("
-                + zahlungen.getZahlungsId()
-                + ", " + zahlungen.getBuchungId()
-                + ", '" + zahlungen.getBetrag()
-                + ", TO_DATE('" + zahlungen.getZahlungsdatum() + "', 'dd.MM.yyyy') ', '"
-                + zahlungen.getZahlungsart() + "'";
-        try
+        String zahlungsid = zahlungen.getZahlungsId() == null ? (getLastId() + 1) + "" : zahlungen.getZahlungsId();
+        String insertCommand = "INSERT INTO T_Zahlungen VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(insertCommand))
         {
-            befehl.executeUpdate(insertCommand);
+            ps.setString(1, zahlungsid);
+            ps.setString(2, zahlungen.getBuchungId());
+            ps.setString(3, zahlungen.getBetrag());
+            ps.setString(4, zahlungen.getZahlungsdatum());
+            ps.setString(5, zahlungen.getZahlungsart());
+            ps.executeUpdate();
         } catch (SQLException ex)
         {
-            String errorMessage = "Es ist ein Fehler beim Hinzufügen des zahlungs " + zahlungen.getZahlungsId() + " aufgetreten.";
-            throw new Exception(errorMessage);
+            throw new Exception("Fehler beim Hinzufügen der Zahlung " + zahlungen.getZahlungsId(), ex);
         } finally
         {
             close();
@@ -40,19 +51,53 @@ public class DBZahlungen extends DBZugriff {
         return true;
     }
 
+    /**
+     * Ruft die höchste Zahlungs-ID aus der Datenbank ab.
+     *
+     * @return Die höchste vorhandene Zahlungs-ID.
+     * @throws Exception Wirft eine Exception bei Fehlern während des
+     * Datenbankzugriffs.
+     */
+    public static int getLastId() throws Exception {
+        String sql = "SELECT MAX(zahlungsid) FROM T_Zahlungen";
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(sql))
+        {
+            ResultSet datenmenge = ps.executeQuery();
+            if (datenmenge.next())
+            {
+                return datenmenge.getInt(1);
+            }
+        } catch (SQLException e)
+        {
+            throw new Exception("Fehler beim Abrufen der letzten Zahlungs-ID", e);
+        } finally
+        {
+            close();
+        }
+        return 0;
+    }
+
+    /**
+     * Aktualisiert die Daten einer existierenden Zahlung in der Datenbank.
+     *
+     * @param zahlungen Das Zahlungsobjekt mit aktualisierten Daten.
+     * @return true, wenn die Aktualisierung erfolgreich war, sonst false.
+     * @throws Exception Wirft eine Exception bei Fehlern während des
+     * Datenbankzugriffs.
+     */
     public static boolean update(Zahlungen zahlungen) throws Exception {
-        connect();
-
-        String updateCommand = "UPDATE T_Zahlungen SET buchungId = " + zahlungen.getBuchungId() + ", betrag= " + zahlungen.getBetrag()
-                + ", zahlungsdatum = '" + zahlungen.getZahlungsdatum() + "', zahlungsart = '" + zahlungen.getZahlungsart() + "' WHERE zahlungsId = " + zahlungen.getZahlungsId();
-
-        try
+        String updateCommand = "UPDATE T_Zahlungen SET buchungId = ?, betrag = ?, zahlungsdatum = ?, zahlungsart = ? WHERE zahlungsId = ?";
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(updateCommand))
         {
-            befehl.executeUpdate(updateCommand);
+            ps.setString(1, zahlungen.getBuchungId());
+            ps.setString(2, zahlungen.getBetrag());
+            ps.setString(3, zahlungen.getZahlungsdatum());
+            ps.setString(4, zahlungen.getZahlungsart());
+            ps.setString(5, zahlungen.getZahlungsId());
+            ps.executeUpdate();
         } catch (SQLException ex)
         {
-            String errorMessage = "Es ist ein Fehler beim Aktualisieren des zahlungs " + zahlungen.getZahlungsId() + " aufgetreten.";
-            throw new Exception(errorMessage);
+            throw new Exception("Fehler beim Aktualisieren der Zahlung " + zahlungen.getZahlungsId(), ex);
         } finally
         {
             close();
@@ -60,36 +105,52 @@ public class DBZahlungen extends DBZugriff {
         return true;
     }
 
+    /**
+     * Löscht eine Zahlung aus der Datenbank anhand ihrer Zahlungs-ID.
+     *
+     * @param zahlungen Das Zahlungsobjekt, das gelöscht werden soll.
+     * @return true, wenn die Zahlung erfolgreich gelöscht wurde, sonst false.
+     * @throws Exception Wirft eine Exception bei Fehlern während des
+     * Datenbankzugriffs.
+     */
     public static boolean Delete(Zahlungen zahlungen) throws Exception {
-        connect();
-        String deleteCommand = "DELETE FROM T_Zahlungen WHERE zahlungsId = " + zahlungen.getZahlungsId();
-
-        try
+        String deleteCommand = "DELETE FROM T_Zahlungen WHERE zahlungsId = ?";
+        try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(deleteCommand))
         {
-            befehl.executeUpdate(deleteCommand);
+            ps.setString(1, zahlungen.getZahlungsId());
+            int status = ps.executeUpdate();
+            return status == 1;
         } catch (SQLException ex)
         {
-            String errorMessage = "Es ist ein Fehler beim Löschen des Zahlungens " + zahlungen.getZahlungsId() + " aufgetreten.";
-            throw new Exception(errorMessage);
+            throw new Exception("Fehler beim Löschen der Zahlung " + zahlungen.getZahlungsId(), ex);
         } finally
         {
             close();
         }
-        return true;
     }
 
-    public static List<Zahlungen> getAllZahlungen() throws Exception {
+    /**
+     * Ruft alle Zahlungen für einen bestimmten Benutzer ab.
+     *
+     * @param benutzerid Die Benutzer-ID für die Abfrage der Zahlungen.
+     * @return Eine Liste von Zahlungen.
+     * @throws Exception Wirft eine Exception bei Fehlern während des
+     * Datenbankzugriffs.
+     */
+    public static List<Zahlungen> getAllZahlungen(String benutzerid) throws Exception {
+        String query = "SELECT * FROM T_Zahlungen,T_buchung , T_benutzer "
+                + "WHERE t_buchung.mieterid=T_benutzer.benutzerid AND t_zahlungen.buchungid = t_buchung.buchungid AND mieterid= ? ";
 
         ArrayList<Zahlungen> zahlungenListe = new ArrayList<>();
-        connect();
-        try
+        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(query))
         {
-            datenmenge = befehl.executeQuery("SELECT * FROM T_Zahlungen");
+            pstmt.setString(1, benutzerid);
+            datenmenge = pstmt.executeQuery();
             while (getNext())
             {
                 String zahlungsId = getzahlungsId();
                 String buchungId = getBuchungId();
-                String betrag = getBetrag();
+                String betrag = getBetrag() + " €";
                 String zahlungsdatum = getZahlungsdatum();
                 String zahlungsart = getZahlungsart();
 
@@ -106,14 +167,24 @@ public class DBZahlungen extends DBZugriff {
         return zahlungenListe;
     }
 
+    /**
+     * Ruft eine spezifische Zahlung anhand ihrer Zahlungs-ID ab.
+     *
+     * @param zahlungsId Die ID der Zahlung, die abgerufen werden soll.
+     * @return Ein Zahlungsobjekt, wenn eine Zahlung mit der angegebenen ID
+     * gefunden wurde, sonst null.
+     * @throws Exception Wirft eine Exception bei Fehlern während des
+     * Datenbankzugriffs.
+     */
     public static Zahlungen getZahlungenByZahlungenId(String zahlungsId) throws Exception {
-        connect();
         Zahlungen zahlungen = null;
-        String query = "SELECT * FROM T_Zahlungen WHERE zahlungenid = " + zahlungsId;
+        String query = "SELECT * FROM T_Zahlungen WHERE zahlungenid = ?";
 
-        try
+        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(query))
         {
-            datenmenge = befehl.executeQuery(query);
+            pstmt.setString(1, zahlungsId);
+
+            datenmenge = pstmt.executeQuery(query);
 
             if (datenmenge.next())
             {
@@ -134,6 +205,13 @@ public class DBZahlungen extends DBZugriff {
         return zahlungen;
     }
 
+    /**
+     * Prüft, ob im aktuellen ResultSet weitere Zahlungen vorhanden sind.
+     *
+     * @return true, wenn weitere Zahlungen vorhanden sind, sonst false.
+     * @throws Exception Wirft eine Exception, wenn Fehler während der Abfrage
+     * auftreten.
+     */
     public static boolean getNext() throws Exception {
         if (datenmenge.next())
         {

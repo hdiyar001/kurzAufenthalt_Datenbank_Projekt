@@ -1,0 +1,25 @@
+.background{
+    -fx-background-color:white;
+}
+.btns {
+    -fx-pref-width: 150;
+    -fx-pref-height: 32;
+    -fx-background-color:#ffffff;
+    -fx-font-size: 1.1em;
+    -fx-alignment: CENTER_LEFT;
+    -fx-effect: dropshadow(three-pass-box,#DDDDDD ,5,0,0,6);
+}
+.btns:hover{
+    -fx-effect: dropshadow(gaussian, rgba(46, 46, 46, 0.50), 20, 0, 0, 0);
+    -fx-cursor:hand;
+}
+.tf_inputs{
+    -fx-pref-height: 30.0;
+    -fx-pref-width: 180.0;
+}
+.meldungen{
+    -fx-background-color: #222;
+    -fx-text-fill: black;
+
+
+}

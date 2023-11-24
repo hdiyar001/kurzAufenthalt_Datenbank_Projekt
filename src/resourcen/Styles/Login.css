@@ -41,3 +41,6 @@
     -fx-text-fill: #2752ffb5;
     -fx-font-size: 13;
 }
+.text_errorMessage {
+    -fx-fill: red;
+}
