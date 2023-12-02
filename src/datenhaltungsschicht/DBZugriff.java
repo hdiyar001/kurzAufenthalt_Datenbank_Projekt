@@ -22,18 +22,9 @@ public class DBZugriff {
      * Stellt die Verbindung zur Datenbank her. Setzt Auto-Commit auf true, um
      * sicherzustellen, dass alle Transaktionen automatisch in der Datenbank
      * festgeschrieben werden, ohne dass explizit commit aufgerufen werden muss.
-     *
      */
     private DBZugriff() {
-        try
-        {
-            con = DriverManager.getConnection(url, "C##FBPOOL86", "oracle");
-            con.setAutoCommit(true);
-            System.out.println("Connection was Successful");
-        } catch (SQLException ex)
-        {
-            System.err.println("Fehler beim Herstellen der Verbindung: " + ex.getMessage());
-        }
+
     }
 
     /**
@@ -57,7 +48,15 @@ public class DBZugriff {
      * @return Die Datenbankverbindung.
      */
     public Connection getConnection() {
-        new DBZugriff();
+        try
+        {
+            con = DriverManager.getConnection(url, "C##FBPOOL86", "oracle");
+            con.setAutoCommit(true);
+            System.out.println("Connection was Successful");
+        } catch (SQLException ex)
+        {
+            System.err.println("Fehler beim Herstellen der Verbindung: " + ex.getMessage());
+        }
         return con;
     }
 

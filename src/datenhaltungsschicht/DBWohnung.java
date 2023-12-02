@@ -32,6 +32,7 @@ public class DBWohnung {
      */
     public static boolean Insert(Wohnung wohnung) throws Exception {
         String wohnId = wohnung.getWohnungId() == null ? (getLastId() + 1) + "" : wohnung.getWohnungId();
+
         String insertCommand = "INSERT INTO T_Wohnung VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(insertCommand))
         {
@@ -181,13 +182,12 @@ public class DBWohnung {
         whereBedingungen += ortP.isBlank() ? "" : " AND t_wohnung.ort = '" + ortP + "'";
 
         String query = "SELECT t_wohnung.wohnungid, t_benutzer.benutzername,t_wohnung.strasse,t_wohnung.ort,t_wohnung.plz,t_benutzer.verifiziert,t_wohnung.preispronacht,t_wohnung.beschreibung,t_wohnung.verfuegbarkeit,t_bewertung.bewertungstext,t_bewertung.sternebewertung "
-                + "FROM t_benutzer JOIN t_wohnung ON t_benutzer.benutzerid = t_wohnung.eigentuemerid JOIN t_buchung ON t_wohnung.wohnungid = t_buchung.wohnungid JOIN t_bewertung ON t_buchung.buchungid = t_bewertung.buchungid "
+                + "FROM t_benutzer JOIN t_wohnung ON t_benutzer.benutzerid = t_wohnung.eigentuemerid "
+                + "JOIN t_buchung ON t_wohnung.wohnungid = t_buchung.wohnungid "
+                + "JOIN t_bewertung ON t_buchung.buchungid = t_bewertung.buchungid "
                 + (!whereBedingungen.isBlank() ? whereBedingungen : "");
-        Connection conn = dbZugriff.getConnection();
-        System.out.println(conn.isClosed());
 
-//                + "WHERE preispronacht > " + preisProNachtP + " AND verfuegbarkeit != 'N' AND t_wohnung.ort = '" + ortP + "'";    
-        try (PreparedStatement pstmt = conn.prepareStatement(query))
+        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(query))
         {
             datenmenge = pstmt.executeQuery();
 
@@ -214,11 +214,7 @@ public class DBWohnung {
         {
             e.printStackTrace();
             throw new Exception("Es ist ein Fehler beim Lesen der Wohnungdaten aufgetreten. ");
-        } finally
-        {
-            conn.close();
         }
-        System.out.println(conn.isClosed());
 
         return filterW;
     }

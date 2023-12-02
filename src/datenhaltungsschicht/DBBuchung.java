@@ -34,6 +34,7 @@ public class DBBuchung {
      */
     public static boolean Insert(Buchung buchung) throws Exception {
         String buchungsId = (buchung.getBuchungId() == null ? (getLastId() + 1) + "" : buchung.getBuchungId());
+
         String insertCommand = "INSERT INTO T_Buchung VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = dbZugriff.getConnection().prepareStatement(insertCommand))
         {

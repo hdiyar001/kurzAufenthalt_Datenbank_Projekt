@@ -7,7 +7,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="MainPanel" prefHeight="333.0" prefWidth="500.0" styleClass="MainPanel" stylesheets="@../../Styles/Login.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="praesentationsschicht_GUI.AuthenticationControllers.ForgotPasswordController">
+<AnchorPane id="MainPanel" prefHeight="333.0" prefWidth="500.0" styleClass="MainPanel" stylesheets="@../../Styles/Login.css" 
+            xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="praesentationsschicht_GUI.AuthenticationControllers.ForgotPasswordController">
 
     <Label layoutX="117.0" layoutY="14.0" styleClass="lbl_title" text="Passwort ändern" />
     <Button fx:id="btn_login" layoutX="146.0" layoutY="230.0" styleClass="btn_login" text="Meine Daten Aktuallisieren" />

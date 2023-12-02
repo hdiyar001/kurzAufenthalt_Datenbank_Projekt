@@ -1,6 +1,5 @@
 package datenhaltungsschicht;
 
-import static datenhaltungsschicht.DBZugriff.close;
 import logikschicht.Benutzer;
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -30,6 +29,7 @@ public class DBBenutzer {
      */
     public static boolean Insert(Benutzer benutzer) {
         String insertCommand = "INSERT INTO T_Benutzer VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
         try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(insertCommand))
         {
             pstmt.setString(1, benutzer.getBenutzerId());
@@ -94,6 +94,10 @@ public class DBBenutzer {
         return sql.substring(0, sql.length() - 2);
     }
 
+    public static void main(String[] args) {
+        System.out.println(getDataToUpdate(new Benutzer(null, "nachname", "Geändert", null, null, "email", null, null, null, null, null, null, null)));
+    }
+
     /**
      * Aktualisiert das Passwort eines Benutzers in der Datenbank.
      *
@@ -135,16 +139,17 @@ public class DBBenutzer {
 
         try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(deleteCommand))
         {
-            pstmt.setInt(1, Integer.parseInt(benutzerId));
-            int status = pstmt.executeUpdate();
-            return status == 1;
+            pstmt.setString(1, benutzerId);
+
+            pstmt.executeUpdate();
+            return true;
         } catch (SQLException ex)
         {
             System.err.println("Fehler beim Löschen des Benutzers " + benutzerId + ": " + ex.getMessage());
             throw ex;
         }
     }
-
+ 
     /**
      * Ruft eine Liste aller Benutzer aus der Datenbank ab.
      *
@@ -162,7 +167,7 @@ public class DBBenutzer {
             datenmenge = pstmt.executeQuery();
             while (datenmenge.next())
             {
-                String benutzerId = getbenutzerId();
+                String benutzerId = datenmenge.getString("benutzerId");
                 String nachname = getNachname();
                 String vorname = getVorname();
                 String anrede = getAnrede();
@@ -228,7 +233,6 @@ public class DBBenutzer {
             System.err.println("Fehler beim Abrufen des Benutzers mit ID " + benutzerId + ": " + e.getMessage());
             throw e;
         }
-
         return benutzer;
     }
 
@@ -293,7 +297,7 @@ public class DBBenutzer {
             return true;
         } else
         {
-            close();
+            DBZugriff.close();
             return false;
         }
     }
@@ -322,6 +326,9 @@ public class DBBenutzer {
         {
             System.err.println("Fehler beim Abrufen der letzten Benutzer-ID: " + e.getMessage());
             throw e;
+        } finally
+        {
+            DBZugriff.close();
         }
     }
 

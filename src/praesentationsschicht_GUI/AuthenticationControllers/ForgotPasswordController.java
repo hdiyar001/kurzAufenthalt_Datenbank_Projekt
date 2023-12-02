@@ -1,6 +1,5 @@
 package praesentationsschicht_GUI.AuthenticationControllers;
 
-import datenhaltungsschicht.DBBenutzer;
 import logikschicht.Modell;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -11,11 +10,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import logikschicht.Benutzer;
 import logikschicht.Benutzerverwaltung;
 
 /**

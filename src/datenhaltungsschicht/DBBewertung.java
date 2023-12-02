@@ -1,4 +1,4 @@
-    package datenhaltungsschicht;
+package datenhaltungsschicht;
 
 import logikschicht.Bewertung;
 import static datenhaltungsschicht.DBZugriff.close;

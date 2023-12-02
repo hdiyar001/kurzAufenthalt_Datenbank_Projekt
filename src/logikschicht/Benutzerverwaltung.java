@@ -76,7 +76,6 @@ public class Benutzerverwaltung {
      * Datenbankzugriffs.
      */
     public static Benutzer checkUserExists(String bNameOEmail, String passwort) throws Exception {
-
         return DBBenutzer.getBenutzerByLogin(bNameOEmail, passwort);
     }
 
