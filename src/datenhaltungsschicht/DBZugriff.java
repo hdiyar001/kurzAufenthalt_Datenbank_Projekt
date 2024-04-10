@@ -15,7 +15,18 @@ public class DBZugriff {
 
     private static Connection con;
     private static DBZugriff instance;
-    private static final String url = "jdbc:oracle:thin:@172.22.160.22:1521:xe";
+
+    private static final String url = "jdbc:oracle:thin:@dihas001.fritz.box:1521:xe";
+    private static final String user = "system";
+    private static final String password = "system";
+
+    static {
+        try {
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+        } catch (ClassNotFoundException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }sfs
 
     /**
      * Privater Konstruktor zur Verhinderung der Instanzerstellung von außen.
@@ -34,8 +45,7 @@ public class DBZugriff {
      * @return Die Instanz von DBZugriff.
      */
     public static DBZugriff getInstance() {
-        if (instance == null)
-        {
+        if (instance == null) {
             instance = new DBZugriff();
         }
         return instance;
@@ -48,13 +58,13 @@ public class DBZugriff {
      * @return Die Datenbankverbindung.
      */
     public Connection getConnection() {
-        try
-        {
-            con = DriverManager.getConnection(url, "C##FBPOOL86", "oracle");
+        try {
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+
+            connection = DriverManager.getConnection(url, user, password);
             con.setAutoCommit(true);
             System.out.println("Connection was Successful");
-        } catch (SQLException ex)
-        {
+        } catch (SQLException ex) {
             System.err.println("Fehler beim Herstellen der Verbindung: " + ex.getMessage());
         }
         return con;
@@ -64,14 +74,11 @@ public class DBZugriff {
      * Schließt die Datenbankverbindung.
      */
     public static void close() {
-        try
-        {
-            if (con != null)
-            {
+        try {
+            if (con != null) {
                 con.close();
             }
-        } catch (SQLException ex)
-        {
+        } catch (SQLException ex) {
             System.err.println("Fehler beim Schließen der Verbindung: " + ex.getMessage());
         }
     }

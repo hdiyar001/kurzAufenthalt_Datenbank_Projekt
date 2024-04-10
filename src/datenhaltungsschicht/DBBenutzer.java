@@ -30,8 +30,7 @@ public class DBBenutzer {
     public static boolean Insert(Benutzer benutzer) {
         String insertCommand = "INSERT INTO T_Benutzer VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(insertCommand))
-        {
+        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(insertCommand)) {
             pstmt.setString(1, benutzer.getBenutzerId());
             pstmt.setString(2, benutzer.getNachname());
             pstmt.setString(3, benutzer.getVorname());
@@ -48,8 +47,7 @@ public class DBBenutzer {
 
             pstmt.executeUpdate();
             return true;
-        } catch (SQLException ex)
-        {
+        } catch (SQLException ex) {
             System.err.println("Fehler beim Hinzufügen des Benutzers: " + ex.getMessage());
             return false;
         }
@@ -65,12 +63,10 @@ public class DBBenutzer {
         String dataToUpdate = getDataToUpdate(benutzer);
 
         String updateCommand = "UPDATE T_Benutzer SET " + dataToUpdate + " WHERE benutzerId = " + benutzer.getBenutzerId();
-        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(updateCommand))
-        {
+        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(updateCommand)) {
             pstmt.executeUpdate();
             return true;
-        } catch (SQLException ex)
-        {
+        } catch (SQLException ex) {
             System.err.println("Fehler beim Aktualisieren des Benutzers: " + ex.getMessage());
             return false;
         }
@@ -112,15 +108,13 @@ public class DBBenutzer {
     public static boolean updatePasswort(String BNameemail, String passwort) throws SQLException {
         String updateCommand = "UPDATE T_Benutzer SET passwort = ? WHERE benutzername = ? OR Email = ?";
 
-        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(updateCommand))
-        {
+        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(updateCommand)) {
             pstmt.setString(1, passwort);
             pstmt.setString(2, BNameemail);
             pstmt.setString(3, BNameemail);
             pstmt.executeUpdate();
             return true;
-        } catch (SQLException ex)
-        {
+        } catch (SQLException ex) {
             System.err.println("Fehler beim Aktualisieren des Passworts für Benutzer " + BNameemail + ": " + ex.getMessage());
             throw ex;
         }
@@ -137,19 +131,17 @@ public class DBBenutzer {
     public static boolean Delete(String benutzerId) throws SQLException {
         String deleteCommand = "DELETE FROM T_Benutzer WHERE benutzerId = ?";
 
-        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(deleteCommand))
-        {
+        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(deleteCommand)) {
             pstmt.setString(1, benutzerId);
 
             pstmt.executeUpdate();
             return true;
-        } catch (SQLException ex)
-        {
+        } catch (SQLException ex) {
             System.err.println("Fehler beim Löschen des Benutzers " + benutzerId + ": " + ex.getMessage());
             throw ex;
         }
     }
- 
+
     /**
      * Ruft eine Liste aller Benutzer aus der Datenbank ab.
      *
@@ -162,11 +154,9 @@ public class DBBenutzer {
         List<Benutzer> benutzerListe = new ArrayList<>();
         String query = "SELECT * FROM T_Benutzer";
 
-        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(query))
-        {
+        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(query)) {
             datenmenge = pstmt.executeQuery();
-            while (datenmenge.next())
-            {
+            while (datenmenge.next()) {
                 String benutzerId = datenmenge.getString("benutzerId");
                 String nachname = getNachname();
                 String vorname = getVorname();
@@ -184,8 +174,7 @@ public class DBBenutzer {
                 Benutzer benutzer = new Benutzer(benutzerId, nachname, vorname, anrede, benutzerName, email, passwort, strasse, ort, plz, geburtsdatum, refBenutzer, verft);
                 benutzerListe.add(benutzer);
             }
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
             System.err.println("Fehler beim Abrufen der Benutzerliste: " + e.getMessage());
             throw e;
         }
@@ -206,13 +195,11 @@ public class DBBenutzer {
         String query = "SELECT * FROM T_Benutzer WHERE benutzerid = ?";
         Benutzer benutzer = null;
 
-        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(query))
-        {
+        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(query)) {
             pstmt.setString(1, benutzerId);
 
             datenmenge = pstmt.executeQuery();
-            if (datenmenge.next())
-            {
+            if (datenmenge.next()) {
                 String nachname = getNachname();
                 String vorname = getVorname();
                 String anrede = getAnrede();
@@ -228,8 +215,7 @@ public class DBBenutzer {
 
                 benutzer = new Benutzer(benutzerId, nachname, vorname, anrede, benutzerName, email, passwort, strasse, ort, plz, geburtsdatum, refBenutzer, verft);
             }
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
             System.err.println("Fehler beim Abrufen des Benutzers mit ID " + benutzerId + ": " + e.getMessage());
             throw e;
         }
@@ -251,15 +237,13 @@ public class DBBenutzer {
         String query = "SELECT * FROM T_Benutzer WHERE (benutzerName = ? OR email = ?) AND passwort = ?";
         Benutzer benutzer = null;
 
-        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(query))
-        {
+        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(query)) {
             pstmt.setString(1, l_bNameOEmail);
             pstmt.setString(2, l_bNameOEmail);
             pstmt.setString(3, l_passwort);
             datenmenge = pstmt.executeQuery();
 
-            if (datenmenge.next())
-            {
+            if (datenmenge.next()) {
                 String benutzerId = getbenutzerId();
                 String nachname = getNachname();
                 String vorname = getVorname();
@@ -275,8 +259,7 @@ public class DBBenutzer {
                 String verft = getverft();
                 benutzer = new Benutzer(benutzerId, nachname, vorname, anrede, benutzerName, email, passwort, strasse, ort, plz, geburtsdatum, refBenutzer, verft);
             }
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
             System.err.println("Fehler beim Abrufen des Benutzers: " + e.getMessage());
             throw e;
         }
@@ -292,11 +275,9 @@ public class DBBenutzer {
      * Datenbankabfrage.
      */
     public static boolean getNext() throws Exception {
-        if (datenmenge.next())
-        {
+        if (datenmenge.next()) {
             return true;
-        } else
-        {
+        } else {
             DBZugriff.close();
             return false;
         }
@@ -312,22 +293,17 @@ public class DBBenutzer {
     public static String getLastId() throws Exception {
         String sql = "SELECT MAX(benutzerId) FROM T_Benutzer";
 
-        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(sql);)
-        {
+        try (PreparedStatement pstmt = dbZugriff.getConnection().prepareStatement(sql);) {
             datenmenge = pstmt.executeQuery();
-            if (getNext())
-            {
+            if (getNext()) {
                 return datenmenge.getString(1);
-            } else
-            {
+            } else {
                 return "0";
             }
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
             System.err.println("Fehler beim Abrufen der letzten Benutzer-ID: " + e.getMessage());
             throw e;
-        } finally
-        {
+        } finally {
             DBZugriff.close();
         }
     }
